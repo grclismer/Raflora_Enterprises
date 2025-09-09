@@ -1,0 +1,230 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  max-height: 100vh;
+  background-color: #f4f4f4;
+}
+
+/* Global Containers */
+.container, .Landing-page,
+.Gallery-Page, .About-Info, .reserve-container{
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* --- Navbar Section --- */
+
+.navbar {
+    display: flex;
+    position: fixed;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F6F6F6;
+    padding: 20px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    top: 0;
+    width: 100%; 
+    z-index: 900;
+}
+
+.navbar img {
+    padding: 2px 3px;
+    width: 70px;
+    height: auto;
+}
+
+.navbar ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style-type: none;
+}
+
+.navbar a {
+    color: #838181;
+    text-decoration: none;
+    padding: 20px;
+    position: relative;
+    align-items: center;
+}
+
+.navbar a:hover {
+    background-color: rgba(0, 0, 0, 0.781);
+    color: white;
+    border-radius: 6%;
+}
+
+.navbar a:active {
+    color: #5121fecd;
+    font-weight: 300;
+}
+
+@media screen and (max-width: 490px) {
+    .navbar {
+        flex-direction: row;
+        text-align: center;
+    }
+    .navbar ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .navbar a {
+        font-size: 15px;
+
+        margin: 15px;
+        padding: 15px;
+    }
+}
+
+
+/* --- Gallery Page --- */
+
+.gallery-container{
+    display: block;
+    position: relative;
+    margin: 0%;
+    padding: 0%;
+    height: 100vh;
+    padding-top: 5%;
+}
+.Gallery-Page {
+    display: block;
+    position: relative;
+    justify-content: center;
+    padding: 3%;
+}
+.Header-Bg h1, .Header-Bg h3{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    left: 20%;
+    font-size: 2.3em;
+    top: 5rem;
+    margin-bottom: 20px ;
+
+    
+}
+
+.Header-Bg img {
+    display: flex;
+    position: relative;
+    width: 50%;
+    height: 30em;
+    margin-top: -10%;
+    margin-bottom: 5%;
+    /* margin: 10px auto; */
+    border-radius: 10px;
+}
+
+
+.Gallery-Collage {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fafafa;
+}
+
+
+.Gallery-Collage > div {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.Gallery-Collage img {
+    width: 100%;
+    height: 15rem;
+    border-radius: 8px;
+    object-fit: cover;
+    /* max-height: 400px; */
+}
+
+.Gallery-Collage h1 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.Gallery-Collage p {
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    color: #666;
+}
+
+
+@media screen and (max-width:768px) and (min-width:420px) {
+
+    .Header-Bg h1{
+        text-align: center;
+        position: relative;
+        justify-content: center;
+        font-size: 25px;
+        margin-top: 10px;
+        left: 0px;
+    }
+    .Header-Bg h3 {
+        text-align: center;
+        position: relative;
+        justify-content: center;
+        font-size: 25px;
+        left: 0px;
+    }
+    .Header-Bg img {
+        display: flex;
+        left: 30px;
+        margin-top: 6rem;
+        width: 90%;
+        height: 15rem;
+    }
+    .Gallery-Collage {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    }
+
+}
+@media screen and (max-width:421px){
+    .Header-Bg h1{
+        font-size: 20px;
+        top: 50px;
+        margin-top: 50px;
+        text-align: center;
+        left: 0px;
+        
+    }
+    .Header-Bg h3 {
+        font-size: 20px;
+        top: 40px;
+        left: 0px;
+        text-align: center;
+    
+    }
+    .Header-Bg img {
+        display: flex;
+        margin-top: 3rem;
+        width: 90%;
+        height: 15rem;
+        left: 13px;
+       
+    }
+    .Gallery-Collage {
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+    }
+
+}
+

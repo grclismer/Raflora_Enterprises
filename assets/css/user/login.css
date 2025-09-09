@@ -1,0 +1,315 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  max-height: 100%;
+  /* background:linear-gradient(rgb(0,0,0),rgb(0,20,29,0.674)); */
+  height: 100vh;
+}
+.Login-form {
+    
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgb(0, 0, 0),
+    rgba(0, 20, 29, 0.674)),url('../../images/login/loginform-bgm.jpg')no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.wrapper {
+    width: 440px;
+    border: 2px solid rgb(255, 255, 255, .2);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 10px rgb(0, 0, 0, .3);
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 30px 40px;
+    overflow: hidden;
+}
+
+.wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+    
+}
+
+.return {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 45px;
+    height: 45px;
+    background: #162938;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    border-bottom-left-radius: 10px;
+}
+
+.return h2 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 45px;
+    height: 45px;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    text-decoration: none;
+}
+
+.wrapper .input-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 30px 0;
+    /* display: grid;
+    grid-template-columns: repeat(1,2fr); */
+}
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgb(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 45px 20px 20px;
+    transition: all 0.3s ease;
+}
+
+.input-box label {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 1em;
+    transition: 0.3s ease;
+    color: #fff;
+}
+
+.input-box i {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
+/* animation box */
+.input-box input:focus + label,
+.input-box input:not(:placeholder-shown) + label {
+    top: -10px;
+    font-size: 1em;
+    color: #ffffff;
+    transform: translateY(-50%) translateX(-5px) scale(0.88);
+    padding: 0 5px;
+    border-radius: 3px;
+    z-index: 1111;
+}
+
+
+/* Show Password Icon Styling */
+.input-box #togglePassword {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #fff;
+    font-size: 1.2em;
+    z-index: 2;
+}
+
+/* Password Strength Feedback */
+.password-feedback {
+    margin-top: -10px;
+    margin-bottom: 30px;
+    font-size: 0.9em;
+    text-align: left;
+    padding-left: 10px;
+    font-weight: bold;
+}
+
+.password-feedback.weak {
+    color: #ff6b6b; /* Red for weak */
+}
+
+.password-feedback.medium {
+    color: #ffe66d; /* Yellow for medium */
+}
+
+.password-feedback.strong {
+    color: #70e000; /* Green for strong */
+}
+
+/* Welcome Message Styling */
+.welcome-message {
+    text-align: center;
+    color: #d5d5d5; /* Green color for greeting */
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    font-weight: bold;
+    display: none; /* Hidden by default */
+    opacity: 0; /* For fade-in effect */
+    transition: opacity 0.5s ease-in-out;
+}
+
+.welcome-message.show {
+    display: block;
+    opacity: 1;
+}
+
+
+/* Existing Login Form Remainder */
+.wrapper .remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -5px 0 10px;
+}
+
+.remember-forgot label input {
+    accent-color: #3730c4;
+    margin-right: 3px;
+}
+
+.remember-forgot a {
+    color: #3730c4;
+    text-decoration: underline;
+}
+
+.wrapper .btn {
+    width: 100%;
+    height: 45px;
+    margin: 10px;
+    background-color: #ffffffed;
+    border: none;
+    border-radius: 48px;
+    box-shadow: 0 0 10px rgb(0, 0, b.1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+.regwrapper h1{
+    margin-bottom: 10px;
+}
+.regwrapper .btn:hover {
+    background-color: #d8d8d8;
+    transform: translateY(-2px);
+}
+.regwrapper .register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0 15px;
+}
+
+.register-link p a {
+    color: #3730c4;
+    text-decoration: none;
+    font-weight: 900px;
+}
+
+.register-link p a:hover {
+    text-decoration: underline;
+}
+
+/* This class will hide the registration form by default */
+.hidden {
+  display: none !important;
+}
+
+/*
+ * New CSS for the Registration Form's show/hide password icons.
+ * This positions the eye icon to the left of the lock icon.
+ */
+#reg-togglePassword,
+#reg-toggleConfirmPassword {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #fff;
+    font-size: 1.2em;
+    z-index: 2;
+}
+.regwrapper {
+    width: 600px;
+    border: 2px solid rgb(255, 255, 255, .2);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 10px rgb(0, 0, 0, .3);
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 10px 30px;
+    overflow: hidden;
+}
+
+
+.regwrapper h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+
+.regwrapper .btn {
+    width: 100%;
+    height: 45px;
+    background-color: #ffffffed;
+    border: none;
+    border-radius: 48px;
+    box-shadow: 0 0 10px rgb(0, 0, b.1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+.regwrapper .input-box {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 15px 6px;
+    
+    /* display: grid;
+    grid-template-columns: repeat(1,2fr); */
+}
+.regrow-1,.regrow-2,.regrow-3,
+.regrow-4,.regrow-5,.regrow-6{
+    display: flex;
+    grid-template-columns: repeat(2,1fr);
+}
+
+/* .mobile-number a{
+    text-decoration: none;
+    color: red;
+    position: absolute;
+} */
+
+/* Media Query for responsiveness */
+@media (max-width: 768px) {
+    .wrapper {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .form-columns {
+        flex-direction: column; /* Stacks columns vertically on small screens */
+        gap: 0;
+    }
+}
