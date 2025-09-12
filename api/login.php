@@ -3,7 +3,7 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "0bdb-login_form";
+$dbname = "raflora_enterprises";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -16,23 +16,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $loginUsername = $_POST['username'];
     $loginPassword = $_POST['password'];
 
-    // CORRECTION: Use the 'username' column, not 'first_name'
-    $stmt = $conn->prepare("SELECT id, username, password FROM login_tbl WHERE username = ?");
+    // CORRECTION: The column name for the username is 'user_name' in your database.
+    // We also need to select the 'password' column to compare it.
+    $stmt = $conn->prepare("SELECT user_id, user_name, password FROM accounts_tbl WHERE user_name = ?");
     $stmt->bind_param("s", $loginUsername);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows == 1) {
-        // CORRECTION: Use 'db_username' to bind to the 'username' column
-        $stmt->bind_result($id, $db_username, $hashed_password);
+        // Correct the variable names to match the columns selected.
+        $stmt->bind_result($user_id, $db_user_name, $hashed_password);
         $stmt->fetch();
 
         if (password_verify($loginPassword, $hashed_password)) {
-            $_SESSION['user_id'] = $id;
-            $_SESSION['username'] = $db_username;
+            $_SESSION['user_id'] = $user_id;
+            $_SESSION['username'] = $db_user_name; // Use the correct column name
 
             if (isset($_POST['remember_me'])) {
-                setcookie('user_id', $id, time() + (86400 * 30), "/"); 
+                setcookie('user_id', $user_id, time() + (86400 * 30), "/"); 
             }
 
             echo "Login successful!";

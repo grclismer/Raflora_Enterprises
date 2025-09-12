@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "0bdb-login_form";
+$dbname = "raflora_enterprises";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -36,7 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Check if the username or email already exists to prevent duplicate entries
-    $stmt = $conn->prepare("SELECT id FROM login_tbl WHERE username = ? OR email = ?");
+    // CORRECTION: The column name for username is 'user_name'.
+    $stmt = $conn->prepare("SELECT user_id FROM accounts_tbl WHERE user_name = ? OR email = ?");
     $stmt->bind_param("ss", $regUsername, $regEmail);
     $stmt->execute();
     $stmt->store_result();
@@ -51,7 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($regPassword, PASSWORD_DEFAULT);
 
     // Prepare and execute the INSERT statement with all fields
-    $stmt = $conn->prepare("INSERT INTO login_tbl (first_name, last_name, username, email, password, mobile_number, address) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    // CORRECTION: The column name for username is 'user_name'.
+    $stmt = $conn->prepare("INSERT INTO accounts_tbl (first_name, last_name, user_name, email, password, contact_number, address) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("sssssss", $regFirstname, $regLastname, $regUsername, $regEmail, $hashed_password, $regMobile, $regAddress);
 
     if ($stmt->execute()) {
