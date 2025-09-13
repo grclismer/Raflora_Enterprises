@@ -101,6 +101,7 @@ body {
     position: relative;
     justify-content: center;
     padding: 3%;
+    padding-top: 10%;
 }
 .Header-Bg h1, .Header-Bg h3{
     display: flex;

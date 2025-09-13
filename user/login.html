@@ -6,6 +6,7 @@
     <title>Login / Register</title>
     <link rel="stylesheet" href="../assets/css/user/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <!-- Re-added the JavaScript link to enable the form functionality -->
     <script src="../assets/js/user/login.js" defer></script>
 </head>
 <body>
@@ -13,9 +14,10 @@
         <div class="wrapper">
             <form id="loginForm" action="../api/login.php" method="post">
                 <span class="return">
-                    <a href="../user/landing.html"><h2>X</h2></a>
+                    <a href="../guest/g-home.html"><h2>X</h2></a>
                 </span>
                 <h1>Login</h1>
+                <!-- The welcome message div will now display login success or error -->
                 <div id="welcomeMessageLogin" class="welcome-message"></div>
                 <div class="input-box">
                     <input type="text" id="username" name="username" placeholder=" " maxlength="30" required>
@@ -25,17 +27,17 @@
                 <div class="input-box">
                     <input type="password" id="password" name="password" placeholder=" " maxlength="50" required>
                     <label for="password">Password</label>
+                    <!-- This icon will be toggled by the JS to show/hide the password -->
                     <i class="fa-solid fa-eye-slash" id="togglePassword"></i>
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                <!-- <div id="password-strength-feedback" class="password-feedback"></div> -->
                 <div class="remember-forgot">
                     <label><input type="checkbox" name="remember_me"> Remember me</label>
                     <a href="#frogot-form" id="showForgotPassword">Forgot password?</a>
                 </div>
                 <button type="submit" class="btn">Login</button>
                 <div class="register-link">
-                    <p>Don't have an account? <a href="#register-form" id="showRegister">Register</a></p>        
+                    <p>Don't have an account? <a href="#register-form" id="showRegister">Register</a></p>
                 </div>
             </form>
         </div>
@@ -44,7 +46,7 @@
         <div class="regwrapper">
             <form id="registrationForm" action="../api/register.php" method="post">
                 <span class="return">
-                    <a href="../user/landing.html"><h2>X</h2></a>
+                    <a href="../guest/g-home.html"><h2>X</h2></a>
                 </span>
                 <h1>Register</h1>
             <div class="regrow-1" id="set1">
@@ -74,7 +76,7 @@
                     <i class="fa-solid fa-eye-slash" id="reg-togglePassword"></i>
                     <i class="fa-solid fa-lock"></i>
                 </div>
-                <div id="password-strength-feedback" class="password-feedback"></div>
+                <!-- <div id="password-strength-feedback" class="password-feedback"></div> -->
             </div>
             <div class="regrow-4" id="set4">
                 <div class="input-box">
@@ -83,7 +85,7 @@
                     <i class="fa-solid fa-eye-slash" id="reg-toggleConfirmPassword"></i>
                     <i class="fa-solid fa-lock"></i>
                 </div>
-             </div>  
+             </div>
             
             <div class="regrow-5" id="set5">
                 <div class="input-box">
@@ -103,9 +105,7 @@
                     <label for="reg-mobilenumber">Mobile Number</label>
                     <i class="fa-solid fa-mobile-screen-button"></i>
                 </div>
-                
             </div>
-            
                 <button type="submit" class="btn">Register</button>
                 <div class="register-link">
                     <p>Already have an account? <a href="#login-form" id="showLoginFromRegister">Login</a></p>
@@ -117,13 +117,13 @@
         <div class="wrapper">
             <form id="forgotPasswordForm">
                 <span class="return">
-                    <a href="../user/landing.html"><h2>X</h2></a>
+                    <a href="../guest/g-home.html"><h2>X</h2></a>
                 </span>
                 <h1>Forgot Password</h1>
                 <div id="forgotPasswordMessage" class="welcome-message"></div>
                 <p class="forgot-instructions">Enter your email and we'll send you a link to reset your password.</p>
                 <div class="input-box">
-                    <input type="email" id=" orgot-email" placeholder=" " required>
+                    <input type="email" id="forgot-email" placeholder=" " required>
                     <label for="forgot-email">Email</label>
                     <i class="fa-solid fa-envelope"></i>
                 </div>

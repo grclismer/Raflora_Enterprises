@@ -1,26 +1,43 @@
+<?php
+session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header("Location: ../user/login.html");
+    exit();
+}
+
+// Check if user is an admin or client
+$is_admin = ($_SESSION['role'] === 'admin_type');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservation</title>
     <link rel="stylesheet" href="../assets/css/user/booking.css">
     <link rel="stylesheet" href="../assets/css/user/footer.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body>
-    <nav class="navbar">
-      <img src="../assets/images/logo/raflora-logo.jpg" alt="logo" class="logo" />
-      <ul class="nav-links">
-        <li><a href="landing.html" class="nav-link">Home</a></li>
-        <li><a href="gallery.html" class="nav-link">Gallery</a></li>
-        <li><a href="about.html" class="nav-link">About</a></li>
-        <!-- <li><a href="#logout"><img src="../assets/css/icon/user.png" class="user" alt="user"></a></li> -->
-        
-      </ul>
-      
-    </nav>
-
+    <div class="landing-container">
+        <nav class="navbar">
+            <img src="../assets/images/logo/raflora-logo.jpg" alt="logo" class="logo" />
+            <ul class="nav-links">
+                <?php if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) : ?>
+                    <li><a href="../api/landing.php" class="nav-link">Home</a></li>
+                    <li><a href="/user/gallery.php" class="nav-link">Gallery</a></li>
+                    <li><a href="/user/about.php" class="nav-link">About</a></li>
+                    <li><a href="../user/login.php" class="nav-link">Log-in</a></li>
+                <?php else : ?>
+                    <li><a href="../api/landing.php" class="nav-link">Home</a></li>
+                    <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
+                    <li><a href="../user/about.php" class="nav-link">About</a></li>
+                    <li><a href="../api/logout.php" class="nav-link">Log-out</a></li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     <div class="main-container">
         <h1 class="page-title">Please fill-up the form</h1>
         <div class="form-container">
@@ -146,7 +163,7 @@
                 </div>
                 
                 <div class="form-action">
-                    <button type="submit" class="submit-button">Place order</button>
+                    <a href="../user/gallery.php"><button type="submit" class="submit-button">Place order</button></a>
                 </div>
             </form>
         </div>

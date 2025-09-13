@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Prepare and execute the INSERT statement with all fields
     // CORRECTION: The column name for username is 'user_name'.
-    $stmt = $conn->prepare("INSERT INTO accounts_tbl (first_name, last_name, user_name, email, password, contact_number, address) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO accounts_tbl (first_name, last_name, user_name, email, password, mobile_number, address) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("sssssss", $regFirstname, $regLastname, $regUsername, $regEmail, $hashed_password, $regMobile, $regAddress);
 
     if ($stmt->execute()) {

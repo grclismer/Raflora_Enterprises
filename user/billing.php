@@ -68,7 +68,7 @@
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Payment method</div>
-                    <div class="detail-value">Online jabol</div>
+                    <div class="detail-value">Online Payment</div>
                 </div>
             </div>
             

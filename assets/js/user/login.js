@@ -61,27 +61,32 @@ document.addEventListener('DOMContentLoaded', function() {
     if (loginForm) {
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
-
+            welcomeMessageLoginDiv.textContent = ''; // Clear previous message
+            
             fetch('../api/login.php', {
                 method: 'POST',
                 body: new FormData(this)
             })
-            .then(response => response.text())
+            .then(response => {
+                // Check if the response is a redirect or a JSON object
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+                return response.json(); // Attempt to parse as JSON
+            })
             .then(data => {
-                welcomeMessageLoginDiv.textContent = data;
-                welcomeMessageLoginDiv.classList.add('show');
-                if (data.includes('successful')) {
+                if (data.status === 'success') {
+                    // Redirect based on the URL provided by the server
+                    welcomeMessageLoginDiv.textContent = 'Login successful!';
                     welcomeMessageLoginDiv.style.color = 'green';
-                    Array.from(loginForm.children).forEach(child => {
-                        if (child.id !== 'welcomeMessageLogin' && child.tagName !== 'SPAN') {
-                            child.style.display = 'none';
-                        }
-                    });
-                    loginForm.querySelector('h1').style.display = 'none';
-                    loginForm.style.height = 'auto';
-                    loginForm.style.paddingBottom = '50px';
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url;
+                    }, 1000);
                 } else {
+                    // Display the error message from the server
+                    welcomeMessageLoginDiv.textContent = data.message;
                     welcomeMessageLoginDiv.style.color = 'red';
+                    welcomeMessageLoginDiv.classList.add('show');
                     document.getElementById('password').value = '';
                 }
             })
@@ -99,12 +104,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const regConfirmPasswordInput = document.getElementById('reg-confirm-password');
     const regTogglePassword = document.getElementById('reg-togglePassword');
     const regToggleConfirmPassword = document.getElementById('reg-toggleConfirmPassword');
-    const feedbackDivReg = document.getElementById('password-strength-feedback-reg');
     const registrationForm = document.getElementById('registrationForm');
     const welcomeMessageRegDiv = document.getElementById('welcomeMessageRegister');
 
     // This is the password strength check logic for the REGISTRATION form only
-    if (regPasswordInput && feedbackDivReg) {
+    if (regPasswordInput) {
         regPasswordInput.addEventListener('keyup', function() {
             const password = this.value;
             let strength = 0;
@@ -120,8 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 else if (strength <= 4) { feedback = 'Medium'; className = 'medium'; }
                 else { feedback = 'Strong!'; className = 'strong'; }
             }
-            feedbackDivReg.textContent = feedback;
-            feedbackDivReg.className = 'password-feedback ' + className;
+            // Temporarily removed feedbackDivReg reference as it's not in the HTML
+            // feedbackDivReg.textContent = feedback;
+            // feedbackDivReg.className = 'password-feedback ' + className;
         });
     }
 
@@ -156,13 +161,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // This is the new check that prevents registration with a weak password
-            if (feedbackDivReg && feedbackDivReg.textContent === 'Weak') {
-                welcomeMessageRegDiv.textContent = 'Error: Password is too weak. Please choose a stronger password.';
-                welcomeMessageRegDiv.style.color = 'red';
-                welcomeMessageRegDiv.classList.add('show');
-                return;
-            }
+            // Temporarily removed feedbackDivReg reference as it's not in the HTML
+            // if (feedbackDivReg && feedbackDivReg.textContent === 'Weak') {
+            //     welcomeMessageRegDiv.textContent = 'Error: Password is too weak. Please choose a stronger password.';
+            //     welcomeMessageRegDiv.style.color = 'red';
+            //     welcomeMessageRegDiv.classList.add('show');
+            //     return;
+            // }
 
             fetch('../api/register.php', {
                 method: 'POST',
@@ -215,6 +220,8 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             const email = forgotEmailInput.value;
             if (email.trim() !== '') {
+                // Use a custom modal instead of the alert() function
+                showCustomAlert('A password reset link has been sent to ' + email + '.');
                 Array.from(forgotPasswordForm.children).forEach(child => {
                     if (child.id !== 'forgotPasswordMessage' && child.tagName !== 'SPAN') {
                         child.style.display = 'none';
@@ -227,8 +234,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 forgotPasswordForm.style.height = 'auto';
                 forgotPasswordForm.style.paddingBottom = '50px';
             } else {
-                alert('Please enter your email address.');
+                showCustomAlert('Please enter your email address.');
             }
         });
+    }
+
+    // Custom alert function to replace window.alert()
+    function showCustomAlert(message) {
+        // Create an overlay and a modal
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        overlay.style.zIndex = '1000';
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+
+        const modal = document.createElement('div');
+        modal.style.backgroundColor = '#fff';
+        modal.style.padding = '20px';
+        modal.style.borderRadius = '8px';
+        modal.style.textAlign = 'center';
+        modal.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        modal.innerHTML = `
+            <p>${message}</p>
+            <button onclick="document.body.removeChild(this.parentNode.parentNode)">OK</button>
+        `;
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
     }
 });

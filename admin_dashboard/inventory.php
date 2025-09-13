@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+// Check if the user is logged in AND is an admin
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true || $_SESSION['role'] !== 'admin_type') {
+    header("Location: ../../login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +24,7 @@
         <ul class="sidebar-menu">
             <li class="active">
                 <span class="icon"><img src="../assets/images/icon/tools_equipment.png" alt="inventory"></span>
-                <span><a href="../admin_dashboard/inventory.html">Tools and Equipment</span></a>
+                <span><a href="../admin_dashboard/inventory.php">Tools and Equipment</span></a>
             </li>
             <li>
                 <span class="icon"><img src="../assets/images/icon/client_updates.png" alt="client updates"></span>
@@ -36,7 +45,7 @@
     <div class="main-content">
         <div class="header">
             <h1>Inventory and Event Management</h1>
-            <button class="logout-btn">Log-out</button>
+           <button class="logout-btn"><a href="../api/logout.php">Log-out</button></a>
         </div>
 
         <div class="dashboard-content">
