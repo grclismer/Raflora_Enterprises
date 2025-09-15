@@ -308,7 +308,10 @@ input::placeholder, .regards::placeholder {
     text-align: center;
     margin-top: 40px;
 }
-
+.form-action a{
+    color: white;
+    text-decoration: none;
+}
 .submit-button {
     background-color: #000;
     color: #fff;

@@ -27,9 +27,9 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
             <ul class="nav-links">
                 <?php if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) : ?>
                     <li><a href="../api/landing.php" class="nav-link">Home</a></li>
-                    <li><a href="/user/gallery.php" class="nav-link">Gallery</a></li>
-                    <li><a href="/user/about.php" class="nav-link">About</a></li>
-                    <li><a href="../user/login.php" class="nav-link">Log-in</a></li>
+                    <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
+                    <li><a href="../user/about.php" class="nav-link">About</a></li>
+                    <li><a href="../api/logout.php" class="nav-link">Log-out</a></li>
                 <?php else : ?>
                     <li><a href="../api/landing.php" class="nav-link">Home</a></li>
                     <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
@@ -163,7 +163,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 </div>
                 
                 <div class="form-action">
-                    <a href="../user/gallery.php"><button type="submit" class="submit-button">Place order</button></a>
+                    <button type="submit" class="submit-button"><a href="../user/billing.php">Place order</a></button>
                 </div>
             </form>
         </div>

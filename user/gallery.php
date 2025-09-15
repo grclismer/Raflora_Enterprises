@@ -26,11 +26,11 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
             <img src="../assets/images/logo/raflora-logo.jpg" alt="logo" class="logo" />
             <ul class="nav-links">
                 <?php if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) : ?>
-                    <li><a href="../api/landing.php" class="nav-link">Home</a></li>
+                    <!-- <li><a href="../api/landing.php" class="nav-link">Home</a></li>
                     <li><a href="/user/gallery.php" class="nav-link">Gallery</a></li>
                     <li><a href="/user/about.php" class="nav-link">About</a></li>
                     <li><a href="../user/booking.php" class="nav-link">Book</a></li>
-                    <li><a href="../user/login.php" class="nav-link">Log-in</a></li>
+                    <li><a href="../user/login.php" class="nav-link">Log-in</a></li> -->
                 <?php else : ?>
                     <li><a href="../api/landing.php" class="nav-link">Home</a></li>
                     <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>

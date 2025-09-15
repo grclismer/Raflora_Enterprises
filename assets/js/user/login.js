@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 else { feedback = 'Strong!'; className = 'strong'; }
             }
             // Temporarily removed feedbackDivReg reference as it's not in the HTML
-            // feedbackDivReg.textContent = feedback;
-            // feedbackDivReg.className = 'password-feedback ' + className;
+            feedbackDivReg.textContent = feedback;
+            feedbackDivReg.className = 'password-feedback ' + className;
         });
     }
 
@@ -162,12 +162,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Temporarily removed feedbackDivReg reference as it's not in the HTML
-            // if (feedbackDivReg && feedbackDivReg.textContent === 'Weak') {
-            //     welcomeMessageRegDiv.textContent = 'Error: Password is too weak. Please choose a stronger password.';
-            //     welcomeMessageRegDiv.style.color = 'red';
-            //     welcomeMessageRegDiv.classList.add('show');
-            //     return;
-            // }
+            if (feedbackDivReg && feedbackDivReg.textContent === 'Weak') {
+                welcomeMessageRegDiv.textContent = 'Error: Password is too weak. Please choose a stronger password.';
+                welcomeMessageRegDiv.style.color = 'red';
+                welcomeMessageRegDiv.classList.add('show');
+                return;
+            }
 
             fetch('../api/register.php', {
                 method: 'POST',
