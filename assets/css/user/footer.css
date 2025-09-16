@@ -1,9 +1,20 @@
+html, body {
+    height: 100%; /* Ensures the body takes up the full viewport height */
+    margin: 0;
+}
+.landing-container, 
+.about-container, .booking-container {
+    min-height: 100vh; /* Ensures the wrapper is at least the height of the viewport */
+    display: flex;
+    flex-direction: column;
+}
 .footer {
+    display: block;
+    margin-top: auto;
     background-color: #515151b4;
     color: #fff;
     padding: 10px ;
     text-align: center;
-    align-content: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 
 }
@@ -69,10 +80,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* width: 45%; */
     margin-right: 10%;
     margin-left: 10%;
     max-width: 100%;
+    
 }
 
 

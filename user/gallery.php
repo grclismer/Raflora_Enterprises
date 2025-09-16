@@ -18,26 +18,30 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
     <title>Gallery</title>
     <link rel="stylesheet" href="../assets/css/user/gallery.css">
     <link rel="stylesheet" href="../assets/css/user/footer.css">
+    <link rel="stylesheet" href="../assets/css/user/navbar.css">
+    <script src="../assets/js/user/navbar.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body>
     <div class="landing-container">
         <nav class="navbar">
             <img src="../assets/images/logo/raflora-logo.jpg" alt="logo" class="logo" />
+            <div class="hamburger-menu">
+                <i class="fas fa-bars"></i>
+            </div>
             <ul class="nav-links">
-                <?php if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) : ?>
-                    <!-- <li><a href="../api/landing.php" class="nav-link">Home</a></li>
-                    <li><a href="/user/gallery.php" class="nav-link">Gallery</a></li>
-                    <li><a href="/user/about.php" class="nav-link">About</a></li>
-                    <li><a href="../user/booking.php" class="nav-link">Book</a></li>
-                    <li><a href="../user/login.php" class="nav-link">Log-in</a></li> -->
-                <?php else : ?>
-                    <li><a href="../api/landing.php" class="nav-link">Home</a></li>
-                    <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
-                    <li><a href="../user/about.php" class="nav-link">About</a></li>
-                    <li><a href="../user/booking.php" class="nav-link">Book</a></li>
-                    <li><a href="../api/logout.php" class="nav-link">Log-out</a></li>
-                <?php endif; ?>
+                <li><a href="../api/landing.php" class="nav-link">Home</a></li>
+                <li class="active"><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
+                <li><a href="../user/about.php" class="nav-link">About</a></li>
+                <li><a href="../user/booking.php" class="nav-link">Book</a></li>
+                <li class="user-dropdown-toggle">
+                    <i class="fas fa-user-circle user-icon"></i>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="#">Edit Account</a></li>
+                        <li><a href="#">My Bookings</a></li>
+                        <li><a href="../api/logout.php">Log Out</a></li>
+                    </ul>
+                </li>
             </ul>
         </nav>
         <!-- Gallery Header Section -->

@@ -6,105 +6,40 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  max-height: 100vh;
-  background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
 
 /* Global Containers */
-.container, .Landing-page,
-.Gallery-Page, .About-Info, .reserve-container{
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-}
 
-/* --- Navbar Section --- */
-.navbar {
-    display: flex;
-    position: fixed;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #F6F6F6;
-    padding: 20px 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    top: 0;
-    width: 100%; 
-    z-index: 900;
-}
 
-.navbar img {
-    padding: 2px 3px;
-    width: 70px;
-    height: auto;
-}
 
-.navbar ul {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    list-style-type: none;
-}
 
-.navbar a {
-    color: #838181;
-    text-decoration: none;
-    padding: 20px;
-    position: relative;
-    align-items: center;
-}
-
-.navbar a:hover {
-    background-color: rgba(0, 0, 0, 0.781);
-    color: white;
-    border-radius: 6%;
-}
-
-.navbar a:active {
-    color: #4d2ac9a0;
-    font-weight: 300;
-}
-
-@media screen and (max-width: 490px) {
-    .navbar {
-        flex-direction: row;
-        text-align: center;
-    }
-    .navbar ul {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .navbar a {
-        font-size: 15px;
-
-        margin: 15px;
-        padding: 15px;
-    }
-}
-/* --- Landing Page Section --- */
-.landing-container{
+/* --- Other CSS Sections --- */
+/* Landing Page Section */
+.landing-container {
     display: block;
     position: relative;
-    margin: 0%;
-    padding: 0%;
-    height: 100vh;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
     margin-top: 8%;
 }
+
 .Home-bg {
     display: block;
     position: relative;
-    justify-content: center;
+    text-align: center;
     padding: 3%;
 }
 
 .Home-bg h1, .Home-bg p {
     display: block;
     position: relative;
-    align-items: center;
-    margin-bottom: 20px ;
-    margin-left: 15%;
+    margin-bottom: 20px;
+    margin-left: 0;
 }
 
 .Home-bg img {
@@ -113,25 +48,23 @@ body {
     height: auto;
     margin: 10px auto;
     border-radius: 10px;
-
 }
 
 .Set-img {
     position: relative;
-    display:flex;
+    display: flex;
     justify-content: center;
     margin: 6%;
     padding: 6%;
     margin-top: 30px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    
 }
-.Set-img .Section-Heading{
-    /* color: red; */
-    /* the text section here was EMPty7 or deleted  */
+
+.Set-img .Section-Heading {
     display: flex;
     position: absolute;
 }
+
 .Set-img img {
     width: 50%;
     height: 10%;
@@ -139,8 +72,8 @@ body {
     padding: 10px 20px;
     border-radius: 10%;
 }
- 
-.Set-img .description{
+
+.Set-img .description {
     font-size: 2rem;
     font-weight: bold;
     position: absolute;
@@ -149,18 +82,15 @@ body {
 
 .Feedback-content {
     position: relative;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-content: center;
     margin: 6%;
     padding: 6%;
-    
-    
 }
 
 .Review {
     width: 100%;
-
     margin-bottom: 20px;
     padding: 15px;
 }
@@ -170,48 +100,35 @@ body {
     height: auto;
     justify-content: center;
     margin-left: 120px;
-
-    
-    border-radius: 10% 40% 10% 40% ; 
+    border-radius: 10% 40% 10% 40%;
 }
+
 .Review h2 {
     word-wrap: break-word;
     white-space: normal;
     font-size: 120%;
 }
 
-@media screen and (max-width:768px) and (min-width:420px) {
-    .landing-container{
+/* Media Queries for Layout and Responsiveness */
+@media screen and (max-width: 768px) and (min-width: 420px) {
+    .landing-container {
         margin-top: 20%;
     }
-    .Home-bg {
-        display: block;
-        text-align: center;
-        justify-content: center;
-        margin: 5%;
-        padding: 0%;
-    }
-    .Home-bg h1, .Home-bg p{
+    .Home-bg h1, .Home-bg p {
         font-size: 1rem;
-        margin-left: 0%;
     }
-    .Home-bg img{
-        display: flex;
-        position: relative;
+    .Home-bg img {
         width: 70%;
     }
-
-    .Set-img h1{
-        /* color: red; */
-        /* text-align: center; */
+    .Set-img h1 {
         font-size: 120%;
     }
     .Set-img img {
-        width: 50%;     
-        border-radius:20%;
+        width: 50%;
+        border-radius: 20%;
         margin-top: -10px;
     }
-    .Set-img .description{
+    .Set-img .description {
         font-size: 1rem;
     }
     .Feedback-content {
@@ -220,57 +137,49 @@ body {
         align-items: center;
         text-align: center;
         font-size: 60%;
-        left: 0%;
-        /* padding: -100%; */
+        left: 0;
     }
-    .Client img{
+    .Client img {
         margin-left: 15em;
-        
         border-radius: 10%;
         width: 25%;
     }
-    .Review h2, h4{
+    .Review h2, h4 {
         padding: 0.1em;
         font-size: 15px;
         margin-right: 6rem;
     }
-    .Review h2{
-        
+    .Review h2 {
         font-size: 15px;
         padding: 3%;
     }
 }
 
-@media screen and (max-width:421px) {
-    .landing-container{
+@media screen and (max-width: 421px) {
+    .landing-container {
         margin-top: 10%;
     }
     .Home-bg {
         font-size: 70%;
         text-align: center;
         margin: 5%;
-        padding: 0%;
+        padding: 0;
     }
-    .Home-bg h1, .Home-bg p{
-        margin-left: 0%;
+    .Home-bg h1, .Home-bg p {
+        margin-left: 0;
     }
-    .Home-bg img{
-        display: flex;
-        position: relative;
+    .Home-bg img {
         width: 70%;
     }
-
-    .Set-img h1{
-        /* color: red; */
-        /* text-align: center; */
+    .Set-img h1 {
         font-size: 120%;
     }
     .Set-img img {
-        width: 100%;     
-        border-radius:20%;
+        width: 100%;
+        border-radius: 20%;
         margin-top: -10px;
     }
-    .Set-img .description{
+    .Set-img .description {
         font-size: 0.9rem;
     }
     .Feedback-content {
@@ -279,19 +188,18 @@ body {
         align-items: center;
         text-align: center;
         font-size: 60%;
-        left: 0%;
-        /* padding: -100%; */
+        left: 0;
     }
-    .Review .Client img{
+    .Review .Client img {
         margin-left: 40%;
         border-radius: 10%;
         width: 25%;
     }
-    .Review h2, h4{
+    .Review h2, h4 {
         font-size: 10px;
         margin-right: 80px;
     }
-    .Review h2{
+    .Review h2 {
         font-size: 15px;
         padding: 3%;
     }
