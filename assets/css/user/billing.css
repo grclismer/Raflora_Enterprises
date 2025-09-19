@@ -13,32 +13,30 @@ body {
 }
 
 .receipt-container {
-    max-width: 800px;
-    max-height: 100%;
+    max-width: 1000px;       /* widen for desktop */
+    height: 90vh;            /* take up most of viewport */
     margin: 0 auto;
     background-color: white;
-    border-radius: 15px; 
+    border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     display: grid;
     grid-template-columns: 1fr 1fr;
-    overflow:hidden; 
-    /* position: fixed; */
+    overflow: hidden;        /* keep background neat */
 }
 
 .left-section {
     padding: 40px;
     background-color: white;
-    display: block;
-    overflow-y: hidden;
+    overflow-y: hidden;      /* no scrollbar */
 }
 
 .right-section {
-    display: block;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-    background-color: #f8f8f8;
     padding: 40px;
+    background-color: #f8f8f8;
+    overflow-y: auto;        /* allow scrolling */
+    max-height: 90vh;        /* match container */
 }
+
 
 .thank-you {
     font-size: 36px;
@@ -179,8 +177,8 @@ body {
 .feedback-link {
     color: #007bff;
     text-decoration: none;
-    margin-top: 30px;
-    display: inline-block;
+    display: block;
+    margin-top: 40px;
 }
 
 .logo img {
@@ -378,68 +376,75 @@ body {
 
 @media (max-width: 768px) {
     .receipt-container {
-        max-width: 100%;
         grid-template-columns: 1fr;
-        margin: 0px;
+        height: 70%;
+        max-width: 100%;
+        margin: 0;
         display: flex;
-        height: 65vh;
-        margin-top: 20%;
+    }
+
+    .right-section {
+        padding: 5px;
+        display: block;
+        position: relative;
+    }
+    .thank-you {
+        font-size: 10%;
+        color: #333;
+        margin-bottom: 40px;
     }
 
     .left-section {
-        padding: 10px 20px;
-        margin-right: 50px;
         display: block;
-        position: relative;
-    }
-    .right-section{
-        padding: 5px;
-        display: block;
-        position: relative;
+        height: 100%;
+        padding: 15px;           /* reduce space */
+        font-size: 14px;         /* smaller text */
+        line-height: 1.4;        /* tighter line spacing */
     }
     
-
-    .thank-you {
-        margin: 5px;
-        padding: 5px;
-        font-size: 15px;
+    .left-section h1, 
+    .left-section h2 {
+        font-size: 16px;         /* scale down headers */
+        margin-bottom: 8px;
     }
-
+    .left-section p {
+        margin-bottom: 6px;      /* reduce paragraph spacing */
+        
+    }
+    .billing-info {
+    margin-bottom: 4px;
+    }
     .billing-section h3 {
-    font-size: 15px;
-    color: #333;
-    margin-bottom: 30px;
+        margin-top: 40px;
+        font-size: 15px;
+        color: #333;
+        margin-bottom: 30px;
     }
     .billing-info h4 {
-    font-size: 12px;
-    color: #333;
-    margin-bottom: 5px;
+        font-size: 10px;
+        color: #333;
     }
     .billing-info p {
-    color: #666;
-    font-size: 10px;
-    margin-bottom: 15px;
-    line-height: 1.4;
+        color: #666;
+        font-size: 9px;
+        line-height: 1.4;
     }
     .checkbox input[type="checkbox"] {
-    width: 15px;
-    height: 15px;
+        width: 15px;
+        height: 15px;
     }
-
     .checkbox a {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 10px;
+        color: #007bff;
+        text-decoration: none;
+        font-size: 10px;
     }
     .proceed-btn{
-        padding: 5px 10px;
-        margin-left: 25%;
+        padding: 3px 5px;
+        margin-left: 0%;
     }
     
     .terms-section {
         font-size: 10px;
-        margin-top: 30px;
-
     }
     .logo img{
         display: flex;
@@ -449,18 +454,20 @@ body {
         border-radius: 6%;
     }
     .summary-header{
-        margin: 0px 5px 0px 0px;
+        margin: 0px;
+        padding: 0%;
         display: flex;
         height: 5rem;
+        width: 100%;
     }
     .summary-header img {
         margin-top: 10px;
         margin-left: 10px;
     }
     .summary-header h3 {
-        font-size: 10px;
-        margin-top: 25px;
-        margin-left: 0px;
+        font-size: 13px;
+        margin-top: 30px;
+        margin-left: 23px;
     }
     .order-details{
         margin-top: 10px;
@@ -482,3 +489,12 @@ body {
         font-size: 10px;
     }
 }
+/* @media screen and (max-width:431px){
+    .receipt-container {
+        grid-template-columns: 1fr;
+        height: 100%;
+        max-width: 100%;
+        margin: 0;
+        display: block;
+    }
+} */

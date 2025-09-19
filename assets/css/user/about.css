@@ -6,20 +6,20 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  max-height: 100vh;
-  background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
 }
 
 /* Global Containers */
- .Landing-page,
-.Gallery-Page, .About-Info, .reserve-container{
+.Landing-page,
+.Gallery-Page,
+.About-Info,
+.reserve-container {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden; 
+    overflow-x: hidden;
 }
+
 .about-container {
     padding-top: 10%;
 }
@@ -54,8 +54,8 @@ body {
 .profile-content h3 {
     font-weight: normal;
     font-style: italic;
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin: 0 0 20px;
+    color: #555;
 }
 
 .profile-image-container {
@@ -73,34 +73,68 @@ body {
     display: block;
 }
 
+/* --- Responsive --- */
+@media screen and (max-width: 1024px) {
+    .profile-section {
+        gap: 30px;
+    }
 
+    .profile-image-container {
+        width: 250px;
+        height: 250px;
+    }
 
+    .profile-content h1 {
+        font-size: 2em;
+    }
 
-@media screen and (max-width:768px) and (min-width:420px) {
-    .about-container{
+    .profile-content h3 {
+        font-size: 1em;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .about-container {
         margin-top: 5%;
     }
-    .Com-Owner, .Assistant-Owner {
-        flex-direction: row;
-        justify-content: center;
-        align-items: flex-start;
-    }
-    .Assistant-Owner {
-        flex-direction: row-reverse;
-    }
-    .Com-image, .Assistant-image {
-        margin: 0 20px;
-    }
-    /* .footer{
-        color: red;
-    } */
-}
-/* 
-@media screen and (max-width: 805px) {
-    .footer{
-        margin-bottom: -100%;
-        background-color: red;
-        color: red;
-    }
-} */
 
+    .profile-section,
+    .profile-section.reverse {
+        flex-direction: column; /* stack on smaller screens */
+        text-align: center;
+    }
+
+    .profile-image-container {
+        width: 220px;
+        height: 220px;
+        margin-bottom: 20px;
+    }
+
+    .profile-content h1 {
+        font-size: 1.6em;
+    }
+
+    .profile-content h3 {
+        font-size: 0.95em;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .profile-section {
+        margin: 30px 0;
+        gap: 20px;
+    }
+
+    .profile-image-container {
+        width: 180px;
+        height: 180px;
+    }
+
+    .profile-content h1 {
+        font-size: 1.4em;
+    }
+
+    .profile-content h3 {
+        font-size: 0.9em;
+    }
+}
