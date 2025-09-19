@@ -13,7 +13,8 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true || $
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tools and Equipment</title>
-    <link rel="stylesheet" href="..//assets/css/admin/inventory.css">
+    <!-- <link rel="stylesheet" href="..//assets/css/admin/inventory.css"> -->
+    <link rel="stylesheet" href="../assets/css/admin/admin_dashboard.css">
     <link rel="stylesheet" href="/css/inventory.css">
 </head>
 <body>

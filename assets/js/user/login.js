@@ -68,22 +68,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: new FormData(this)
             })
             .then(response => {
-                // Check if the response is a redirect or a JSON object
+                 // Check if the response is a redirect (not always reliable, but good practice)
                 if (response.redirected) {
                     window.location.href = response.url;
                 }
-                return response.json(); // Attempt to parse as JSON
+                // Always try to parse as JSON first
+                return response.json(); 
             })
             .then(data => {
                 if (data.status === 'success') {
-                    // Redirect based on the URL provided by the server
                     welcomeMessageLoginDiv.textContent = 'Login successful!';
                     welcomeMessageLoginDiv.style.color = 'green';
                     setTimeout(() => {
                         window.location.href = data.redirect_url;
                     }, 1000);
                 } else {
-                    // Display the error message from the server
                     welcomeMessageLoginDiv.textContent = data.message;
                     welcomeMessageLoginDiv.style.color = 'red';
                     welcomeMessageLoginDiv.classList.add('show');
@@ -107,26 +106,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('registrationForm');
     const welcomeMessageRegDiv = document.getElementById('welcomeMessageRegister');
 
-    // This is the password strength check logic for the REGISTRATION form only
+    // NOTE: Removed feedbackDivReg references as it doesn't exist in the HTML.
+    // If you add a div for password strength feedback, you'll need to define it here.
     if (regPasswordInput) {
         regPasswordInput.addEventListener('keyup', function() {
             const password = this.value;
             let strength = 0;
-            let feedback = '';
-            let className = '';
             if (password.length > 0) {
                 if (password.length >= 8) { strength += 1; }
                 if (/[A-Z]/.test(password)) { strength += 1; }
                 if (/[a-z]/.test(password)) { strength += 1; }
                 if (/[0-9]/.test(password)) { strength += 1; }
                 if (/[^A-Za-z0-9]/.test(password)) { strength += 1; }
-                if (strength <= 2) { feedback = 'Weak'; className = 'weak'; }
-                else if (strength <= 4) { feedback = 'Medium'; className = 'medium'; }
-                else { feedback = 'Strong!'; className = 'strong'; }
             }
-            // Temporarily removed feedbackDivReg reference as it's not in the HTML
-            feedbackDivReg.textContent = feedback;
-            feedbackDivReg.className = 'password-feedback ' + className;
+            // Add a password feedback div to your HTML and uncomment the lines below
+            // to re-enable this functionality.
+            // const feedbackDivReg = document.getElementById('password-feedback');
+            // if (feedbackDivReg) {
+            //     let feedback = '';
+            //     let className = '';
+            //     if (strength <= 2) { feedback = 'Weak'; className = 'weak'; }
+            //     else if (strength <= 4) { feedback = 'Medium'; className = 'medium'; }
+            //     else { feedback = 'Strong!'; className = 'strong'; }
+            //     feedbackDivReg.textContent = feedback;
+            //     feedbackDivReg.className = 'password-feedback ' + className;
+            // }
         });
     }
 
@@ -161,41 +165,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Temporarily removed feedbackDivReg reference as it's not in the HTML
-            if (feedbackDivReg && feedbackDivReg.textContent === 'Weak') {
-                welcomeMessageRegDiv.textContent = 'Error: Password is too weak. Please choose a stronger password.';
-                welcomeMessageRegDiv.style.color = 'red';
-                welcomeMessageRegDiv.classList.add('show');
-                return;
-            }
-
+            // Corrected: Use response.json() for a JSON response
             fetch('../api/register.php', {
                 method: 'POST',
                 body: new FormData(this)
             })
-            .then(response => response.text())
+            .then(response => {
+                // Check if the response is a redirect or a JSON object
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+                return response.json(); 
+            })
             .then(data => {
-                welcomeMessageRegDiv.textContent = data;
-                welcomeMessageRegDiv.classList.add('show');
-                
-                if (data.includes('successful')) {
+                if (data.status === 'success') {
+                    welcomeMessageRegDiv.textContent = data.message;
                     welcomeMessageRegDiv.style.color = 'green';
-                    Array.from(registrationForm.children).forEach(child => {
-                        if (child.id !== 'welcomeMessageRegister') {
-                            child.style.display = 'none';
-                        }
+                    welcomeMessageRegDiv.classList.add('show');
+                    
+                    // Hide the form fields on success
+                    Array.from(registrationForm.querySelectorAll('.input-box, .btn, .register-link')).forEach(child => {
+                         child.style.display = 'none';
                     });
+                    
                     setTimeout(() => {
                         showForm(loginFormContainer);
-                        welcomeMessageLoginDiv.textContent = "You can now log in with your new account.";
+                        welcomeMessageLoginDiv.textContent = data.message;
                         welcomeMessageLoginDiv.style.color = 'green';
                         welcomeMessageLoginDiv.classList.add('show');
                         welcomeMessageRegDiv.textContent = "";
                     }, 2000); 
                 } else {
+                    welcomeMessageRegDiv.textContent = data.message;
                     welcomeMessageRegDiv.style.color = 'red';
+                    welcomeMessageRegDiv.classList.add('show');
                     regPasswordInput.value = '';
                     regConfirmPasswordInput.value = '';
+                    
+                    // Show the form fields again on error
                     Array.from(registrationForm.children).forEach(child => {
                         child.style.display = '';
                     });
@@ -220,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             const email = forgotEmailInput.value;
             if (email.trim() !== '') {
-                // Use a custom modal instead of the alert() function
                 showCustomAlert('A password reset link has been sent to ' + email + '.');
                 Array.from(forgotPasswordForm.children).forEach(child => {
                     if (child.id !== 'forgotPasswordMessage' && child.tagName !== 'SPAN') {
@@ -239,9 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Custom alert function to replace window.alert()
     function showCustomAlert(message) {
-        // Create an overlay and a modal
         const overlay = document.createElement('div');
         overlay.style.position = 'fixed';
         overlay.style.top = '0';

@@ -21,7 +21,8 @@ body {
 }
 
 .about-container {
-    padding-top: 10%;
+    padding: 0%;
+    margin: 0%;
 }
 
 /* About Section */

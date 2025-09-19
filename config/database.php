@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = '0bdb-login_form';
+    private $db_name = 'raflora_enterprises';
     private $username = '';
     private $password = '';
     private $conn;
