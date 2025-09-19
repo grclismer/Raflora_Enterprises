@@ -3,14 +3,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalOverlay = document.getElementById('modalOverlay');
     const termsModalContent = document.getElementById('termsandCondition');
     const privacyModalContent = document.getElementById('privacyPolicy');
+    const feedbackModalContent = document.getElementById('FeedbackCondition');
     const showPrivacyPolicyLink = document.getElementById('showPrivacyPolicy');
     const showTermsConditionLink = document.getElementById('showTermsCondition');
+    const showFeedbackConditionLink = document.getElementById('showFeedbackCondition');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const body = document.body;
 
     function showModal(contentElement) {
         termsModalContent.classList.add('hidden');
         privacyModalContent.classList.add('hidden');
+        feedbackModalContent.classList.add('hidden');
         contentElement.classList.remove('hidden');
         modalContainer.classList.add('modal-active');
         modalOverlay.classList.add('modal-active');
@@ -36,6 +39,12 @@ document.addEventListener('DOMContentLoaded', function() {
             showModal(termsModalContent);
         });
     }
+    if (showFeedbackConditionLink) {
+        showFeedbackConditionLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            showModal(feedbackModalContent);
+        });
+    }
 
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', hideModal);
@@ -44,4 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (modalOverlay) {
         modalOverlay.addEventListener('click', hideModal);
     }
+
+
 });

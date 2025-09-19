@@ -20,6 +20,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
     <link rel="stylesheet" href="../assets/css/user/footer.css">
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
     <script src="../assets/js/user/navbar.js" defer></script>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body>
@@ -75,7 +76,8 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                             <label for="color-scheme-upload">Color scheme</label>
                             <div class="file-upload-box">
                                 <label for="color-scheme-upload">
-                                    <img src="../assets/images/icon/upload_ico.png" alt="Color scheme upload">
+                                    <i class="fi fi-br-cloud-upload"></i>
+                                    <!-- <img src="../assets/images/icon/upload_ico.png" alt="Color scheme upload"> -->
                                     <span class="upload-text"></span>
                                 </label>
                                 <input type="file" id="color-scheme-upload" accept="image/*" class="file-input">
@@ -145,6 +147,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                         <div class="design-upload-group">
                             <div class="design-upload-box">
                                 <label for="design-upload-1">
+                                    <!-- <i class="fi fi-br-home my-custom-icon"></i> -->
                                     <img src="../assets/images//icon/upload_image_placeholder.png" alt="Upload design image">
                                 </label>
                                 <input type="file" id="design-upload-1" class="file-input">
@@ -170,6 +173,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 </form>
             </div>
         </div>
+    </div>
         <footer class="footer" id="Page-footer">
             <h1 class="Contact">Contact us</h1>
             <div class="social-icons-container">
@@ -195,6 +199,6 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 </div>
             </div>
         </footer>
-    </div>
+    
 </body>
 </html>

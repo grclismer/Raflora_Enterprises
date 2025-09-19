@@ -38,8 +38,9 @@ body {
 .Home-bg h1, .Home-bg p {
     display: block;
     position: relative;
+    margin-top: 10px;
     margin-bottom: 20px;
-    margin-left: 0;
+    margin-right: 40rem;
 }
 
 .Home-bg img {
@@ -110,15 +111,18 @@ body {
 }
 
 /* Media Queries for Layout and Responsiveness */
-@media screen and (max-width: 768px) and (min-width: 420px) {
+@media screen and (max-width: 990px) and (min-width: 768px) {
     .landing-container {
         margin-top: 20%;
     }
     .Home-bg h1, .Home-bg p {
         font-size: 1rem;
+        margin-right: 0%;
+        margin-top: 10px;
     }
     .Home-bg img {
         width: 70%;
+    
     }
     .Set-img h1 {
         font-size: 120%;
@@ -155,9 +159,9 @@ body {
     }
 }
 
-@media screen and (max-width: 421px) {
+@media screen and (max-width: 769px) {
     .landing-container {
-        margin-top: 10%;
+        margin-top: 20%;
     }
     .Home-bg {
         font-size: 70%;
@@ -166,7 +170,9 @@ body {
         padding: 0;
     }
     .Home-bg h1, .Home-bg p {
-        margin-left: 0;
+        margin-right: 0%;
+        margin-top: 40px;
+        font-size: 0.9rem;
     }
     .Home-bg img {
         width: 70%;

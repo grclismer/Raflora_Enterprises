@@ -45,7 +45,6 @@
     font-size: 20px;
     padding: 16px 0px;
     border-radius: 6%;
-    color: red;
 }
 .nav-links li:not(.user-dropdown-toggle).active a {
     color: rgb(0, 0, 0); 
@@ -117,13 +116,13 @@
         display:flex;
     }
     .navbar .logo {
-        width: 60px;
+        width: 70px;
     }
     .hamburger-menu {
-    display: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #838181;
+        display: none;
+        font-size: 30px;
+        cursor: pointer;
+        color: #838181;
     }
     .nav-links {
         display: none; /* Hide the main nav links by default */
@@ -139,15 +138,46 @@
     .nav-links.active {
         display: flex; /* Show the links when the 'active' class is added */
     }
+ 
+   .nav-links li:not(.active) a:hover {
+        background-color: rgba(0, 0, 0, 0.781);
+        color: white;
+        padding: 15px 15px;
+        border-radius: 6%;
+    }
+    .nav-links li:not(.user-dropdown-toggle).active {
+        background-color: rgba(112, 112, 112, 0.368);
+        border-right: 3px solid rgb(0, 0, 0);
+        font-size: 20px;
+        padding: 10px 0;
+        border-radius: 6%;
+    }
+        .nav-links li:not(.user-dropdown-toggle).active a {
+        color: rgb(0, 0, 0); 
+        
+    }
+    .nav-links li a {
+    color: #838181;
+    text-decoration: none;
+    padding: 15px 15px;
+    position: relative;
+    white-space: nowrap;
+    }
+
+   
     .nav-links li {
         width: 100%;
         padding: 5px;
         margin: 5px;
+        font-size: 15px;
     }
-    .nav-links li a {
+    /* .nav-links li a {
         padding: 15px;
         text-align: center;
-    }
+        font-size: 10px;
+
+    } */
+    
     .hamburger-menu {
         display: block; /* Show hamburger on mobile */
     }
@@ -160,15 +190,20 @@
         position: static;
     }
     
+    
     .user-icon {
-        padding: 15px;
+    font-size: 20px;
+    color: #838181;
+    padding: 5px;
+    transition: color 0.3s ease;
     }
     
     .user-dropdown-menu {
         position: static;
-        width: 100%;
+        width: 10%;
         text-align: center;
         box-shadow: none;
         border: none;
     }
+    
 }

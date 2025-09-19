@@ -14,13 +14,15 @@ body {
 }
 
 /* Global Containers */
-.landing-container, .Landing-page,
+ .Landing-page,
 .Gallery-Page, .About-Info, .reserve-container{
     width: 100%;
     max-width: 100%;
     overflow-x: hidden; 
 }
-
+.about-container {
+    padding-top: 10%;
+}
 
 /* About Section */
 .About-Info {

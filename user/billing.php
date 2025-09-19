@@ -48,15 +48,15 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
             <div class="terms-section">
                 <div class="checkbox">
                     <input type="checkbox" checked>
-                    <span>I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></span>
+                    <span>I read and agree to <a href="#PrivacyPolicy" id="showPrivacyPolicy">Privacy Policy</a></span>
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" checked>
-                    <span>I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></span>
+                    <span>I read and agree to <a href="#TermsandCondition" id="showTermsCondition">Terms and Condition</a></span>
                 </div>
                 <!-- kailangan i link yung bagong update kasi php na siya -->
                 <button class="proceed-btn"><a href="../api/landing.php">Proceed</button></a>
-                <a href="#Feedback" class="feedback-link">Feedback and evaluation</a>
+                <a href="#Feedback" class="feedback-link" id="showFeedbackCondition">Feedback and evaluation</a>
             </div>
         </div>
         <div class="right-section">
@@ -116,7 +116,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                         <strong>B. BALLROOM<br>ENTRANCE COLUMNS</strong>
                     </div>
                     <div>-</div>
-                    <div>
+                    <div class="item-details">
                         1 Pair (Size: H-8' x D-2')
                     </div>
                     <div class="item-price">
@@ -220,6 +220,15 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                         <p><span class="highlighted">B. Overdue accounts</span> are subject to interest based on prevailing bank rates from the time it becomes overdue until full payment.</p>
                         <p><span class="highlighted">C. This formal quotation</span> also serves as the formal contract of confirmation. All contents, values, rates and other particulars of this Formal Quotation is <span class="highlighted">strictly confidential and only for the perusal of the intended client.</span></p>
                     </div>
+                </div>
+            </div>
+            <div id="FeedbackCondition" class="modal-text hidden">
+                <div class="feedRegards" id="feedRegardsCondtion">
+                    <img src="../assets/images/icon/user.png" alt="user">
+                        <h2>How's our services?</h2>
+                            <textarea name="clientRegards" class="ClientRegards" id="clientFormRegards"></textarea>
+                                <div class="starFeed" id="starFeedCondition"></div>
+                                <button class="submit-btn" id="submitFeedCondition">Submit</button>
                 </div>
             </div>
         </div>

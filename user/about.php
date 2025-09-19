@@ -23,7 +23,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
 <body>
-    <div class="landing-container">
+    <div class="about-container">
         <nav class="navbar">
             <img src="../assets/images/logo/raflora-logo.jpg" alt="logo" class="logo" />
             <div class="hamburger-menu">
