@@ -48,7 +48,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
             <div class="profile-section">
                 <div class="profile-content">
                     <h1>Antonio A. Adriatico Jr.</h1>
-                    <h3>Subheading for description or instructions</h3>
+                    <h3>CREATIVE DIRECTOR</h3>
                     <p>Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:</p>
                     <br>
                     <p>Excepteur efficient emerging, minim veniam anim aute carefully curated Ginza conversation exquisite perfect nostrud nisi intricate Content. Qui international first-class nulla ut. adipisicing, essential lovely queen tempor eiusmod irure. Exclusive izakaya charming Scandinavian impeccable aute quality of life soft power pariatur Melbourne occaecat discerning. Qui wardrobe aliquip, et Porter destination Toto remarkable officia Helsinki excepteur Basset hound. Zürich sleepy perfect consectetur.</p>
@@ -63,7 +63,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 </div>
                 <div class="profile-content">
                     <h1>Raffy Chrisrtian Zamora</h1>
-                    <h3>Subheading for description or instructions</h3>
+                    <h3>PROPRIETOR </h3>
                     <p>Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:</p>
                     <br>
                     <p>Excepteur efficient emerging, minim veniam anim aute carefully curated Ginza conversation exquisite perfect nostrud nisi intricate Content. Qui international first-class nulla ut. adipisicing, essential lovely queen tempor eiusmod irure. Exclusive izakaya charming Scandinavian impeccable aute quality of life soft power pariatur Melbourne occaecat discerning. Qui wardrobe aliquip, et Porter destination Toto remarkable officia Helsinki excepteur Basset hound. Zürich sleepy perfect consectetur.</p>

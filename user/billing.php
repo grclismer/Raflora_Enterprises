@@ -30,19 +30,23 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 <h3>Billing address</h3>
                 <div class="billing-info">
                     <h4>Name</h4>
-                    <p>John Doe</p>
+                    <!-- This part was a data so i leave it as a comment  -->
+                    <!-- <p>John Doe</p> -->
                 </div>
                 <div class="billing-info">
                     <h4>Address</h4>
-                    <p>1234 Makati st. sample, sample address<br>B2 04145, Makati City</p>
+                    <!-- This part was a data so i leave it as a comment  -->
+                    <!-- <p>1234 Makati st. sample, sample address<br>B2 04145, Makati City</p> -->
                 </div>
                 <div class="billing-info">
                     <h4>Phone</h4>
-                    <p>+69 9123456789</p>
+                    <!-- This part was a data so i leave it as a comment  -->
+                    <!-- <p>+69 9123456789</p> -->
                 </div>
                 <div class="billing-info">
                     <h4>Email</h4>
-                    <p>johndoe@example.com</p>
+                    <!-- This part was a data so i leave it as a comment  -->
+                    <!-- <p>johndoe@example.com</p> -->
                 </div>
             </div>
             <div class="terms-section">
@@ -67,15 +71,16 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
             <div class="order-details">
                 <div class="detail-item">
                     <div class="detail-label">Date</div>
-                    <div class="detail-value">04-27-25</div>
+                    <!-- This part was a data so i leave it as a comment  -->
+                    <!-- <div class="detail-value">04-27-25</div> -->
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Order number</div>
-                    <div class="detail-value">001</div>
+                    <!-- <div class="detail-value">001</div> -->
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Payment method</div>
-                    <div class="detail-value">Online Payment</div>
+                    <!-- <div class="detail-value">Online Payment</div> -->
                 </div>
             </div>
             <div class="items-table">
@@ -87,47 +92,55 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 </div>
                 <div class="item-row">
                     <div>
-                        <strong>A. ENTOURAGE</strong>
+                        <strong>A. </strong>
                         <div class="item-details">
-                            *Bridal Bouquet *Mothers<br>
+                            <!-- This part was a data so i leave it as a comment  -->
+                            <!-- *Bridal Bouquet *Mothers<br>
                             *Grandmothers *Principal<br>
                             Sponsors *Maid/Matrons<br>
                             *Bridesmaids *Candle, Veil,<br>
                             Chord *Coin, Bible Bearers<br>
                             *Offertory Bearers *Flower<br>
-                            Girl *All Male Boutonnieres
+                            Girl *All Male Boutonnieres -->
                         </div>
                     </div>
                     <div>-</div>
                     <div class="item-details">
-                        1 Bouquet 2 Bouquets 2<br>
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <!-- 1 Bouquet 2 Bouquets 2<br>
                         Bouquets 5 Bouquets 6<br>
                         Bouquets 2 Wrist Corsages<br>
                         5 Wrist Corsages 2<br>
                         Poutnnieres 1 Groom 14<br>
-                        Male Entourage
+                        Male Entourage -->
                     </div>
                     <div class="item-price">
-                        ₱9,500.00
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <!-- ₱9,500.00 -->
                     </div>
                 </div>
                 <div class="item-row">
                     <div>
-                        <strong>B. BALLROOM<br>ENTRANCE COLUMNS</strong>
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <strong>B. </strong>
                     </div>
                     <div>-</div>
                     <div class="item-details">
-                        1 Pair (Size: H-8' x D-2')
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <!-- 1 Pair (Size: H-8' x D-2') -->
                     </div>
                     <div class="item-price">
-                        ₱10,870.00
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <!-- ₱10,870.00 -->
                     </div>
                 </div>
                 <div class="item-row">
                     <div>
-                        <strong>C. RECEPTION</strong>
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <strong>C. </strong>
                         <div class="item-details">
-                            16 Tables (Part of the Hotel<br>
+                            <!-- This part was a data so i leave it as a comment  -->
+                            <!-- 16 Tables (Part of the Hotel<br>
                             Package, Upgraded to<br>
                             Long & Low); 16 Long &<br>
                             Low + 1 Additional x 16<br>
@@ -143,30 +156,34 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                             *Couples Table (Part of<br>
                             Package) *Cake Table<br>
                             (Upgraded) *Long & Low<br>
-                            (Complementary)
+                            (Complementary) -->
                         </div>
                     </div>
                     <div>-</div>
                     <div class="item-details">
-                        16 Pieces (Long & Low)<br>
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <!-- 16 Pieces (Long & Low)<br>
                         16 Pieces (Tall<br>
-                        Arrangements)
+                        Arrangements) -->
                     </div>
 
                     <div class="item-price">
-                        ₱17,450.00
+                        <!-- This part was a data so i leave it as a comment  -->
+                        <!-- ₱17,450.00 -->
                     </div>
                 </div>
             </div>
             <div class="design-options">
+                <!-- This part was a data so i leave it as a comment  -->
                 <i class="fa-regular fa-image"></i>
                 <i class="fa-regular fa-image"></i>
                 <i class="fa-regular fa-image"></i>
                 <span class="preferred-design">preferred design</span>
             </div>
             <div class="total-section">
+                <!-- This part was a data so i leave it as a comment  -->
                 <span>GRANDTOTAL</span>
-                <span>₱39,260.00</span>
+                <span class="total-amount">₱39,260.00</span>
             </div>
         </div>
     </div>

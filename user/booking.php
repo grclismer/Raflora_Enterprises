@@ -20,6 +20,7 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
     <link rel="stylesheet" href="../assets/css/user/footer.css">
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
     <script src="../assets/js/user/navbar.js" defer></script>
+    <script src="../assets/js/user/booking.js" defer></script>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 </head>
@@ -48,26 +49,26 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
         <div class="main-container">
             <h1 class="page-title">Please fill-up the form</h1>
             <div class="form-container">
-                <form action="#" method="post">
+                <form action="../config/client_booking.php" method="post">
                     <div class="form-group-row">
                         <div class="form-field">
                             <label for="full-name">Full name</label>
-                            <input type="text" id="full-name" placeholder="John Doe">
+                            <input type="text" id="full_name" name="full_name" placeholder="full name">
                         </div>
                         <div class="form-field">
                             <label for="contact-number">Contact number</label>
-                            <input type="tel" id="contact-number" placeholder="+69 9123456789">
+                            <input type="tel" id="mobile_number" name="mobile_number" placeholder="+69 " maxlength="11">
                         </div>
                         <div class="form-field">
                             <label for="email">Email</label>
-                            <input type="email" id="email" placeholder="johndoe@example.com">
+                            <input type="email" id="email" name="email" placeholder="email address">
                         </div>
                     </div>
 
                     <div class="form-group-address">
                         <div class="form-field">
                             <label for="address">Address</label>
-                            <input type="text" id="address" placeholder="1234 Makati st, sample, sample address B2 04145, Makati City">
+                            <input type="text" id="address" name="address" placeholder="address">
                         </div>
                     </div>
                     
@@ -89,25 +90,25 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                             <div class="date-time-group">
                                 <div class="date-field">
                                     <img src="../assets/images//icon/calendar.png" alt="Calendar icon">
-                                    <input type="date" id="event-date">
+                                    <input type="date" name="event_date" id="event-date">
                                 </div>
                                 <div class="time-field">
                                     <img src="../assets/images//icon/clock.png" alt="Clock icon">
-                                    <input type="time" id="event-time">
+                                    <input type="time" name="event_time" id="event-time">
                                 </div>
                             </div>
                         </div>
                         <div class="form-field form-field-regards">
-                            <label for="form-field form-field-regards">Your Regards:</label>
-                            <textarea id="regards" name="message" 
+                            <label for="form-field form-field-regards">Your Recommendations :</label>
+                            <textarea id="regards" name="recommendations" 
                                     placeholder="Type your message here..."></textarea>
                         </div>
                     </div>
                     <div class="form-group-row">
                         <div class="form-field">
-                            <label for="theme">Theme</label>
-                            <select id="theme">
-                                <option value="">Select an option</option>
+                            <label for="theme">Event</label>
+                            <select id="theme" name="event_theme">
+                                <option value="">Select an event</option>
                                 <optgroup label="Personal Events">
                                     <option value="wedding">Wedding</option>
                                     <option value="birthday">Birthday Party</option>
@@ -125,20 +126,75 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                                 </optgroup>
                             </select>
                         </div>
+                        <div class="form-field hidden" id="packages-field">
+                            <label for="packages">Packages</label>
+                            <select id="packages"name="packages">
+                                <option value="">Select Packages</option>
+                                <optgroup label="Wedding Package" data-event="wedding">
+                                <option class="package-option" value="Package 1">Wedding Package 1</option>
+                                <option class="package-option" value="Package 2">Wedding Package 2</option>
+                                <option class="package-option" value="Package 3">Wedding Package 3</option>
+                                </optgroup>
+                                <optgroup label="Birthday Party Package" data-event="birthday">
+                                    <option class="package-option" value="Package 1">Birthday Package 1</option>
+                                    <option class="package-option" value="Package 2">Birthday Package 2</option>
+                                    <option class="package-option" value="Package 3">Birthday Package 3</option>
+                                </optgroup>
+                                <optgroup label="Reunion Package" data-event="reunion">
+                                    <option class="package-option" value="Package 1">Reunion Package 1</option>
+                                    <option class="package-option" value="Package 2">Reunion Package 2</option>
+                                    <option class="package-option" value="Package 3">Reunion Package 3</option>
+                                </optgroup>
+                                <optgroup label="Funeral Package" data-event="funeral">
+                                    <option class="package-option" value="Package 1">Funeral Package 1</option>
+                                    <option class="package-option" value="Package 2">Funeral Package 2</option>
+                                    <option class="package-option" value="Package 3">Funeral Package 3</option>
+                                </optgroup>
+                                <optgroup label="Meetings Package" data-event="meetings">
+                                    <option class="package-option" value="Package 1">Meetings Package 1</option>
+                                    <option class="package-option" value="Package 2">Meetings Package 2</option>
+                                    <option class="package-option" value="Package 3">Meetings Package 3</option>
+                                </optgroup>
+                                <optgroup label="Conferences Package" data-event="conferences">
+                                    <option class="package-option" value="Package 1">Conferences Package 1</option>
+                                    <option class="package-option" value="Package 2">Conferences Package 2</option>
+                                    <option class="package-option" value="Package 3">Conferences Package 3</option>
+                                </optgroup>
+                                <optgroup label="Hotels Package" data-event="hotels">
+                                    <option class="package-option" value="Package 1">Hotel Package 1</option>
+                                    <option class="package-option" value="Package 2">Hotel Package 2</option>
+                                    <option class="package-option" value="Package 3">Hotel Package 3</option>
+                                </optgroup>
+                                <optgroup label="Churches Package" data-event="churches">
+                                    <option class="package-option" value="Package 1">Church Package 1</option>
+                                    <option class="package-option" value="Package 2">Church Package 2</option>
+                                    <option class="package-option" value="Package 3">Church Package 3</option>
+                                </optgroup>
+                                <optgroup label="Outdoor Package" data-event="outdoor">
+                                    <option class="package-option" value="Package 1">Outdoor Package 1</option>
+                                    <option class="package-option" value="Package 2">Outdoor Package 2</option>
+                                    <option class="package-option" value="Package 3">Outdoor Package 3</option>
+                                </optgroup>
+                            </select>
+                        </div>
                         <div class="form-field">
                             <label for="payment-method">Payment Method</label>
-                            <select id="payment-method">
-                                <option value="">Select an option</option>
+                            <select id="payment-method"name="payment_method">
+                                <option value="">Select payment method</option>
                                 <option value="">Online Bank</option>
                                 <option value="ewallet">E-Wallet</option>
                             </select>
                         </div>
                         <div class="form-field">
                             <label for="payment-type">Payment</label>
-                            <div class="payment-selection">
-                                <button type="button" class="payment-button selected">Half Payment</button>
-                                <button type="button" class="payment-button">Full Payment</button>
+                             <div class="payment-selection">
+                                <label><input type="radio" name="payment_type" value="Down Payment" checked> Down Payment</label>
+                                <label><input type="radio" name="payment_type" value="Full Payment"> Full Payment</label>
                             </div>
+                            <!-- <div class="payment-selection" name="payment" >
+                                <button type="button" class="payment-button selected" >Down Payment</button>
+                                <button type="button" class="payment-button">Full Payment</button>
+                            </div> -->
                         </div>
                     </div>
                     <div class="form-group-preferred-design">
@@ -166,10 +222,10 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="form-action">
-                        <button type="submit" class="submit-button"><a href="../user/billing.php">Place order</a></button>
-                    </div>
+                        <div class="form-action">
+                            <button type="submit" class="submit-button">Place order</button>
+                        </div>
+                    </form>
                 </form>
             </div>
         </div>

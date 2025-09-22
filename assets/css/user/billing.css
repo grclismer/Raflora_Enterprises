@@ -312,9 +312,14 @@ body {
     background-color: #f0f0f0;
     padding: 15px;
     border-radius: 8px;
-    text-align: right;
+    text-align: left;
 }
-
+.total-section, .total-amount{
+    background-color: #f0f0f0;
+    /* margin-top: -5%; */
+    border-radius: 8px;
+    text-align: end;
+}
 .total-row {
     display: flex;
     justify-content: space-between;

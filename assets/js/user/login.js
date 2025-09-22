@@ -121,16 +121,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             // Add a password feedback div to your HTML and uncomment the lines below
             // to re-enable this functionality.
-            // const feedbackDivReg = document.getElementById('password-feedback');
-            // if (feedbackDivReg) {
-            //     let feedback = '';
-            //     let className = '';
-            //     if (strength <= 2) { feedback = 'Weak'; className = 'weak'; }
-            //     else if (strength <= 4) { feedback = 'Medium'; className = 'medium'; }
-            //     else { feedback = 'Strong!'; className = 'strong'; }
-            //     feedbackDivReg.textContent = feedback;
-            //     feedbackDivReg.className = 'password-feedback ' + className;
-            // }
+            const feedbackDivReg = document.getElementById('password-feedback');
+            if (feedbackDivReg) {
+                let feedback = '';
+                let className = '';
+                if (strength <= 2) { feedback = 'Weak'; className = 'weak'; }
+                else if (strength <= 4) { feedback = 'Medium'; className = 'medium'; }
+                else { feedback = 'Strong!'; className = 'strong'; }
+                feedbackDivReg.textContent = feedback;
+                feedbackDivReg.className = 'password-feedback ' + className;
+            }
         });
     }
 
@@ -258,17 +258,17 @@ document.addEventListener('DOMContentLoaded', function() {
         overlay.style.justifyContent = 'center';
         overlay.style.alignItems = 'center';
 
-        const modal = document.createElement('div');
-        modal.style.backgroundColor = '#fff';
-        modal.style.padding = '20px';
-        modal.style.borderRadius = '8px';
-        modal.style.textAlign = 'center';
-        modal.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-        modal.innerHTML = `
-            <p>${message}</p>
-            <button onclick="document.body.removeChild(this.parentNode.parentNode)">OK</button>
-        `;
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
+        // const modal = document.createElement('div');
+        // modal.style.backgroundColor = '#fff';
+        // modal.style.padding = '20px';
+        // modal.style.borderRadius = '8px';
+        // modal.style.textAlign = 'center';
+        // modal.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        // modal.innerHTML = `
+        //     <p>${message}</p>
+        //     <button onclick="document.body.removeChild(this.parentNode.parentNode)">OK</button>
+        // `;
+        // overlay.appendChild(modal);
+        // document.body.appendChild(overlay);
     }
 });

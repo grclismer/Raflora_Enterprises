@@ -1,31 +1,50 @@
-const inputElement = document.getElementById('client_number');
-        const errorMessage = document.getElementById('warning-message');
+document.addEventListener('DOMContentLoaded', function() {
+    const eventSelect = document.getElementById('theme');
+    const packagesSelect = document.getElementById('packages');
+    const packagesField = document.getElementById('packages-field');
 
-        // Add an input event listener to the element
-        inputElement.addEventListener('input', function() {
-            // Remove any non-digit characters
-            this.value = this.value.replace(/[^0-9]/g, '');
+    // Initial state: hide the packages field on page load
+    packagesField.classList.add('hidden');
+    
+    // Hide all options inside the packages select menu initially
+    packagesSelect.querySelectorAll('option').forEach(option => {
+        option.style.display = 'none';
+    });
+    
+    // Re-show the default "choose Packages" option
+    packagesSelect.querySelector('option[value=""]').style.display = 'block';
 
-            // Check if the number of digits is not 11
-            if (this.value.length > 0 && this.value.length !== 11) {
-                // If it's not 11, show the error message
-                errorMessage.classList.remove('hidden');
-            } else {
-                // Otherwise, hide the error message
-                errorMessage.classList.add('hidden');
-            }
+    eventSelect.addEventListener('change', function() {
+        const selectedEvent = this.value;
+
+        // Hide all package options and reset the select menu
+        packagesSelect.querySelectorAll('option').forEach(option => {
+            option.style.display = 'none';
         });
-        
-        // Tag seclection for payments 
-function logSelection() {
-            const selectElement = document.getElementById('payment-select','theme-select');
-            const selectedValue = selectElement.options[selectElement.selectedIndex].text;
-            const displayElement = document.getElementById('selected-value');
+        packagesSelect.value = '';
+
+        if (selectedEvent) {
+            // Show the packages field
+            packagesField.classList.remove('hidden');
+
+            // Show the "choose Packages" option
+            packagesSelect.querySelector('option[value=""]').style.display = 'block';
             
-            if (selectElement.value) {
-                displayElement.classList.remove('hidden');
-                displayElement.querySelector('span').textContent = selectedValue;
-            } else {
-                displayElement.classList.add('hidden');
+            // Find the optgroup that matches the selected event
+            const selectedGroup = packagesSelect.querySelector(`optgroup[data-event="${selectedEvent}"]`);
+
+            if (selectedGroup) {
+                // Show all options within the matching optgroup
+                selectedGroup.querySelectorAll('option').forEach(option => {
+                    option.style.display = 'block';
+                });
             }
+        } else {
+            // If no event is selected, hide the entire packages field
+            packagesField.classList.add('hidden');
         }
+    });
+
+
+    
+});
