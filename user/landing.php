@@ -2,7 +2,7 @@
 session_start();
 // Check if the user is logged in
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header("Location: ../user/login.html");
+    header("Location: ../user/user_login.html");
     exit();
 }
 
@@ -15,48 +15,64 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raflora Enterprises</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../assets/js/user/dark_mode.js"></script> 
     <link rel="stylesheet" href="../assets/css/user/landing.css">
     <link rel="stylesheet" href="../assets/css/user/footer.css">
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
-    <script src="../assets/js/user/navbar.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
+    <script src="../assets/js/user/dark_mode.js" defer></script>
+    <script src="../assets/js/user/navbar.js" ></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
 </head>
 <body>
+
     <div class="landing-container">
+        
         <nav class="navbar">
             <img src="../assets/images/logo/raflora-logo.jpg" alt="logo" class="logo" />
             <div class="hamburger-menu">
                 <i class="fas fa-bars"></i>
             </div>
             <ul class="nav-links">
-                <li class="active"><a href="../api/landing.php" class="nav-link">Home</a></li>
+                <li class="active"><a href="../user/landing.php" class="nav-link">Home</a></li>
                 <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
                 <li><a href="../user/about.php" class="nav-link">About</a></li>
                 <li><a href="../user/booking.php" class="nav-link">Book</a></li>
                 <li class="user-dropdown-toggle">
                     <i class="fas fa-user-circle user-icon"></i>
                     <ul class="user-dropdown-menu">
-                        <li><a href="#">Edit Account</a></li>
-                        <li><a href="#">My Bookings</a></li>
+                        <li><a href="../user/account_settings.php">Account settings</a></li>
+                        <li><a href="../user/my_bookings.php">My Bookings</a></li>
                         <li><a href="../api/logout.php">Log Out</a></li>
                     </ul>
                 </li>
             </ul>
         </nav>
+        
+        <!-- DARK MODE BUTTON: Gumamit ng z-[9999] para hindi matabunan ng ibang elements -->
+        <button id="dark-mode-icon-toggle">
+            <i id="dark-mode-icon" class="fa-solid fa-moon"></i>
+        </button>
+        
         <div class="Landing-page">
             <div class="Home-bg">
+                <!-- Idinagdag ang dark:text-white at dark:text-gray-300 -->
                 <h1>Raflora Enterprises</h1>
                 <p>Raflora Enterprises Flower Arrangement and<br>
                     Event Stylist Scheduling Management System</p>
                 <img src="../assets/images/Home/box-img1.jpg" alt="Home">
             </div>
             <div class="Set-img" id="images">
-                <h1 class="Section-Heading" id="Header"> </h1>
+                 <!-- Idinagdag ang dark:text-white at dark:bg-gray-800 -->
+                <h1> </h1>
                 <img src="../assets/images/portrait/section1.jpg" alt="image1">
                 <img src="../assets/images/portrait/section2.jpg" alt="image2">
-                <p class="description">Raflora Enterprises Management Team</p>
+                <p >Raflora Enterprises Management Team</p>
             </div>
             <div class="Feedback-content" id="Feeds">
+                <!-- Kailangan mong i-style ang .Review at .Client sa iyong dark_mode.css o landing.css -->
                 <div class="Review" id="Rev-1">
                     <div class="Client" id="client-1">
                         <img src="../assets/images/img/VVip.jpg" alt="Vvip-client">
@@ -84,31 +100,31 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
             </div>
         </div>
         <footer class="footer" id="Page-footer">
-                <h1 class="Contact">Contact us</h1>
-                    <div class="social-icons-container">
-                        <div class="Social-Facebook">
-                            <h3>Facebook</h3>
-                            <p>Please visit us on</p>
-                            <a href="https://www.facebook.com/RafloraEnterprises">
-                                <img src="../assets/images/icon/facebook-icon.png" alt="facebook">
-                            </a>
-                            <a href="https://www.facebook.com/RafloraEnterprises" class="hyper-link-facebook">
-                                www.facebook.com/RafloraEnterprises
-                            </a>
-                        </div>
-
-                        <div class="Social-Email">
-                            <h3>Email</h3>
-                            <p>Please Reach us on</p>
-                            <a href="https://mail.google.com/mail/u/0/#inbox?compose=new">
-                                <img src="../assets/images/icon/gmail-icon.png" alt="gmail">
-                            </a>
-                            <a href="https://mail.google.com/mail/u/0/#inbox?compose=new" class="hyper-link-gmail">
-                                @raflora18.gmail.com
-                            </a>
-                        </div>
+            <h1 class="Contact">Contact us</h1>
+                <div class="social-icons-container">
+                    <div class="Social-Facebook">
+                        <h3>Facebook</h3>
+                        <p>Please visit us on</p>
+                        <a href="https://www.facebook.com/RafloraEnterprises " target="_blank">
+                            <img src="../assets/images/icon/facebook-icon.png" alt="facebook">
+                        </a>
+                        <a href="https://www.facebook.com/RafloraEnterprises" class="hyper-link-facebook">
+                            www.facebook.com/RafloraEnterprises
+                        </a>
                     </div>
-         </footer>
+
+                    <div class="Social-Email">
+                        <h3>Email</h3>
+                        <p>Please Reach us on</p>
+                        <a href="https://mail.google.com/mail/u/0/#inbox?compose=new">
+                            <img src="../assets/images/icon/gmail-icon.png" alt="gmail">
+                        </a>
+                        <a href="https://mail.google.com/mail/u/0/#inbox?compose=new" class="hyper-link-gmail">
+                            @raflora18.gmail.com
+                        </a>
+                    </div>
+                </div>
+        </footer>
     </div> 
     <script src="./js/script.js"></script>
 </body>

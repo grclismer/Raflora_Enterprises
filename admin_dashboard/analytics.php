@@ -19,15 +19,15 @@
             </li>
             <li>
                 <span class="icon"><img src="../assets/images/icon/client_updates.png" alt="client updates"></span>
-                <a href="../admin_dashboard/update.html"><span>Client updates</span></a>
+                <a href="../admin_dashboard/update.php"><span>Client updates</span></a>
             </li>
             <li>
                 <span class="icon"><img src="../assets/images/icon/invoice.png" alt="invoice"></span>
-                <span><a href="../admin_dashboard/invoice.html">Invoice</span></a>
+                <span><a href="../admin_dashboard/invoice.php">Invoice</span></a>
             </li>
             <li class="active">
                 <span class="icon"><img src="../assets/images/icon/perfo_analy.png" alt="perforamance analytics"></span>
-                <span><a href="../admin_dashboard/analytics.html">Performance Analytics</span></a>
+                <span><a href="../admin_dashboard/analytics.php">Performance Analytics</span></a>
                 
             </li>
         </ul>
@@ -51,7 +51,7 @@
                 <div class="client-list">
                     <table class="client-table">
                         <tbody>
-                            <tr><td>John Doe</td></tr>
+                            <tr><td>Lismer Palce</td></tr>
                             <tr><td>Jane Smith</td></tr>
                             <tr><td>Anderson</td></tr>
                             <tr><td>Darwin</td></tr>

@@ -1,29 +1,33 @@
 <?php
 class Database {
-    private $host = 'localhost';
-    private $db_name = 'raflora_enterprises';
-    private $username = '';
-    private $password = '';
-    private $conn;
-
-    public function connect() {
-        $this->conn = null;
-        try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
-                $this->username,
-                $this->password,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES => false
-                ]
-            );
-        } catch(PDOException $e) {
-            error_log("Connection error: " . $e->getMessage());
-            throw new Exception("Database connection failed");
+    private static $instance = null;
+    private $connection;
+    
+    private function __construct() {
+        $this->connection = new mysqli(
+            'localhost', 
+            'root', 
+            '', 
+            'raflora_enterprises'
+        );
+        
+        if ($this->connection->connect_error) {
+            throw new Exception("Connection failed: " . $this->connection->connect_error);
         }
-        return $this->conn;
+    }
+    
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new Database();
+        }
+        return self::$instance->connection;
+    }
+    
+    public static function closeConnection() {
+        if (self::$instance !== null) {
+            self::$instance->connection->close();
+            self::$instance = null;
+        }
     }
 }
 ?>

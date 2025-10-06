@@ -32,7 +32,7 @@
                     <i class="fa-solid fa-lock"></i>
                 </div>
                 <div class="remember-forgot">
-                    <label><input type="checkbox" name="remember_me"> Remember me</label>
+                    <!-- <label><input type="checkbox" name="remember_me"> Remember me</label> -->
                     <a href="#frogot-form" id="showForgotPassword">Forgot password?</a>
                 </div>
                 <button type="submit" class="btn">Login</button>

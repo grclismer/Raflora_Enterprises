@@ -3,7 +3,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header("Location: ../user/login.html");
+    header("Location: ../user/user_login.html");
     exit();
 }
 
@@ -20,7 +20,16 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
     <link rel="stylesheet" href="../assets/css/user/footer.css">
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
     <script src="../assets/js/user/navbar.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+        <!-- 1. TAILWIND CSS CDN (CRITICAL for dark mode classes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. DARK MODE CONFIGURATION + LOGIC (Nasa iisang JS file na dapat ang config at functions) -->
+    <!-- I-check kung tama ang path na ito: ../assets/js/user/dark_mode.js -->
+    <!-- Inalis ang 'defer' para iwas conflict -->
+    <script src="../assets/js/user/dark_mode.js"></script> 
+<!-- Font Awesome link na stable (6.4.0) -->
+    <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="about-container">
@@ -30,27 +39,32 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 <i class="fas fa-bars"></i>
             </div>
             <ul class="nav-links">
-                <li><a href="../api/landing.php" class="nav-link">Home</a></li>
+                <li><a href="../user/landing.php" class="nav-link">Home</a></li>
                 <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
                 <li class="active"><a href="../user/about.php" class="nav-link">About</a></li>
                 <li><a href="../user/booking.php" class="nav-link">Book</a></li>
                 <li class="user-dropdown-toggle">
                     <i class="fas fa-user-circle user-icon"></i>
                     <ul class="user-dropdown-menu">
-                        <li><a href="#">Edit Account</a></li>
-                        <li><a href="#">My Bookings</a></li>
+                        <li><a href="../user/account_settings.php">Account settings</a></li>
+                        <li><a href="../user/my_bookings.php">My Bookings</a></li>
                         <li><a href="../api/logout.php">Log Out</a></li>
                     </ul>
                 </li>
             </ul>
         </nav>
+        <button id="dark-mode-icon-toggle" 
+            class="fixed top-4 left-4 p-3 rounded-full text-2xl transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-800 z-[9999] focus:outline-none">
+        <!-- CRITICAL: Ang JS ang magse-set ng Moon o Sun icon base sa current state -->
+        <i id="dark-mode-icon" class="fa-solid fa-moon text-blue-600 dark:text-yellow-400"></i>
+        </button>
         <div class="About-Info">
             <div class="profile-section">
                 <div class="profile-content">
                     <h1>Antonio A. Adriatico Jr.</h1>
                     <h3>CREATIVE DIRECTOR</h3>
                     <p>Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:</p>
-                    <br>
+                    <br>    
                     <p>Excepteur efficient emerging, minim veniam anim aute carefully curated Ginza conversation exquisite perfect nostrud nisi intricate Content. Qui international first-class nulla ut. adipisicing, essential lovely queen tempor eiusmod irure. Exclusive izakaya charming Scandinavian impeccable aute quality of life soft power pariatur Melbourne occaecat discerning. Qui wardrobe aliquip, et Porter destination Toto remarkable officia Helsinki excepteur Basset hound. Zürich sleepy perfect consectetur.</p>
                 </div>
                     <div class="profile-image-container">
@@ -99,6 +113,6 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                     </div>
          </footer>
     </div>
-  <script src="../assets/js/user/main.js"></script>
+  <!-- <script src="../assets/js/user/main.js"></script> -->
 </body>
 </html>

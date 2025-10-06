@@ -1,255 +1,314 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header("Location: ../user/login.html");
+// Handle payment modal display - Store in session
+if (isset($_GET['show_payment_modal']) && $_GET['show_payment_modal'] == 1 && isset($_GET['order_id'])) {
+    $_SESSION['show_payment_modal'] = $_GET['order_id'];
+    
+    // Redirect to clean URL
+    header("Location: billing.php?order_id=" . $_GET['order_id']);
     exit();
 }
 
-// Check if user is an admin or client
-$is_admin = ($_SESSION['role'] === 'admin_type');
+// Database configuration (Must match client_booking.php)
+$db_host = 'localhost'; 
+$db_name = 'raflora_enterprises';
+$db_user = 'root'; 
+$db_pass = ''; 
+
+// Check if order_id is provided
+if (!isset($_GET['order_id'])) {
+    header("Location: my_bookings.php");
+    exit();
+}
+
+$orderId = intval($_GET['order_id']);
+
+// Initialize database connection
+$conn = null;
+try {
+    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+    if ($conn->connect_error) {
+        throw new Exception("Connection failed: " . $conn->connect_error);
+    }
+} catch (Exception $e) {
+    die("Database Connection Error: " . $e->getMessage());
+}
+
+// 1. Fetch Booking Details from booking_tbl
+$booking = null;
+$sql_booking = "SELECT user_id, full_name, mobile_number, email, address, event_theme, packages, design_document_path, event_date, event_time, recommendations, payment_method, payment_details, payment_type, total_price, amount_due, booking_status, reference_number, rejection_reason FROM booking_tbl WHERE booking_id = ?";
+$stmt_booking = $conn->prepare($sql_booking);
+$stmt_booking->bind_param("i", $orderId);
+$stmt_booking->execute();
+$result_booking = $stmt_booking->get_result();
+
+if ($result_booking->num_rows > 0) {
+    $booking = $result_booking->fetch_assoc();
+} else {
+    die("Error: Booking ID {$orderId} not found.");
+}
+$stmt_booking->close();
+
+// 2. Fetch Package Details (Inclusions) from package_details_tbl
+$inclusions = "N/A";
+if ($booking && !empty($booking['packages']) && !empty($booking['event_theme'])) {
+    $sql_package = "SELECT inclusions FROM package_details_tbl WHERE package_name = ? AND event_type = ?";
+    $stmt_package = $conn->prepare($sql_package);
+    
+    $stmt_package->bind_param("ss", $booking['packages'], $booking['event_theme']); 
+    $stmt_package->execute();
+    $result_package = $stmt_package->get_result();
+    
+    if ($row_package = $result_package->fetch_assoc()) {
+        $inclusions = $row_package['inclusions'];
+    }
+    $stmt_package->close();
+}
+
+$conn->close();
+
+// UPDATED: Check if we should show the payment modal
+$showPaymentModal = false;
+
+// Method 1: Check URL parameter (for direct access from my_bookings.php)
+if (isset($_GET['trigger_modal']) && $_GET['trigger_modal'] == 1) {
+    if ($booking && $booking['booking_status'] === 'PENDING_ORDER_CONFIRMATION') {
+        $showPaymentModal = true;
+    }
+}
+
+// Method 2: Check session (for redirects from other pages)
+if (isset($_SESSION['show_payment_modal']) && $_SESSION['show_payment_modal'] == $orderId) {
+    if ($booking && $booking['booking_status'] === 'PENDING_ORDER_CONFIRMATION') {
+        $showPaymentModal = true;
+    }
+    unset($_SESSION['show_payment_modal']);
+}
+
+// Helper function to format currency
+function format_price($price) {
+    return '₱' . number_format($price, 2);
+}
+
+// Calculate remaining balance
+$totalPrice = (float)$booking['total_price'];
+$amountDue = (float)$booking['amount_due'];
+$remainingBalance = $totalPrice - $amountDue;
+
+// Format date 
+$formattedDate = date('m-d-y', strtotime($booking['event_date']));
+
+// Determine design file path and name
+$designPath = $booking['design_document_path'];
+$designFileName = basename($designPath);
+$fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPath;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reciept</title>
+    <title>Booking Receipt - Order <?php echo $orderId; ?></title>
+
+    <!-- KEEP your original CSS links (place cleaned CSS into these file paths if you want new styling) -->
+    <link rel="stylesheet" href="../assets/css/user/billing_modal.css">
     <link rel="stylesheet" href="../assets/css/user/billing.css">
-    <link rel="stylesheet" href="../assets/css/user/terms-conditions.css">
-    <link rel="stylesheet" href="../assets/css/user/footer.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
-    <script src="../assets/js/user/billing.js"></script>
+
+    <style>
+      /* Small safety CSS to ensure layout won't be fully broken if your external css missing.
+         This will be overridden by your billing.css when it loads. */
+      .billing-container { display:flex; gap:0; width:100%; min-height:100vh; }
+      .billing-left, .billing-right { padding:24px; box-sizing:border-box; }
+      body { background:#f5f5f5; }
+    </style>
 </head>
 <body>
-    <div class="receipt-container">
-        <div class="left-section">
-            <h1 class="thank-you">Thank you for your purchase!</h1>
-            <div class="billing-section">
-                <h3>Billing address</h3>
-                <div class="billing-info">
-                    <h4>Name</h4>
-                    <!-- This part was a data so i leave it as a comment  -->
-                    <!-- <p>John Doe</p> -->
-                </div>
-                <div class="billing-info">
-                    <h4>Address</h4>
-                    <!-- This part was a data so i leave it as a comment  -->
-                    <!-- <p>1234 Makati st. sample, sample address<br>B2 04145, Makati City</p> -->
-                </div>
-                <div class="billing-info">
-                    <h4>Phone</h4>
-                    <!-- This part was a data so i leave it as a comment  -->
-                    <!-- <p>+69 9123456789</p> -->
-                </div>
-                <div class="billing-info">
-                    <h4>Email</h4>
-                    <!-- This part was a data so i leave it as a comment  -->
-                    <!-- <p>johndoe@example.com</p> -->
-                </div>
-            </div>
-            <div class="terms-section">
-                <div class="checkbox">
-                    <input type="checkbox" checked>
-                    <span>I read and agree to <a href="#PrivacyPolicy" id="showPrivacyPolicy">Privacy Policy</a></span>
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" checked>
-                    <span>I read and agree to <a href="#TermsandCondition" id="showTermsCondition">Terms and Condition</a></span>
-                </div>
-                <!-- kailangan i link yung bagong update kasi php na siya -->
-                <button class="proceed-btn"><a href="../api/landing.php">Proceed</button></a>
-                <a href="#Feedback" class="feedback-link" id="showFeedbackCondition">Feedback and evaluation</a>
-            </div>
-        </div>
-        <div class="right-section">
-            <div class="summary-header">
-                <div class="logo"><img src="../assets/images/logo/raflora-logo.jpg" alt="raflora-logo"></div>
-                <h3>Summary of deliverables</h3>
-            </div>
-            <div class="order-details">
-                <div class="detail-item">
-                    <div class="detail-label">Date</div>
-                    <!-- This part was a data so i leave it as a comment  -->
-                    <!-- <div class="detail-value">04-27-25</div> -->
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Order number</div>
-                    <!-- <div class="detail-value">001</div> -->
-                </div>
-                <div class="detail-item">
-                    <div class="detail-label">Payment method</div>
-                    <!-- <div class="detail-value">Online Payment</div> -->
-                </div>
-            </div>
-            <div class="items-table">
-                <div class="items-header">
-                    <div>Item</div>
-                    <div>Unit cost</div>
-                    <div>Quantity</div>
-                    <div>Total cost</div>
-                </div>
-                <div class="item-row">
-                    <div>
-                        <strong>A. </strong>
-                        <div class="item-details">
-                            <!-- This part was a data so i leave it as a comment  -->
-                            <!-- *Bridal Bouquet *Mothers<br>
-                            *Grandmothers *Principal<br>
-                            Sponsors *Maid/Matrons<br>
-                            *Bridesmaids *Candle, Veil,<br>
-                            Chord *Coin, Bible Bearers<br>
-                            *Offertory Bearers *Flower<br>
-                            Girl *All Male Boutonnieres -->
-                        </div>
-                    </div>
-                    <div>-</div>
-                    <div class="item-details">
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <!-- 1 Bouquet 2 Bouquets 2<br>
-                        Bouquets 5 Bouquets 6<br>
-                        Bouquets 2 Wrist Corsages<br>
-                        5 Wrist Corsages 2<br>
-                        Poutnnieres 1 Groom 14<br>
-                        Male Entourage -->
-                    </div>
-                    <div class="item-price">
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <!-- ₱9,500.00 -->
-                    </div>
-                </div>
-                <div class="item-row">
-                    <div>
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <strong>B. </strong>
-                    </div>
-                    <div>-</div>
-                    <div class="item-details">
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <!-- 1 Pair (Size: H-8' x D-2') -->
-                    </div>
-                    <div class="item-price">
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <!-- ₱10,870.00 -->
-                    </div>
-                </div>
-                <div class="item-row">
-                    <div>
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <strong>C. </strong>
-                        <div class="item-details">
-                            <!-- This part was a data so i leave it as a comment  -->
-                            <!-- 16 Tables (Part of the Hotel<br>
-                            Package, Upgraded to<br>
-                            Long & Low); 16 Long &<br>
-                            Low + 1 Additional x 16<br>
-                            Tables + 16 Additional<br>
-                            Long & Low *Not Part of<br>
-                            Package; 4 Long & Low<br>
-                            (From VIP) 16 Tables Tall<br>
-                            (Upgraded) Not Part of<br>
-                            (Package) 1 Tall x 16 Tables<br>
-                            (Upgraded) *Cake Table<br>
-                            Arrangements *Part of<br>
-                            Package; 2 Tall (From VIP)<br>
-                            *Couples Table (Part of<br>
-                            Package) *Cake Table<br>
-                            (Upgraded) *Long & Low<br>
-                            (Complementary) -->
-                        </div>
-                    </div>
-                    <div>-</div>
-                    <div class="item-details">
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <!-- 16 Pieces (Long & Low)<br>
-                        16 Pieces (Tall<br>
-                        Arrangements) -->
-                    </div>
 
-                    <div class="item-price">
-                        <!-- This part was a data so i leave it as a comment  -->
-                        <!-- ₱17,450.00 -->
-                    </div>
+  <div class="billing-container">
+
+    <!-- LEFT (Billing info) - fixed / sticky on desktop -->
+    <aside class="billing-left" style="width: 40%; min-width: 320px; background: #fff; border-right: 1px solid #eee; position: sticky; top:0; height:100vh; overflow:auto;">
+        <h1 style="font-size:28px; font-weight:800; margin-bottom:12px;">Thank you for your purchase!</h1>
+        <h3 style="font-size:18px; margin-top:18px;">Billing address</h3>
+
+        <div class="billing-address" style="margin-top:12px;">
+            <p><strong>Name</strong><?php echo htmlspecialchars($booking['full_name']); ?></p>
+            <p><strong>Address</strong><?php echo htmlspecialchars($booking['address']); ?></p>
+            <p><strong>Phone</strong><?php echo htmlspecialchars($booking['mobile_number']); ?></p>
+            <p><strong>Email</strong><?php echo htmlspecialchars($booking['email']); ?></p>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label style="display:block; margin-bottom:8px;"><input type="checkbox" checked> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></label>
+            <label style="display:block; margin-bottom:12px;"><input type="checkbox" checked> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></label>
+
+            <button class="proceed-btn" onclick="window.print()" style="display:block; width:80%; margin-top:10px;">Proceed</button>
+
+            <!-- Buttons / Status area (kept same conditions as original) -->
+            <?php if ($booking['booking_status'] == 'PENDING_ORDER_CONFIRMATION'): ?>
+                <button class="submit-payment-btn" onclick="openPaymentModal()" style="margin-top:12px; width:80%;">Submit Payment Reference</button>
+                <div class="status-indicator" style="margin-top:12px;">Status: Waiting for Payment Reference Submission</div>
+
+            <?php elseif ($booking['booking_status'] == 'PENDING_PAYMENT_VERIFICATION'): ?>
+                <div class="status-indicator" style="margin-top:12px;">Status: Waiting for Admin Payment Verification</div>
+
+            <?php elseif ($booking['booking_status'] == 'APPROVED'): ?>
+                <div class="status-indicator" style="margin-top:12px; background:#d4edda; border-color:#c3e6cb; color:#155724;">✅ Status: Booking Approved! Your event is confirmed.</div>
+
+            <?php elseif ($booking['booking_status'] == 'REJECTED'): ?>
+                <div class="status-indicator" style="margin-top:12px; background:#f8d7da; border-color:#f5c6cb; color:#721c24;">❌ Status: Booking Rejected
+                    <?php if (!empty($booking['rejection_reason'])): ?>
+                        <div style="margin-top:12px;"><strong>Reason:</strong> <?php echo htmlspecialchars($booking['rejection_reason']); ?></div>
+                    <?php endif; ?>
                 </div>
+
+                <div style="margin-top:12px; padding:12px; background:#fff3cd; border:1px solid #ffeaa7; border-radius:6px;">
+                    <strong>What to do next?</strong>
+                    <p>If you believe this was a mistake or would like to discuss further, please contact our support team.</p>
+                </div>
+
+            <?php elseif ($booking['booking_status'] == 'COMPLETED'): ?>
+                <div class="status-indicator" style="margin-top:12px; background:#e2e3e5; border-color:#d6d8db; color:#383d41;">✅ Status: Event Completed Successfully</div>
+            <?php endif; ?>
+
+            <a href="#" class="feedback-link" id="showFeedbackCondition" style="display:block; margin-top:18px;">Feedback and evaluation</a>
+        </div>
+    </aside>
+
+    <!-- RIGHT (Summary) - scrollable -->
+    <main class="billing-right" style="flex:1; height:100vh; overflow:auto; background:#fafafa;">
+        <div class="summary-header" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <img src="../assets/img/raflora_logo.png" alt="RAFLORA Logo" style="height:48px;">
+                <h2 style="margin:0; font-size:22px;">Summary of deliverables</h2>
             </div>
-            <div class="design-options">
-                <!-- This part was a data so i leave it as a comment  -->
-                <i class="fa-regular fa-image"></i>
-                <i class="fa-regular fa-image"></i>
-                <i class="fa-regular fa-image"></i>
-                <span class="preferred-design">preferred design</span>
-            </div>
-            <div class="total-section">
-                <!-- This part was a data so i leave it as a comment  -->
-                <span>GRANDTOTAL</span>
-                <span class="total-amount">₱39,260.00</span>
+
+            <div class="summary-info" style="text-align:right;">
+                <div><strong>Date</strong><div><?php echo $formattedDate; ?></div></div>
+                <div style="margin-top:6px;"><strong>Order number</strong><div><?php echo htmlspecialchars($orderId); ?></div></div>
+                <div style="margin-top:6px;"><strong>Payment method</strong><div><?php echo htmlspecialchars($booking['payment_method']); ?></div></div>
             </div>
         </div>
-    </div>
-    <div id="modalOverlay" class="modal-overlay"></div>
-    <div id="modalContainer" class="modal-container">
-        <div id="modalContent" class="modal-content">
-            <button id="closeModalBtn" class="close-btn">&times;</button>
-            <div id="termsandCondition" class="modal-text hidden">
-                <h2>TERMS AND CONDITIONS:</h2>
-                <p class="subtitle">Contractor: RAFLORA ENTERPRISES</p>
-                <div class="section"><p>Contractor shall be given independence as stylist to choose colors, materials, and accessories that will be compatible with the theme and inspiration
-                    <span class="highlighted">AS REQUIRED BY THE CLIENT</span>. Client accepts that flowers and materials shape, form and colors may vary from attached sketches or photo pegs. As stylist, Contractor shall be given
-                    <span class="highlighted">artistic license</span> in dealing with the available materials as they see fit, adhering as close as possible to the approved presentation.</p></div>
-                <div class="section"><p class="section-title">A. Meals:</p><p>Client shall provide (3) three meals and continuous supply of clean drinking water for
-                    <span class="highlighted">Contractor's crew</span> during the whole duration of the installation until final conclusion. In the event that client fails to provide meals, client shall be invoiced for the provision of meals.</p></div>
-                <div class="section"><p class="section-title">B. Electrician:</p><p>Raflora Enterprises shall arrange for an electrician to tap any Décor that has electrical elements to a power source compatible with the electrical requirements of the materials concerned. This is to avoid and keep in control electrical fire hazards.</p></div>
-                <div class="section"><p class="section-title">C. Raflora Enterprises</p><p>shall have recourse for assistance from Event Venue for tools and equipment, (e.g., tall ladders or scaffolding) necessary for the completion of certain tasks, and should
-                    <span class="highlighted">assist in providing personnel</span> who can install that which may be inaccessible under normal conditions.</p></div>
-                <div class="section"><p class="section-title">D. Holding Room:</p><p>Hotel Venue, in coordination with Client, should make available a holding room where delivered materials and accessories for installation can be stored and are easily accessible. The holding room will also serve as preparation area for the finished product is installed and should be furnished with tables and chairs. This should also be protected from the elements to safeguard the integrity of the materials for installation, and shall serve as private and rest area for Crew to take their meals and completion of installation until Egress.</p></div>
-                <div class="section"><p class="section-title">E. Contractor</p><p>shall not be liable for any consequential damages that may arise due to unforeseen events such as malfunction of any equipment,
-                    <span class="highlighted">forces of nature (typhoon, strong winds and rain)</span> that may cause damage to installed materials and decorations, acts of war, accidents, unexpected governmental acts that may cause unforeseen traffic or any delay, and political/social unrest.</p></div>
-                <div class="section"><p class="section-title">F. All goods, accessories and decorative materials from RAFLORA'S INVENTORY</p><p>from their warehouse are considered as
-                    <span class="highlighted">RENTALS (Inclusive in the Proposal Costs)</span> for the duration of the event. EX: Vases, Votives, Accent Decors, Electronic Votives and Candles, Floating Battery-Operated Candles, Tassels, Faux Flowers, Avatar Lights, Gold Metal Structures, Bubble Lights & Tube Lights, etc.</p></div>
+
+        <table class="summary-table" style="width:100%; margin-top:18px; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; padding:8px 0;">Item (Event/Package)</th>
+                    <th style="text-align:center; padding:8px 0;">Price/Unit</th>
+                    <th style="text-align:left; padding:8px 0;">Package Details</th>
+                    <th style="text-align:right; padding:8px 0;">Total cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="vertical-align:top;">
+                    <td style="padding:12px 0;">
+                        <strong>Event:</strong> <?php echo htmlspecialchars($booking['event_theme']); ?><br>
+                        <strong>Package:</strong> <?php echo htmlspecialchars($booking['packages']); ?>
+                    </td>
+                    <td style="text-align:center; padding:12px 0;">
+                        <!-- if you have per-unit price, echo here -->
+                    </td>
+                    <td style="padding:12px 0;">
+                        <span style="font-weight:bold;">1 Package</span>
+                        <?php if ($inclusions !== 'N/A'): ?>
+                            <ul class="inclusions-list" style="margin-top:8px; padding-left:18px;">
+                                <?php
+                                $items = preg_split('/<br\s*\/?>|\n/', $inclusions, -1, PREG_SPLIT_NO_EMPTY);
+                                foreach ($items as $item) {
+                                    echo '<li>' . trim($item) . '</li>';
+                                }
+                                ?>
+                            </ul>
+                        <?php else: ?>
+                            <p style="font-style:italic; color:#777; margin-top:6px;">No detailed inclusions available.</p>
+                        <?php endif; ?>
+                    </td>
+                    <td style="text-align:right; padding:12px 0;"><?php echo format_price($totalPrice); ?></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- design file link if exists -->
+        <?php if ($fileUrl): ?>
+            <a class="file-link" href="<?php echo htmlspecialchars($fileUrl); ?>" target="_blank">
+                📁 <?php echo htmlspecialchars($designFileName); ?> (Click to view preferred design document)
+            </a>
+        <?php endif; ?>
+
+        <!-- Totals area -->
+        <div style="margin-top:28px; padding:16px; background:#fff; border-radius:8px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <div><strong>GRANDTOTAL (Fixed Price)</strong></div>
+                <div style="font-weight:800;"><?php echo format_price($totalPrice); ?></div>
             </div>
-            <div id="privacyPolicy" class="modal-text hidden">
-                <h2>DISCLAIMER:</h2>
-                <p class="subtitle">All presentation photos in this proposal have been gathered/generated from public design requirements of the Client. Actual installations may have variations in sizes, colors and design form but we will remain faithful to the Client's theme and requirements.</p>
-                <div class="section"><p class="section-title">1.Publicly Available:</p><p>The photo pegs presented in this proposal have been gathered/generated from publicly available sources, such as websites, publications, and other open platforms. These images remain in the public domain or under their respective ownership.</p></div>
-                <div class="section"><p class="section-title">2.Fresh Perspectives:</p><p>Our intention is to bring innovative and unique viewpoints to the project. While these photo pegs serve as an initial starting point, we are dedicated to creating original installations that goes beyond referenced materials. Our goal is fresh and inventive interpretations that align with your vision.</p></div>
-                <div class="section"><p class="section-title">3.Fresh Interpretations:</p><p>Our primary objective is to offer innovative and distinct perspectives based on the influence of the client's Mood Board, Color Theme, etc. These photo pegs are intended to ignite creativity and provide an initial visual reference, but they do not entirely define our original content nor represents a fresh take on the project.</p></div>
-                <div class="section"><p class="section-title">4.Collaboration Focus:</p><p>We aim to offer innovative and distinct perspectives. They are intended to spark creativity and set a tone for the project, but the final results may differ due to factors such as the project's evolving nature and client support. Instead, we focus final availability of seasonal flowers, accessories at any given time.</p></div>
-                <div class="section"><p class="section-title">5.Open Collaboration:</p><p>We encourage an open and collaborative environment. We value our client's input, feedback, and ideas throughout the project's development, which may lead to further innovative and creative perspectives.</p></div>
-                <div class="section"><p>By revieswing this proposal and the associated photo pegs, you acknowledge and accept the terms outlined in this disclaimer. If you have any inquiries, concerns, or need further clarification, please do not hesitate to reach out. We are enthusiastic about the opportunity to work together and keep the project to life with fresh and unique perspectives.</p></div>
-                <div class="payment-terms">
-                    <h3>CLIENT PRIORITY AND TERMS OF PAYMENT</h3>
-                    <div class="payment-details">
-                        <p><span class="highlighted">First-Come, First-Serve Policy:</span> Services are provided on a first-come, first-serve basis, based on the receipt of a down-payment. Raflora Enterprises reserves the right to prioritize clients, whose event occurs on the same date with other client/ clients, who have confirmed their event by submitting their down-payment first and who have applied for this priority status shall be in the last confirmed in this interim, and will not be liable from accepting another client who has provided their down payment first. Raflora Enterprises is not responsible for any potential inconvenience or impact on a client's event due to the first-come, first-serve policy.</p>
-                        <div class="payment-row">
-                            <span>⮚ 50 % DOWNPAYMENT UPON APPROVAL & SIGNING OF CONTRACT</span>
-                        </div>
-                        <div class="payment-row">
-                            <span>⮚ 50 % BALANCE OF PAYMENT 30 DAYS BEFORE THE EVENT</span>
-                        </div>
-                        <div class="payment-row">
-                            <span>RAFLORA ENTERPRISES - BIR TIN: 944-328-187-000 (NON-VAT)</span>
-                        </div>
-                        <div class="payment-row">
-                            <span>BDO SAVINGS ACCOUNT: 0013 - 9018 - 3937</span>
-                        </div>
-                        <p style="margin-top: 15px;"><span class="highlighted">A. Proposal</span> is based on above-given areas and quantity. No variation of costs less than the approved and confirmed Grand Total shall be allowed for any regional and confirmation of this Contract.</p>
-                        <p><span class="highlighted">B. Overdue accounts</span> are subject to interest based on prevailing bank rates from the time it becomes overdue until full payment.</p>
-                        <p><span class="highlighted">C. This formal quotation</span> also serves as the formal contract of confirmation. All contents, values, rates and other particulars of this Formal Quotation is <span class="highlighted">strictly confidential and only for the perusal of the intended client.</span></p>
-                    </div>
-                </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <div>Amount Paid (Down Payment)</div>
+                <div><?php echo format_price($amountDue); ?></div>
             </div>
-            <div id="FeedbackCondition" class="modal-text hidden">
-                <div class="feedRegards" id="feedRegardsCondtion">
-                    <img src="../assets/images/icon/user.png" alt="user">
-                        <h2>How's our services?</h2>
-                            <textarea name="clientRegards" class="ClientRegards" id="clientFormRegards"></textarea>
-                                <div class="starFeed" id="starFeedCondition"></div>
-                                <button class="submit-btn" id="submitFeedCondition">Submit</button>
-                </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:0;">
+                <div><strong>Remaining Balance Due:</strong></div>
+                <div style="font-weight:800; color:#cc0000;"><?php echo format_price($remainingBalance); ?></div>
             </div>
         </div>
-    </div>
-    
+
+        <!-- Client Recommendations & feedback -->
+        <div style="margin-top:18px; padding:14px; background:#fff; border-radius:8px;">
+            <h3 style="margin:0 0 8px 0;">Client Recommendations</h3>
+            <p style="color:#333; margin:0;"><?php echo nl2br(htmlspecialchars($booking['recommendations'])); ?></p>
+        </div>
+
+        <div style="margin-top:22px; text-align:center;">
+            <button class="proceed-btn" onclick="window.print()" style="padding:12px 24px; border-radius:8px;">Print Receipt</button>
+        </div>
+
+    </main>
+
+  </div>
+
+  <!-- Payment Reference Modal (keeps original form/action names) -->
+  <div id="paymentModal" class="payment-modal" style="<?php echo $showPaymentModal ? 'display:block;' : 'display:none;'; ?>">
+      <div class="payment-modal-content" style="max-width:600px; margin:60px auto; background:#fff; padding:20px; border-radius:8px;">
+          <h2>Submit Payment Reference</h2>
+
+          <div class="alert alert-info">Please pay the required amount to get the <strong>Reference code</strong>.</div>
+
+          <p><strong>Order ID:</strong> #<?php echo $orderId; ?></p>
+          <p><strong>Amount Due:</strong> <span style="color:#28a745; font-weight:bold;"><?php echo format_price($amountDue); ?></span></p>
+          <p><strong>Payment Method:</strong> <?php echo htmlspecialchars($booking['payment_method']); ?></p>
+          <p><strong>Payment Channel:</strong> <?php echo htmlspecialchars($booking['payment_details']); ?></p>
+          <p><strong>Payment Type:</strong> <?php echo htmlspecialchars($booking['payment_type']); ?></p>
+
+          <form action="../config/client_booking.php" method="POST" id="referenceForm">
+              <input type="hidden" name="order_id_value" value="<?php echo $orderId; ?>">
+              <input type="hidden" name="payment_details" value="<?php echo htmlspecialchars($booking['payment_details']); ?>">
+
+              <div class="form-group">
+                  <label for="referenceCode">Reference ID/Code</label>
+                  <input type="text" name="reference_code" id="referenceCode" required placeholder="Enter your Payment Reference code" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+              </div>
+
+              <button type="submit" name="submit_reference_from_modal" class="submit-btn" style="background:#28a745; color:#fff; padding:10px 18px; border-radius:6px; border:none;">Submit Reference</button>
+          </form>
+      </div>
+  </div>
+
+  <script>
+    function openPaymentModal() {
+      var modal = document.getElementById('paymentModal');
+      modal.style.display = 'block';
+      document.body.classList.add('modal-open');
+    }
+    function closePaymentModal() {
+      var modal = document.getElementById('paymentModal');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+    // If the server determined we should show it, modal is already visible (via PHP $showPaymentModal)
+    if (<?php echo $showPaymentModal ? 'true' : 'false'; ?>) {
+      document.body.classList.add('modal-open');
+    }
+  </script>
 </body>
 </html>

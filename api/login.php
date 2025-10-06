@@ -62,9 +62,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($db_role === 'admin_type') {
                 $redirect_url = '../admin_dashboard/inventory.php';
             } elseif ($db_role === 'client_type') {
-                $redirect_url = '../api/landing.php';
+                $redirect_url = '../user/landing.php';
             } else {
-                $redirect_url = '../api/landing.php';
+                $redirect_url = '../user/landing.php';
             }
             echo json_encode(['status' => 'success', 'redirect_url' => $redirect_url]);
         } else {

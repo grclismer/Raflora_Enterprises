@@ -1,58 +1,95 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const modalContainer = document.getElementById('modalContainer');
+// FILE: assets/js/user/billing.js
+
+document.addEventListener('DOMContentLoaded', () => {
     const modalOverlay = document.getElementById('modalOverlay');
-    const termsModalContent = document.getElementById('termsandCondition');
-    const privacyModalContent = document.getElementById('privacyPolicy');
-    const feedbackModalContent = document.getElementById('FeedbackCondition');
-    const showPrivacyPolicyLink = document.getElementById('showPrivacyPolicy');
-    const showTermsConditionLink = document.getElementById('showTermsCondition');
-    const showFeedbackConditionLink = document.getElementById('showFeedbackCondition');
+    const modalContainer = document.getElementById('modalContainer');
     const closeModalBtn = document.getElementById('closeModalBtn');
-    const body = document.body;
+    
+    // Elements for Terms, Privacy, and Feedback
+    const showTermsCondition = document.getElementById('showTermsCondition');
+    const termsandCondition = document.getElementById('termsandCondition');
+    
+    const showPrivacyPolicy = document.getElementById('showPrivacyPolicy');
+    const privacyPolicy = document.getElementById('privacyPolicy');
+    
+    const showFeedbackCondition = document.getElementById('showFeedbackCondition');
+    const feedbackCondition = document.getElementById('FeedbackCondition');
 
+    // Function to show the modal with specific content
     function showModal(contentElement) {
-        termsModalContent.classList.add('hidden');
-        privacyModalContent.classList.add('hidden');
-        feedbackModalContent.classList.add('hidden');
-        contentElement.classList.remove('hidden');
-        modalContainer.classList.add('modal-active');
+        // Hide all modal content first
+        document.querySelectorAll('.modal-text').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        // Show the selected content
+        if (contentElement) {
+            contentElement.classList.remove('hidden');
+        }
+
+        // Show the overlay and container
         modalOverlay.classList.add('modal-active');
-        body.classList.add('modal-open');
+        modalContainer.classList.add('modal-active');
+        document.body.classList.add('modal-open'); // Prevent body scroll
     }
 
+    // Function to hide the modal
     function hideModal() {
-        modalContainer.classList.remove('modal-active');
         modalOverlay.classList.remove('modal-active');
-        body.classList.remove('modal-open');
+        modalContainer.classList.remove('modal-active');
+        document.body.classList.remove('modal-open'); // Re-enable body scroll
     }
 
-    if (showPrivacyPolicyLink) {
-        showPrivacyPolicyLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            showModal(privacyModalContent);
+    // --- Event Listeners for Opening Modals ---
+    if (showTermsCondition) {
+        showTermsCondition.addEventListener('click', (e) => {
+            e.preventDefault();
+            showModal(termsandCondition);
         });
     }
 
-    if (showTermsConditionLink) {
-        showTermsConditionLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            showModal(termsModalContent);
-        });
-    }
-    if (showFeedbackConditionLink) {
-        showFeedbackConditionLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            showModal(feedbackModalContent);
+    if (showPrivacyPolicy) {
+        showPrivacyPolicy.addEventListener('click', (e) => {
+            e.preventDefault();
+            showModal(privacyPolicy);
         });
     }
 
+    if (showFeedbackCondition) {
+        showFeedbackCondition.addEventListener('click', (e) => {
+            e.preventDefault();
+            showModal(feedbackCondition);
+        });
+    }
+
+    // --- Event Listeners for Closing Modals ---
+    
+    // 1. Close button (X)
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', hideModal);
     }
 
+    // 2. Clicking outside the modal (on the overlay)
     if (modalOverlay) {
         modalOverlay.addEventListener('click', hideModal);
     }
 
+    // 3. Escape key press
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalContainer.classList.contains('modal-active')) {
+            hideModal();
+        }
+    });
 
+    // NOTE: Adding an event listener to stop clicks inside the modal from closing it
+    // This is optional but good for UX. The 'modal-container' handles this implicitly,
+    // but if you had clicked an element inside the content, it might bubble up to the body.
+    if (modalContainer) {
+         modalContainer.addEventListener('click', (e) => {
+            // Stop propagation to the overlay if the click originated inside the modal content
+            if (e.target !== modalContainer && e.target !== modalOverlay) {
+                e.stopPropagation();
+            }
+        });
+    }
 });

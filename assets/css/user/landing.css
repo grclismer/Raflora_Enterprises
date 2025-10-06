@@ -28,6 +28,7 @@ body {
 }
 
 .Home-bg img {
+    
     width: 70%;
     max-width: 600px;
     border-radius: 10px;
@@ -50,6 +51,7 @@ body {
     gap: 10px;
     margin: 10px;
     border-radius: 8px;
+    
 }
 
 .Set-img .description {
@@ -85,7 +87,7 @@ body {
     font-weight: bold;
     position: absolute;
     bottom: 6%;
-} */
+} 
 /* --- Feedback Section --- */
 .Feedback-content {
     display: flex;
