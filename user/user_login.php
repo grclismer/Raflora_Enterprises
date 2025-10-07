@@ -14,7 +14,7 @@
         <div class="wrapper">
             <form id="loginForm" action="../api/login.php" method="post">
                 <span class="return">
-                    <a href="../guest/g-home.html"><h2>X</h2></a>
+                    <a href="../guest/g-home.php"><h2>X</h2></a>`
                 </span>
                 <h1>Login</h1>
                 <!-- The welcome message div will now display login success or error -->
@@ -46,7 +46,7 @@
         <div class="regwrapper">
             <form id="registrationForm" action="../api/register.php" method="post">
                 <span class="return">
-                    <a href="../guest/g-home.html"><h2>X</h2></a>
+                    <a href="../guest/g-home.php"><h2>X</h2></a>
                 </span>
                 <h1>Register</h1>
             <div class="regrow-1" id="set1">
@@ -118,7 +118,7 @@
         <div class="wrapper">
             <form id="forgotPasswordForm">
                 <span class="return">
-                    <a href="../guest/g-home.html"><h2>X</h2></a>
+                    <a href="../guest/g-home.php"><h2>X</h2></a>
                 </span>
                 <h1>Forgot Password</h1>
                 <div id="forgotPasswordMessage" class="welcome-message"></div>

@@ -1,3 +1,45 @@
+<?php
+session_start();
+
+// Debug session
+error_log("Account Settings - Session: " . print_r($_SESSION, true));
+
+// If user is not logged in, redirect to login
+if (!isset($_SESSION['user_id'])) {
+    // Try to get user_id from cookie as fallback
+    if (isset($_COOKIE['user_id'])) {
+        $_SESSION['user_id'] = $_COOKIE['user_id'];
+        $_SESSION['username'] = $_COOKIE['username'] ?? '';
+        $_SESSION['is_logged_in'] = true;
+    } else {
+        header("Location: ../guest/login.php");
+        exit();
+    }
+}
+
+// Now get user data directly from database for the page
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "raflora_enterprises";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+$user_data = [];
+
+if (!$conn->connect_error) {
+    // UPDATED QUERY TO INCLUDE PROFILE PICTURE
+    $stmt = $conn->prepare("SELECT user_id, first_name, last_name, user_name, email, mobile_number, address, profile_picture FROM accounts_tbl WHERE user_id = ?");
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows == 1) {
+        $user_data = $result->fetch_assoc();
+    }
+    $stmt->close();
+    $conn->close();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +59,7 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        'primary-blue': '#3b82f6',
+                        'primary-blue': '#000000ff',
                     }
                 }
             }
@@ -26,8 +68,8 @@
     <style>
         /* Custom styles for dark inputs and smooth transitions */
         .input-dark {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background-color: rgba(248, 248, 248, 0.1);
+            color: #f9f9f9ff;
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
         .input-dark:focus {
@@ -42,11 +84,11 @@
         /* Dark Mode Specific Styles */
         html.dark {
             /* Full dark background */
-            background-color: #1f2937; 
+            background-color: #eceef1ff; 
         }
         html:not(.dark) {
              /* Default background (yung dark blue na ginamit mo sa original) */
-             background-color: #111827; 
+             background-color: #ebebebff; 
         }
         body {
             /* Ensure body inherits size but not the color, container handles card color */
@@ -57,38 +99,30 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center font-sans p-4 bg-gray-900">
-
-    <!-- Dark Mode Toggle Button (TOP LEFT - Global Control) -->
-    <button id="top-dark-mode-icon-toggle" class="fixed top-4 left-4 p-3 rounded-full text-2xl transition duration-300 hover:bg-gray-700 z-50 focus:outline-none">
-        <!-- Initial icon state will be set by JS on load -->
-        <i id="top-dark-mode-icon" class="fa-solid fa-moon text-blue-400"></i>
-    </button>
-
+<body class="min-h-screen flex items-center justify-center font-sans p-4 bg-white">
 
     <!-- Account Settings Container -->
     <div id="settings-card" class="w-full max-w-xl bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl text-white card-bg">
         
-        <h2 class="text-3xl font-bold text-center mb-6 border-b border-gray-700 pb-3">Account Settings</h2>
-
+        <h2 class="text-2xl font-bold text-center mb-2 border-b border-gray-700 pb-3">Account Settings</h2>
         <form id="settingsForm" onsubmit="handleSave(event)">
             
             <!-- User ID and Username Display (Read Only - As requested) -->
-            <div class="section-title border-b border-gray-700 mb-4 pb-2 text-xl font-semibold text-blue-400">User Information (Read Only)</div>
+            <!-- <div class="section-title border-b border-gray-700 mb-4 pb-2 text-xl font-semibold text-blue-400">User Information (Read Only)</div> -->
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div class="form-group relative form-group-icon">
-                    <!-- Sample Data: Papalitan ito ng actual user ID value mo -->
-                    <input type="text" value="User ID: C0012345" readonly
+                    <input type="text" value="User ID: <?php echo $user_data['user_id'] ?? 'Loading...'; ?>" readonly
                            class="w-full p-3 pl-4 rounded-lg input-dark transition duration-200 cursor-not-allowed opacity-75 text-sm">
                     <i class="fa fa-id-card-clip absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
                 <div class="form-group relative form-group-icon">
-                    <!-- Sample Data: Papalitan ito ng actual username value mo -->
-                    <input type="text" placeholder="Username" value="client_jane_doe" readonly
+                    <input type="text" placeholder="Username" value="<?php echo $user_data['user_name'] ?? 'Loading...'; ?>" readonly
                            class="w-full p-3 pl-4 rounded-lg input-dark transition duration-200 cursor-not-allowed opacity-75">
                     <i class="fa fa-user absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    
                 </div>
+                
             </div>
 
             
@@ -99,8 +133,8 @@
             <div class="flex flex-col items-center mb-6">
                 <div class="relative w-28 h-28 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden border-4 border-gray-600 mb-2">
                     <!-- Placeholder Avatar -->
-                    <i id="avatarIcon" class="fa fa-user text-6xl text-gray-500"></i>
-                    <img id="profileImage" src="" alt="Profile" class="absolute w-full h-full object-cover hidden">
+                    <i id="avatarIcon" class="fa fa-user text-6xl text-gray-500 <?php echo !empty($user_data['profile_picture']) ? 'hidden' : ''; ?>"></i>
+                    <img id="profileImage" src="<?php echo !empty($user_data['profile_picture']) ? '/raflora_enterprises/' . ltrim($user_data['profile_picture'], '/') : ''; ?>" alt="Profile" class="absolute w-full h-full object-cover <?php echo empty($user_data['profile_picture']) ? 'hidden' : ''; ?>">
                 </div>
                 <label for="profile-upload" class="cursor-pointer text-sm font-medium text-blue-400 hover:text-blue-300 transition duration-150">
                     Change Profile Photo
@@ -112,13 +146,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div class="form-group relative form-group-icon">
                     <input type="text" id="reg-firstname" name="firstname" placeholder="First Name" maxlength="50" required 
-                           value="Jane"
+                           value="<?php echo $user_data['first_name'] ?? ''; ?>"
                            class="w-full p-3 pl-4 rounded-lg input-dark transition duration-200">
                     <i class="fa-solid fa-signature absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
                 <div class="form-group relative form-group-icon">
                     <input type="text" id="reg-lastname" name="lastname" placeholder="Last Name" maxlength="50" required 
-                           value="Doe"
+                           value="<?php echo $user_data['last_name'] ?? ''; ?>"
                            class="w-full p-3 pl-4 rounded-lg input-dark transition duration-200">
                     <i class="fa-solid fa-signature absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
@@ -127,13 +161,13 @@
             <!-- Email and Contact Number Group -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div class="form-group relative form-group-icon">
-                    <input type="email" id="reg-email" placeholder="Email" value="jane.doe@example.com" required
+                    <input type="email" id="reg-email" placeholder="Email" value="<?php echo $user_data['email'] ?? ''; ?>" required
                            class="w-full p-3 pl-4 rounded-lg input-dark transition duration-200">
                     <i class="fa fa-envelope absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
                 <div class="form-group relative form-group-icon">
                     <input type="tel" id="reg-phone" name="phone" placeholder="Contact Number (e.g., 900-123-4567)" maxlength="15" 
-                           value="917-555-1234"
+                           value="<?php echo $user_data['mobile_number'] ?? ''; ?>"
                            class="w-full p-3 pl-4 rounded-lg input-dark transition duration-200">
                     <i class="fa-solid fa-phone absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
@@ -141,7 +175,7 @@
             
             <div class="form-group relative form-group-icon mb-6">
                 <input type="text" id="reg-address" name="address" placeholder="Address (Optional)" maxlength="255"
-                        value="123 Main St, Manila"
+                        value="<?php echo $user_data['address'] ?? ''; ?>"
                         class="w-full p-3 pl-4 rounded-lg input-dark transition duration-200">
                 <i class="fa-solid fa-map-location-dot absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
             </div>
@@ -175,7 +209,7 @@
         </form>
 
         <!-- Danger Zone -->
-        <div class="section-title border-b border-gray-700 mt-8 mb-4 pb-2 text-xl font-semibold text-red-400">Danger Zone</div>
+        <div class="section-title border-b border-gray-700 mt-8 mb-4 pb-2 text-xl font-semibold text-red-400">Deactivate account</div>
         
         <!-- Delete Account -->
         <div class="flex items-center justify-between p-4 bg-red-900/30 border border-red-800 rounded-xl">
@@ -202,88 +236,36 @@
     </div>
 
     <script>
-        // --- Global Dark Mode Functions (Gamit ang localStorage) ---
-        const DARK_MODE_KEY = 'global_dark_mode';
+        // Update profile picture preview function
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-        /**
-         * Ina-apply ang Dark Mode state sa buong page.
-         * @param {boolean} isDark - True para sa Dark Mode, False para sa Light Mode.
-         */
-        function applyDarkMode(isDark) {
-            const html = document.documentElement;
-            const card = document.getElementById('settings-card');
-            
-            if (isDark) {
-                html.classList.add('dark');
-                html.style.backgroundColor = '#1f2937'; // Para sa smooth transition
-                document.body.classList.remove('bg-gray-900');
-                document.body.classList.add('bg-gray-800');
-                card.classList.remove('bg-gray-800', 'text-white');
-                card.classList.add('bg-gray-700', 'text-gray-100');
-            } else {
-                html.classList.remove('dark');
-                html.style.backgroundColor = '#111827';
-                document.body.classList.remove('bg-gray-800');
-                document.body.classList.add('bg-gray-900');
-                card.classList.remove('bg-gray-700', 'text-gray-100');
-                card.classList.add('bg-gray-800', 'text-white');
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                showMessage("Error", "Please select a valid image file (JPG, PNG, GIF, or WebP)");
+                return;
             }
-            
-            // Update icons based on the new state
-            updateIcons(isDark);
-            
-            // Save preference to local storage for global access
-            localStorage.setItem(DARK_MODE_KEY, isDark ? 'enabled' : 'disabled');
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage("Error", "File size must be less than 5MB");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('profileImage');
+                const icon = document.getElementById('avatarIcon');
+                output.src = reader.result;
+                output.classList.remove('hidden');
+                icon.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
         }
 
-        /**
-         * Ina-update ang icon para sa moon/sun.
-         * @param {boolean} isDark - True kung Dark Mode.
-         */
-        function updateIcons(isDark) {
-            // Updated to only target the two external icons
-            const icons = [document.getElementById('top-dark-mode-icon'), document.getElementById('bottom-dark-mode-icon')];
-            
-            icons.forEach(icon => {
-                if (!icon) return; // check kung existing
-                
-                // Clear previous classes
-                icon.classList.remove('fa-sun', 'text-yellow-400', 'fa-moon', 'text-blue-400');
-                
-                if (isDark) {
-                    // Dark Mode is ON: Show SUN icon
-                    icon.classList.add('fa-sun', 'text-yellow-400');
-                } else {
-                    // Dark Mode is OFF: Show MOON icon
-                    icon.classList.add('fa-moon', 'text-blue-400');
-                }
-            });
-        }
-        
-        /**
-         * Toggle event handler.
-         */
-        function toggleDarkMode() {
-            const currentMode = localStorage.getItem(DARK_MODE_KEY) === 'enabled';
-            applyDarkMode(!currentMode);
-        }
-
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check saved preference on load
-            const savedMode = localStorage.getItem(DARK_MODE_KEY);
-            const isDark = savedMode === 'enabled';
-            
-            // Apply initial state
-            applyDarkMode(isDark);
-            
-            // Attach listeners to all external toggle buttons
-            document.getElementById('top-dark-mode-icon-toggle').addEventListener('click', toggleDarkMode);
-            document.getElementById('bottom-dark-mode-icon-toggle').addEventListener('click', toggleDarkMode);
-        });
-
-
-        // --- Modal/Message Box Functions (Replaces alert/confirm) ---
+        // --- Modal/Message Box Functions ---
         function showMessage(title, content, isConfirm = false, onConfirm = null) {
             const box = document.getElementById('message-box');
             document.getElementById('modal-title').textContent = title;
@@ -292,7 +274,7 @@
             
             if (isConfirm) {
                 confirmBtn.classList.remove('hidden');
-                confirmBtn.onclick = closeModal; // Default cancel behavior
+                confirmBtn.onclick = closeModal;
                 document.querySelector('#message-box button:not(#modal-cancel)').onclick = () => {
                     if (onConfirm) onConfirm();
                     closeModal();
@@ -312,62 +294,113 @@
             box.classList.remove('flex');
         }
 
-
-        // --- Profile Image Preview ---
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById('profileImage');
-                const icon = document.getElementById('avatarIcon');
-                output.src = reader.result;
-                output.classList.remove('hidden');
-                icon.classList.add('hidden');
-            }
-            if (event.target.files[0]) {
-                reader.readAsDataURL(event.target.files[0]);
-            }
-        }
-
-        // --- Form Handlers ---
-        function handleSave(event) {
-            event.preventDefault(); // Prevents actual form submission
+        async function handleSave(event) {
+            event.preventDefault();
             
-            // Basic validation check for new password consistency
+            // Basic validation
             const currentPass = document.getElementById('current-password').value;
             const newPass = document.getElementById('new-password').value;
             const confirmPass = document.getElementById('confirm-new-password').value;
             
             if (newPass || confirmPass) {
                 if (!currentPass) {
-                    showMessage("Error", "Kailangan ang Current Password kapag nagpapalit ng New Password.");
+                    showMessage("Error", "Current password is required when changing password.");
                     return;
                 }
                 if (newPass !== confirmPass) {
-                    showMessage("Error", "Ang Bagong Password at Kumpirmasyon ay hindi tugma. Pakisubukang muli.");
+                    showMessage("Error", "New password and confirmation do not match.");
                     return;
                 }
             }
 
-            // DITO MO GAGAWIN ANG ACTUAL API/PHP POST REQUEST
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('firstname', document.getElementById('reg-firstname').value);
+            formData.append('lastname', document.getElementById('reg-lastname').value);
+            formData.append('email', document.getElementById('reg-email').value);
+            formData.append('phone', document.getElementById('reg-phone').value);
+            formData.append('address', document.getElementById('reg-address').value);
             
-            // Simulate successful save
-            showMessage("Success!", `Ang iyong settings ay matagumpay na na-save!`, false);
+            // Add profile picture if selected
+            const profileUpload = document.getElementById('profile-upload');
+            if (profileUpload.files[0]) {
+                formData.append('profile_picture', profileUpload.files[0]);
+            }
+
+            try {
+                // Use upload_profile.php which handles both profile data and picture
+                const response = await fetch('/raflora_enterprises/api/upload_profile.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Update profile image on page if new picture was uploaded
+                    if (data.profile_picture) {
+                        const profileImg = document.getElementById('profileImage');
+                        const icon = document.getElementById('avatarIcon');
+                        profileImg.src = '/raflora_enterprises/' + data.profile_picture.replace(/^\/+/, '');
+                        profileImg.classList.remove('hidden');
+                        icon.classList.add('hidden');
+                    }
+                    
+                    showMessage("Success", data.message);
+                    
+                    // Clear password fields
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-new-password').value = '';
+                    
+                } else {
+                    showMessage("Error", "Failed to update profile: " + data.message);
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                showMessage("Error", "Failed to save changes: " + error.message);
+            }
         }
 
-        function handleDelete() {
-            // Confirmation before deletion
+        async function handleDelete() {
             showMessage(
                 "Confirm Deletion", 
-                "Sigurado ka bang gusto mong tanggalin nang permanente ang iyong account? Hindi na ito mababawi.",
+                "Are you sure you want to delete your account permanently? This action cannot be undone.",
                 true,
-                () => {
-                    // Dito mo ilalagay ang DELETE API call.
-                    showMessage("Account Deleted", "Ang iyong account ay na-delete na. Salamat!", false);
-                    // Redirect to homepage/logout page
-                    // window.location.href = '/logout';
+                async () => {
+                    try {
+                        const response = await fetch('/raflora_enterprises/api/delete_account.php', {
+                            method: 'POST'
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            showMessage("Account Deleted", "Your account has been deleted successfully. Redirecting to homepage...");
+                            setTimeout(() => {
+                                window.location.href = '/raflora_enterprises/index.html';
+                            }, 2000);
+                        } else {
+                            showMessage("Error", "Failed to delete account: " + data.message);
+                        }
+                    } catch (error) {
+                        showMessage("Error", "Failed to delete account: " + error.message);
+                    }
                 }
             );
         }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load profile picture on page load
+            const profileImage = document.getElementById('profileImage');
+            if (profileImage.src && !profileImage.src.includes('account_settings.php')) {
+                const output = document.getElementById('profileImage');
+                const icon = document.getElementById('avatarIcon');
+                output.classList.remove('hidden');
+                icon.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>

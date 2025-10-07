@@ -59,42 +59,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (loginForm) {
-        loginForm.addEventListener('submit', function(event) {
+        loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            welcomeMessageLoginDiv.textContent = ''; // Clear previous message
             
-            fetch('../api/login.php', {
-                method: 'POST',
-                body: new FormData(this)
-            })
-            .then(response => {
-                 // Check if the response is a redirect (not always reliable, but good practice)
-                if (response.redirected) {
-                    window.location.href = response.url;
+            welcomeMessageLoginDiv.textContent = ''; // Clear previous message
+            welcomeMessageLoginDiv.style.color = 'red';
+            
+            try {
+                const response = await fetch('/raflora_enterprises/api/login.php', {
+                    method: 'POST',
+                    body: new FormData(this)
+                });
+                
+                // Get the response as text first
+                const responseText = await response.text();
+                
+                let data;
+                try {
+                    // Try to parse as JSON
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    throw new Error('Server returned invalid response. Please try again.');
                 }
-                // Always try to parse as JSON first
-                return response.json(); 
-            })
-            .then(data => {
+                
                 if (data.status === 'success') {
-                    welcomeMessageLoginDiv.textContent = 'Login successful!';
+                    welcomeMessageLoginDiv.textContent = 'Login successful! Redirecting...';
                     welcomeMessageLoginDiv.style.color = 'green';
                     setTimeout(() => {
                         window.location.href = data.redirect_url;
                     }, 1000);
                 } else {
-                    welcomeMessageLoginDiv.textContent = data.message;
+                    welcomeMessageLoginDiv.textContent = data.message || 'Login failed. Please try again.';
                     welcomeMessageLoginDiv.style.color = 'red';
-                    welcomeMessageLoginDiv.classList.add('show');
                     document.getElementById('password').value = '';
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                welcomeMessageLoginDiv.textContent = 'An error occurred. Please try again.';
+            } catch (error) {
+                welcomeMessageLoginDiv.textContent = error.message || 'An error occurred. Please try again.';
                 welcomeMessageLoginDiv.style.color = 'red';
-                welcomeMessageLoginDiv.classList.add('show');
-            });
+            }
         });
     }
 
@@ -106,8 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('registrationForm');
     const welcomeMessageRegDiv = document.getElementById('welcomeMessageRegister');
 
-    // NOTE: Removed feedbackDivReg references as it doesn't exist in the HTML.
-    // If you add a div for password strength feedback, you'll need to define it here.
     if (regPasswordInput) {
         regPasswordInput.addEventListener('keyup', function() {
             const password = this.value;
@@ -118,18 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (/[a-z]/.test(password)) { strength += 1; }
                 if (/[0-9]/.test(password)) { strength += 1; }
                 if (/[^A-Za-z0-9]/.test(password)) { strength += 1; }
-            }
-            // Add a password feedback div to your HTML and uncomment the lines below
-            // to re-enable this functionality.
-            const feedbackDivReg = document.getElementById('password-feedback');
-            if (feedbackDivReg) {
-                let feedback = '';
-                let className = '';
-                if (strength <= 2) { feedback = 'Weak'; className = 'weak'; }
-                else if (strength <= 4) { feedback = 'Medium'; className = 'medium'; }
-                else { feedback = 'Strong!'; className = 'strong'; }
-                feedbackDivReg.textContent = feedback;
-                feedbackDivReg.className = 'password-feedback ' + className;
             }
         });
     }
@@ -165,16 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Corrected: Use response.json() for a JSON response
-            fetch('../api/register.php', {
+            // Updated path for registration
+            fetch('/raflora_enterprises/api/register.php', {
                 method: 'POST',
                 body: new FormData(this)
             })
             .then(response => {
-                // Check if the response is a redirect or a JSON object
-                if (response.redirected) {
-                    window.location.href = response.url;
-                }
                 return response.json(); 
             })
             .then(data => {
@@ -227,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             const email = forgotEmailInput.value;
             if (email.trim() !== '') {
-                showCustomAlert('A password reset link has been sent to ' + email + '.');
                 Array.from(forgotPasswordForm.children).forEach(child => {
                     if (child.id !== 'forgotPasswordMessage' && child.tagName !== 'SPAN') {
                         child.style.display = 'none';
@@ -240,35 +223,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 forgotPasswordForm.style.height = 'auto';
                 forgotPasswordForm.style.paddingBottom = '50px';
             } else {
-                showCustomAlert('Please enter your email address.');
+                forgotPasswordMessageDiv.textContent = 'Please enter your email address.';
+                forgotPasswordMessageDiv.style.color = 'red';
+                forgotPasswordMessageDiv.classList.add('show');
             }
         });
-    }
-
-    function showCustomAlert(message) {
-        const overlay = document.createElement('div');
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        overlay.style.zIndex = '1000';
-        overlay.style.display = 'flex';
-        overlay.style.justifyContent = 'center';
-        overlay.style.alignItems = 'center';
-
-        // const modal = document.createElement('div');
-        // modal.style.backgroundColor = '#fff';
-        // modal.style.padding = '20px';
-        // modal.style.borderRadius = '8px';
-        // modal.style.textAlign = 'center';
-        // modal.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-        // modal.innerHTML = `
-        //     <p>${message}</p>
-        //     <button onclick="document.body.removeChild(this.parentNode.parentNode)">OK</button>
-        // `;
-        // overlay.appendChild(modal);
-        // document.body.appendChild(overlay);
     }
 });

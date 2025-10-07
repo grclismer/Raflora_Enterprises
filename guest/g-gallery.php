@@ -30,9 +30,9 @@
                 <i class="fas fa-bars"></i>
             </div>
             <ul class="nav-links">
-                <li><a href="../guest/g-home.html" class="nav-link">Home</a></li>
-                <li class="active"><a href="../guest/g-gallery.html" class="nav-link">Gallery</a></li>
-                <li><a href="../guest/g-about.html" class="nav-link">About</a></li>
+                <li><a href="../guest/g-home.php" class="nav-link">Home</a></li>
+                <li class="active"><a href="../guest/g-gallery.php" class="nav-link">Gallery</a></li>
+                <li><a href="../guest/g-about.php" class="nav-link">About</a></li>
                 <li><a href="../user/user_login.php" class="nav-link">Log-in</a></li>
             </ul>
         </nav>

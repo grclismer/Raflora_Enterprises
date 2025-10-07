@@ -1,6 +1,9 @@
 <?php
-session_start();
+// Turn off error display but log them
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
+session_start();
 header('Content-Type: application/json');
 
 $servername = "localhost";
@@ -13,7 +16,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-    echo json_encode(['status' => 'error', 'message' => "Connection failed: " . $conn->connect_error]);
+    echo json_encode(['status' => 'error', 'message' => "Database connection failed"]);
     exit();
 }
 
@@ -21,11 +24,23 @@ if ($conn->connect_error) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Get user input from the form
-    $loginUsername = $_POST['username'];
-    $loginPassword = $_POST['password'];
+    $loginUsername = $_POST['username'] ?? '';
+    $loginPassword = $_POST['password'] ?? '';
+
+    // Validate input
+    if (empty($loginUsername) || empty($loginPassword)) {
+        echo json_encode(['status' => 'error', 'message' => 'Username and password are required']);
+        exit();
+    }
 
     // Prepare a SQL statement to prevent SQL injection and fetch user type
     $stmt = $conn->prepare("SELECT user_id, user_name, password, role FROM accounts_tbl WHERE user_name = ?");
+    
+    if (!$stmt) {
+        echo json_encode(['status' => 'error', 'message' => "Database error"]);
+        exit();
+    }
+    
     $stmt->bind_param("s", $loginUsername);
     $stmt->execute();
     $stmt->store_result();
@@ -37,7 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Verify the password against the stored hash
         if (password_verify($loginPassword, $hashed_password)) {
-            // Check if the hash needs to be rehashed to a more secure algorithm/cost
+            
+            // Check if the hash needs to be rehashed
             if (password_needs_rehash($hashed_password, PASSWORD_DEFAULT)) {
                 $newHash = password_hash($loginPassword, PASSWORD_DEFAULT);
                 $update_stmt = $conn->prepare("UPDATE accounts_tbl SET password = ? WHERE user_id = ?");
@@ -55,28 +71,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Set cookie for "remember me" functionality
             if (isset($_POST['remember_me'])) {
                 setcookie('user_id', $user_id, time() + (86400 * 30), "/"); 
+                setcookie('username', $db_user_name, time() + (86400 * 30), "/");
             }
             
             // Return a JSON response with the redirection URL
             $redirect_url = '';
             if ($db_role === 'admin_type') {
-                $redirect_url = '../admin_dashboard/inventory.php';
+                $redirect_url = '/raflora_enterprises/admin_dashboard/inventory.php';
             } elseif ($db_role === 'client_type') {
-                $redirect_url = '../user/landing.php';
+                $redirect_url = '/raflora_enterprises/user/landing.php';
             } else {
-                $redirect_url = '../user/landing.php';
+                $redirect_url = '/raflora_enterprises/user/landing.php';
             }
+            
             echo json_encode(['status' => 'success', 'redirect_url' => $redirect_url]);
         } else {
             // Invalid password
-            echo json_encode(['status' => 'error', 'message' => 'Error: Invalid credentials.']);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid username or password.']);
         }
     } else {
         // User not found
-        echo json_encode(['status' => 'error', 'message' => 'Error: Invalid credentials.']);
+        echo json_encode(['status' => 'error', 'message' => 'Invalid username or password.']);
     }
 
     $stmt->close();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
 
 // Close the database connection

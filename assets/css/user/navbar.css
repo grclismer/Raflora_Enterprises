@@ -37,6 +37,8 @@
 .nav-links li:not(.active) a:hover {
     background-color: rgba(0, 0, 0, 0.781);
     color: white;
+    /* transition: background-color 0.5s;
+    transition: ease-in; */
     border-radius: 6%;
 }
 .nav-links li:not(.user-dropdown-toggle).active {
@@ -45,6 +47,7 @@
     font-size: 20px;
     padding: 16px 0px;
     border-radius: 6%;
+    
 }
 .nav-links li:not(.user-dropdown-toggle).active a {
     color: rgb(0, 0, 0); 
@@ -54,6 +57,7 @@
     position: relative;
     cursor: pointer;
     list-style: none;
+    transition: height 0.3s ease-in;
 }
 
 .user-icon {
