@@ -14,7 +14,26 @@ $current_user_id = $_SESSION['user_id'] ?? 0;
 
 $bookings = [];
 $error_message = null;
+// Profile Picture Database Connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "raflora_enterprises";
 
+// Create connection for profile picture
+$conn_profile = new mysqli($servername, $username, $password, $dbname);
+$user_data = [];
+
+if (!$conn_profile->connect_error && isset($_SESSION['user_id'])) {
+    // IMPORTANT: Include profile_picture in the query
+    $stmt = $conn_profile->prepare("SELECT user_name, profile_picture FROM accounts_tbl WHERE user_id = ?");
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc() ?? [];
+    $stmt->close();
+}
+$conn_profile->close();
 try {
     // UPDATED QUERY: Include reference_number
     $sql = "SELECT 
@@ -80,12 +99,27 @@ function format_price($price) {
             <li><a href="../user/landing.php" class="nav-link">Home</a></li>
             <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
             <li><a href="../user/about.php" class="nav-link">About</a></li>
-            <li class="active"><a href="../user/booking.php" class="nav-link">My Bookings</a></li>
+            <li class="active"><a href="../user/my_bookings.php" class="nav-link">My Bookings</a></li>
             <li class="user-dropdown-toggle">
-                <i class="fas fa-user-circle user-icon"></i>
+                <div class="navbar-profile">
+                    <?php if (!empty($user_data['profile_picture'])): ?>
+                        <!-- Profile picture with CSS class -->
+                        <img src="/raflora_enterprises/<?php echo ltrim($user_data['profile_picture'], '/'); ?>" 
+                            alt="Profile" 
+                            class="profile-picture profile-picture-small">
+                    <?php else: ?>
+                        <!-- Default icon with CSS class -->
+                        <div class="profile-default-icon">
+                            <i class="fa fa-user"></i>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <!-- Username (optional) -->
+                    <span class="navbar-username"><?php echo $user_data['user_name'] ?? 'User'; ?></span>
+                </div>
                 <ul class="user-dropdown-menu">
                     <li><a href="../user/account_settings.php">Account settings</a></li>
-                    <li><a href="../user/my_bookings.php">My Bookings</a></li>
+                    <li><a href="../user/booking.php">Book</a></li>
                     <li><a href="../api/logout.php">Log Out</a></li>
                 </ul>
             </li>

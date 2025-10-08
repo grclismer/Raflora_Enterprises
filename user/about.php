@@ -1,14 +1,30 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header("Location: ../user/user_login.html");
-    exit();
+// Database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "raflora_enterprises";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Check if user is an admin or client
-$is_admin = ($_SESSION['role'] === 'admin_type');
+if (!$conn->connect_error && isset($_SESSION['user_id'])) {
+    // IMPORTANT: Include profile_picture in the query
+    $stmt = $conn->prepare("SELECT user_name, profile_picture FROM accounts_tbl WHERE user_id = ?");
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc() ?? [];
+    $stmt->close();
+}
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +60,22 @@ $is_admin = ($_SESSION['role'] === 'admin_type');
                 <li class="active"><a href="../user/about.php" class="nav-link">About</a></li>
                 <li><a href="../user/booking.php" class="nav-link">Book</a></li>
                 <li class="user-dropdown-toggle">
-                    <i class="fas fa-user-circle user-icon"></i>
+                    <div class="navbar-profile">
+                        <?php if (!empty($user_data['profile_picture'])): ?>
+                            <!-- Profile picture with CSS class -->
+                            <img src="/raflora_enterprises/<?php echo ltrim($user_data['profile_picture'], '/'); ?>" 
+                                alt="Profile" 
+                                class="profile-picture profile-picture-small">
+                        <?php else: ?>
+                            <!-- Default icon with CSS class -->
+                            <div class="profile-default-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <!-- Username (optional) -->
+                        <span class="navbar-username"><?php echo $user_data['user_name'] ?? 'User'; ?></span>
+                    </div>
                     <ul class="user-dropdown-menu">
                         <li><a href="../user/account_settings.php">Account settings</a></li>
                         <li><a href="../user/my_bookings.php">My Bookings</a></li>

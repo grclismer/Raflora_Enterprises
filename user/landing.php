@@ -15,15 +15,16 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get user data including profile picture
-if (isset($_SESSION['user_id'])) {
+if (!$conn->connect_error && isset($_SESSION['user_id'])) {
+    // IMPORTANT: Include profile_picture in the query
     $stmt = $conn->prepare("SELECT user_name, profile_picture FROM accounts_tbl WHERE user_id = ?");
     $stmt->bind_param("i", $_SESSION['user_id']);
     $stmt->execute();
     $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    $user_data = $result->fetch_assoc() ?? [];
     $stmt->close();
 }
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +32,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raflora Enterprises</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <script src="../assets/js/user/dark_mode.js"></script> 
     <link rel="stylesheet" href="../assets/css/user/landing.css">
     <link rel="stylesheet" href="../assets/css/user/footer.css">
@@ -58,21 +59,22 @@ if (isset($_SESSION['user_id'])) {
                 <li><a href="../user/booking.php" class="nav-link">Book</a></li>
                 <div class="user-dropdown-toggle">
                     <div class="flex items-center">
-    <?php if (!empty($user_data['profile_picture'])): ?>
-        <?php 
-        $clean_path = ltrim($user_data['profile_picture'], '/');
-        $image_path = '/Raflora_Enterprises/' . $clean_path;
-        ?>
-        <img src="<?php echo $image_path; ?>" 
-             alt="Profile" 
-             class="w-8 h-8 rounded-full object-cover border-2 border-white">
-    <?php else: ?>
-        <div class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center border-2 border-white">
-            <i class="fa fa-user text-white text-sm"></i>
-        </div>
-    <?php endif; ?>
-    <span class="ml-2 text-white font-medium"><?php echo $user_data['user_name'] ?? 'User'; ?></span>
-</div>
+                    <div class="navbar-profile">
+                        <?php if (!empty($user_data['profile_picture'])): ?>
+                            <!-- Profile picture with CSS class -->
+                            <img src="/raflora_enterprises/<?php echo ltrim($user_data['profile_picture'], '/'); ?>" 
+                                alt="Profile" 
+                                class="profile-picture profile-picture-small">
+                        <?php else: ?>
+                            <!-- Default icon with CSS class -->
+                            <div class="profile-default-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <!-- Username (optional) -->
+                        <span class="navbar-username"><?php echo $user_data['user_name'] ?? 'User'; ?></span>
+                    </div>
                     <ul class="user-dropdown-menu">
                         <li><a href="../user/account_settings.php">Account settings</a></li>
                         <li><a href="../user/my_bookings.php">My Bookings</a></li>
@@ -157,6 +159,5 @@ if (isset($_SESSION['user_id'])) {
                 </div>
         </footer>
     </div> 
-    <script src="./js/script.js"></script>
 </body>
 </html>

@@ -8,14 +8,8 @@
     <link rel="stylesheet" href="../assets/css/user/footer.css">
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
     <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
-    <!-- 1. TAILWIND CSS CDN (CRITICAL for dark mode classes) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. DARK MODE CONFIGURATION + LOGIC (Nasa iisang JS file na dapat ang config at functions) -->
-    <!-- I-check kung tama ang path na ito: ../assets/js/user/dark_mode.js -->
-    <!-- Inalis ang 'defer' para iwas conflict -->
     <script src="../assets/js/user/dark_mode.js"></script> 
-<!-- Font Awesome link na stable (6.4.0) -->
     <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 

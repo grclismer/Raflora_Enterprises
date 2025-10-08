@@ -141,11 +141,11 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
         </div>
 
         <div style="margin-top: 20px;">
-            <label style="display:block; margin-bottom:8px;"><input type="checkbox" checked> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></label>
-            <label style="display:block; margin-bottom:12px;"><input type="checkbox" checked> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></label>
+            <label style="display:block; margin-bottom:8px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></label>
+            <label style="display:block; margin-bottom:12px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></label>
 
-            <button class="proceed-btn" onclick="window.print()" style="display:block; width:80%; margin-top:10px;">Proceed</button>
-
+            <!-- <button class="proceed-btn" onclick="window.print()" style="display:block; width:80%; margin-top:10px;">Proceed</button> -->
+            <button class="proceed-btn" href="../user/my_bookings.php">Proceed</button>
             <!-- Buttons / Status area (kept same conditions as original) -->
             <?php if ($booking['booking_status'] == 'PENDING_ORDER_CONFIRMATION'): ?>
                 <button class="submit-payment-btn" onclick="openPaymentModal()" style="margin-top:12px; width:80%;">Submit Payment Reference</button>
@@ -181,7 +181,7 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
     <main class="billing-right" style="flex:1; height:100vh; overflow:auto; background:#fafafa;">
         <div class="summary-header" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
             <div style="display:flex; align-items:center; gap:12px;">
-                <img src="../assets/img/raflora_logo.png" alt="RAFLORA Logo" style="height:48px;">
+                <img src="../assets/images/logo/raflora-logo.jpg" alt="RAFLORA Logo" style="height:48px;">
                 <h2 style="margin:0; font-size:22px;">Summary of deliverables</h2>
             </div>
 
@@ -259,9 +259,9 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
             <p style="color:#333; margin:0;"><?php echo nl2br(htmlspecialchars($booking['recommendations'])); ?></p>
         </div>
 
-        <div style="margin-top:22px; text-align:center;">
+        <!-- <div style="margin-top:22px; text-align:center;">
             <button class="proceed-btn" onclick="window.print()" style="padding:12px 24px; border-radius:8px;">Print Receipt</button>
-        </div>
+        </div> -->
 
     </main>
 
