@@ -201,11 +201,11 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                             <label for="event-schedule">Event Schedule</label>
                             <div class="date-time-group">
                                 <div class="date-field">
-                                    <img src="../assets/images//icon/calendar.png" alt="Calendar icon">
+                                    <!-- <img src="../assets/images//icon/calendar.png" alt="Calendar icon"> -->
                                     <input type="date" name="event_date" id="event-date" required>
                                 </div>
                                 <div class="time-field">
-                                    <img src="../assets/images//icon/clock.png" alt="Clock icon">
+                                    <!-- <img src="../assets/images//icon/clock.png" alt="Clock icon"> -->
                                     <input type="time" name="event_time" id="event-time" required>
                                 </div>
                             </div>

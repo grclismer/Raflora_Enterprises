@@ -14,28 +14,35 @@
         </div>
         <ul class="sidebar-menu">
             <li>
-                <span class="icon"><img src="../assets/images/icon/tools_equipment.png" alt="inventory"></span>
-                <span><a href="../admin_dashboard/inventory.php">Tools and Equipment</span></a>
+                <a href="../admin_dashboard/inventory.php" class="list-item-link">
+                    <span class="icon"><img src="../assets/images/icon/tools_equipment.png" alt="inventory"></span>
+                    <span class="text">Tools and Equipment</span>
+                </a>
             </li>
             <li>
-                <span class="icon"><img src="../assets/images/icon/client_updates.png" alt="client updates"></span>
-                <a href="../admin_dashboard/update.php"><span>Client updates</span></a>
+                <a href="../admin_dashboard/update.php" class="list-item-link">
+                    <span class="icon"><img src="../assets/images/icon/client_updates.png" alt="client updates"></span>
+                    <span class="text">Client updates</span>
+                </a>
             </li>
             <li class="active">
-                <span class="icon"><img src="../assets/images/icon/invoice.png" alt="invoice"></span>
-                <span><a href="../admin_dashboard/invoice.php">Invoice</span></a>
+                <a href="../admin_dashboard/invoice.php" class="list-item-link">
+                    <span class="icon"><img src="../assets/images/icon/invoice.png" alt="invoice"></span>
+                    <span class="text">Invoice</span>
+                </a>
             </li>
             <li>
-                <span class="icon"><img src="../assets/images/icon/perfo_analy.png" alt="perforamance analytics"></span>
-                <span><a href="../admin_dashboard/analytics.php">Performance Analytics</span></a>
-                
+                <a href="../admin_dashboard/analytics.php" class="list-item-link">
+                    <span class="icon"><img src="../assets/images/icon/perfo_analy.png" alt="performance analytics"></span>
+                    <span class="text">Performance Analytics</span>
+                </a>
             </li>
         </ul>
     </div>
 
     <div class="main-content">
         <div class="header">
-            <h1>Inventory and Event Management</h1>
+            <h1>Sales Invoice</h1>
             <button class="logout-btn"><a href="../api/logout.php">Log-out</button></a>
         </div>
 

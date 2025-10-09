@@ -6,7 +6,6 @@
     <title>Login / Register</title>
     <link rel="stylesheet" href="../assets/css/user/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
-    <!-- Re-added the JavaScript link to enable the form functionality -->
     <script src="../assets/js/user/login.js" defer></script>
 </head>
 <body>

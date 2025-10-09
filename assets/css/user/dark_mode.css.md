@@ -19,32 +19,33 @@ body {
              transition: background-color 0.5s;
         }
 /* Ensure icon pointers don't interfere with clicks */
-.form-group-icon i {
-    pointer-events: none;
-}
-#dark-mode-icon-toggle {
+/* Dark Mode Toggle */
+.dark-mode-toggle {
     position: fixed;
+    top: 6rem;
+    right: 2rem;
+    background: #1f2937;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 40%;
-    width: 46px;
-    height: 60px;
-    top: 2rem; /* Inilipat pababa para di magdikit sa Navbar */
-    left: 5rem; 
-    padding: 0.75rem;
-    border-radius: 9999px; 
-    font-size: 1.5rem;
-    transition: background-color 0.3s;
-    z-index: 9999; 
-    outline: none;
-    cursor: pointer; 
-    background-color:transparent; 
-    border: none;
+    font-size: 1.25rem;
+    z-index: 999;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
 
-    
-    
-    
+.dark-mode-toggle:hover {
+    background: #374151;
+    transform: scale(1.1);
+}
+.form-group-icon i {
+    pointer-events: none;
 }
 #dark-mode-icom{
     color: #2563eb;

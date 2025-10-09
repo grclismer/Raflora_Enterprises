@@ -98,7 +98,7 @@ function format_price($price) {
         <ul class="nav-links">
             <li><a href="../user/landing.php" class="nav-link">Home</a></li>
             <li><a href="../user/gallery.php" class="nav-link">Gallery</a></li>
-            <li><a href="../user/about.php" class="nav-link">About</a></li>
+            <li><a href="../user/about.php" class="nav-link">About</a></li> 
             <li class="active"><a href="../user/my_bookings.php" class="nav-link">My Bookings</a></li>
             <li class="user-dropdown-toggle">
                 <div class="navbar-profile">

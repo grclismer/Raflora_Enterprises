@@ -84,11 +84,10 @@ $conn->close();
                 </li>
             </ul>
         </nav>
-        <button id="dark-mode-icon-toggle" 
+        <!-- <button id="dark-mode-icon-toggle" 
             class="fixed top-4 left-4 p-3 rounded-full text-2xl transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-800 z-[9999] focus:outline-none">
-        <!-- CRITICAL: Ang JS ang magse-set ng Moon o Sun icon base sa current state -->
         <i id="dark-mode-icon" class="fa-solid fa-moon text-blue-600 dark:text-yellow-400"></i>
-        </button>
+        </button> -->
         <div class="About-Info">
             <div class="profile-section">
                 <div class="profile-content">

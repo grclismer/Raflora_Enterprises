@@ -9,33 +9,41 @@
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <div class="logo">
-            <img src="../assets/images/logo/raflora-logo.jpg" alt="raflora logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li class="active">
-                <span class="icon"><img src="../assets/images/icon/tools_equipment.png" alt="inventory"></span>
-                <span><a href="../admin_dashboard/inventory.php">Tools and Equipment</a></span>
-            </li>
-            <li>
-                <span class="icon"><img src="../assets/images/icon/client_updates.png" alt="client updates"></span>
-                <a href="../admin_dashboard/update.php"><span>Client updates</span></a>
-            </li>
-            <li>
-                <span class="icon"><img src="../assets/images/icon/invoice.png" alt="invoice"></span>
-                <span><a href="../admin_dashboard/invoice.php">Invoice</a></span>
-            </li>
-            <li>
-                <span class="icon"><img src="../assets/images/icon/perfo_analy.png" alt="performance analytics"></span>
-                <span><a href="../admin_dashboard/analytics.php">Performance Analytics</a></span>
-            </li>
-        </ul>
+    <div class="logo">
+        <img src="../assets/images/logo/raflora-logo.jpg" alt="raflora logo">
     </div>
+    <ul class="sidebar-menu">
+        <li class="active">
+            <a href="../admin_dashboard/inventory.php" class="list-item-link">
+                <span class="icon"><img src="../assets/images/icon/tools_equipment.png" alt="inventory"></span>
+                <span class="text">Tools and Equipment</span>
+            </a>
+        </li>
+        <li>
+            <a href="../admin_dashboard/update.php" class="list-item-link">
+                <span class="icon"><img src="../assets/images/icon/client_updates.png" alt="client updates"></span>
+                <span class="text">Client updates</span>
+            </a>
+        </li>
+        <li>
+            <a href="../admin_dashboard/invoice.php" class="list-item-link">
+                <span class="icon"><img src="../assets/images/icon/invoice.png" alt="invoice"></span>
+                <span class="text">Invoice</span>
+            </a>
+        </li>
+        <li>
+            <a href="../admin_dashboard/analytics.php" class="list-item-link">
+                <span class="icon"><img src="../assets/images/icon/perfo_analy.png" alt="performance analytics"></span>
+                <span class="text">Performance Analytics</span>
+            </a>
+        </li>
+    </ul>
+</div>
 
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1>Inventory and Event Management</h1>
+            <h1>Tools and Equipment</h1>
             <button class="logout-btn"><a href="../api/logout.php">Log-out</a></button>
         </div>
 

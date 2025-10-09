@@ -127,13 +127,16 @@
 }
 
 .profile-picture-small {
-    width: 32px;
-    height: 32px;
+    width: 55px;
+    height: 55px;
 }
 
 .profile-picture-large {
     width: 48px;
     height: 48px;
+}
+.navbar-username{
+    display: none ;
 }
 
 .profile-default-icon {
@@ -276,6 +279,13 @@
         text-align: center;
         box-shadow: none;
         border: none;
+    }
+    .profile-picture-small {
+    width: 40px;
+    height: 40px;
+    }
+    .navbar-username{
+    display: flex ;
     }
     
 }

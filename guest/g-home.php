@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../assets/css/user/footer.css">
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
     <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <script src="../assets/js/user/dark_mode.js"></script> 
     <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -31,11 +31,10 @@
 
             </ul>
         </nav>
-        <button id="dark-mode-icon-toggle" 
+        <!-- <button id="dark-mode-icon-toggle" 
             class="fixed top-4 left-4 p-3 rounded-full text-2xl transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-800 z-[9999] focus:outline-none">
-        <!-- CRITICAL: Ang JS ang magse-set ng Moon o Sun icon base sa current state -->
         <i id="dark-mode-icon" class="fa-solid fa-moon text-blue-600 dark:text-yellow-400"></i>
-        </button>
+        </button> -->
         <div class="Landing-page">
             <div class="Home-bg">
                 <h1>Raflora Enterprises</h1>
