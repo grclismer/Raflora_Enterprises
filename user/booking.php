@@ -109,14 +109,15 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
     <link rel="stylesheet" href="../assets/css/user/booking.css">
     <link rel="stylesheet" href="../assets/css/user/footer.css">
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
-    <script src="../assets/js/user/navbar.js"></script>
-    <SCRipt src="../assets/js/user/booking" defer></SCRipt>
+    <script src="../assets/js/user/navbar.js" defer></script>
+    <script src="../assets/js/user/booking.js" defer ></script>
+    <script src="../assets/js/user/modal.js" defer ></script>
 
 
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 
@@ -251,7 +252,7 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                         </div>
                     </div>
                     
-                    <div class="payment-selection">
+                    <!-- <div class="payment-selection">
                         <label for="payment-method">Payment Method</label>
                         <select id="payment-method" name="payment_method" required>
                             <option value="">Select payment method</option>
@@ -283,13 +284,18 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                                 <input type="radio" name="payment_type" value="Full Payment"required> Full Payment (100%)
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-action">
                         <button type="submit" class="submit-button" name="place_order_btn">Place order</button>
                     </div>
+                    <label style="display:block; margin-bottom:8px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></label>
+            <label style="display:block; margin-bottom:12px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></label>
+
                 </form>
             </div>
+            
         </div>
+        
     </div>
     
     <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
@@ -299,24 +305,109 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                     <h5 class="modal-title" id="paymentModalLabel">Payment Confirmation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="../config/client_booking.php" method="POST" id="referenceForm">
+                <form action="../config/client_booking.php" method="POST" id="referenceForm" onsubmit="return validatePaymentForm()">
                     <div class="modal-body">
                         <div class="alert alert-info" role="alert">
-                            Please pay the required amount to get the **Reference code**.
+                            Please pay the required amount to get the <strong>Reference code</strong>.
                         </div>
-                        <p>Order ID: <strong id="modal-order-id"><?php echo $orderId; ?></strong></p>
-                        <p>Amount Due Now: <strong class="text-xl text-success"><?php echo $formattedAmount; ?></strong></p>
-                        <p>You are paying via: <strong id="modal-payment-method"><?php echo $paymentMethod; ?></strong></p>
-                        <p>Specific Channel: <strong id="modal-specific-details"><?php echo $specificDetails; ?></strong></p>
-                        <p>Payment type: <strong id="modal-payment-type"><?php echo $paymentType; ?></strong></p>
                         
-                        <input type="hidden" name="order_id_value" id="modal-order-id-input" value="<?php echo $orderId; ?>">
+                        <p><strong>Order ID:</strong> <span id="modal-order-id"><?php echo $orderId; ?></span></p>
+                        <p><strong>Package Price:</strong> <span id="package-price" class="text-info"><?php echo $formattedAmount; ?></span></p>
+                        <p><strong>Amount Due Now:</strong> <span id="amount-due-now" class="text-xl text-success"><?php echo $formattedAmount; ?></span></p>
                         
-                        <input type="hidden" name="payment_details" value="<?php echo $specificDetails; ?>"> 
-
+                        <!-- Store the total price in a hidden field for calculation -->
+                        <input type="hidden" id="total-package-price" value="<?php echo $amountDue; ?>">
+                        
+                        <!-- COMPACT PAYMENT SELECTION - SIDE BY SIDE -->
+                        <div class="payment-row" style="display: flex; gap: 15px; margin-bottom: 20px;">
+                            <div style="flex: 1; position: relative;">
+                                <label for="payment-method-modal" class="form-label required-field">
+                                    Payment Method 
+                                    <span class="required-indicator">*</span>
+                                </label>
+                                <select id="payment-method-modal" name="payment_method" class="form-control payment-field" required style="width: 100%;">
+                                    <option value="">Select method</option>
+                                    <option value="Online Bank">Online Bank</option>
+                                    <option value="E-Wallet">E-Wallet</option>
+                                </select>
+                                <div class="field-error" id="method-error" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Please select a payment method</span>
+                                </div>
+                            </div>
+                            <div style="flex: 1; position: relative;">
+                                <label for="payment-details-select" class="form-label required-field">
+                                    Payment Channel 
+                                    <span class="required-indicator">*</span>
+                                </label>
+                                <select name="payment_details" id="payment-details-select" class="form-control payment-field" style="width: 100%; display: none;">
+                                    <option value="">Select channel</option>
+                                </select>
+                                <input type="text" name="custom_payment_channel" id="custom-payment-channel" 
+                                    class="form-control payment-field" placeholder="Enter payment channel name" 
+                                    style="width: 100%; display: none;">
+                                <div id="payment-channel-placeholder" style="color: #6c757d; font-style: italic; padding: 8px 0;">
+                                    Select method first
+                                </div>
+                                <div class="field-error" id="channel-error" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Please select or enter a payment channel</span>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="mb-3">
-                            <label for="referenceCode" class="form-label">Reference ID/Code</label>
-                            <input type="text" class="form-control" name="reference_code" id="referenceCode" required placeholder="Enter your Payment Reference code"/>
+                            <label class="form-label required-field">
+                                Payment Type 
+                                <span class="required-indicator">*</span>
+                            </label>
+                            <div style="display: flex; gap: 20px;">
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="radio" name="payment_type" value="Down Payment" required checked class="payment-field payment-type-radio" data-type="down" />
+                                    <span>Down Payment (50%)</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="radio" name="payment_type" value="Full Payment" required class="payment-field payment-type-radio" data-type="full" />
+                                    <span>Full Payment (100%)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="order_id_value" id="modal-order-id-input" value="<?php echo $orderId; ?>">
+
+                        <div class="mb-3" style="position: relative;">
+                            <label for="referenceCode" class="form-label required-field">
+                                Reference ID/Code 
+                                <span class="required-indicator">*</span>
+                                <span class="payment-guide-icon" id="paymentGuideIcon">
+                                    <i class="fas fa-info-circle"></i>
+                                </span>
+                            </label>
+                            <input type="text" class="form-control payment-field" name="reference_code" id="referenceCode" required 
+                                placeholder="Enter your 12-30 digit Reference code" 
+                                minlength="12" maxlength="30"
+                                pattern="[A-Za-z0-9]{12,30}"
+                                title="Reference code must be 12-30 characters (letters and numbers only)"
+                                style="width: 100%;">
+                            <div class="field-error" id="reference-error" style="display: none;">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Reference code must be 12-30 characters (letters and numbers only)</span>
+                            </div>
+                            
+                            <!-- Payment Guide Tooltip -->
+                            <div class="payment-guide-tooltip" id="paymentGuideTooltip">
+                                <h6>💡 How to Pay via <span id="guide-channel">Your Selected Bank</span>:</h6>
+                                <div id="payment-instructions">
+                                    Please select a payment method to see instructions.
+                                </div>
+                                <p><strong>Reference Code Requirements:</strong></p>
+                                <ul>
+                                    <li>12-30 characters long</li>
+                                    <li>Letters and numbers only</li>
+                                    <li>No spaces or special characters</li>
+                                </ul>
+                                <p><strong>Need help?</strong> Contact: support@raflora.com</p>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -1,8 +1,18 @@
 <?php
-// FILE: config/submit_reference.php (Bagong file para sa Reference Code)
-
 session_start();
-require_once('db.php'); 
+
+// Database configuration
+$db_host = 'localhost'; 
+$db_name = 'raflora_enterprises';
+$db_user = 'root'; 
+$db_pass = '';
+
+// Connect to database
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset($_POST['reference_code'])) {
     
@@ -11,24 +21,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
     
     if ($order_id && !empty($referenceCode) && isset($_SESSION['user_id'])) {
         
-        // Update the booking with the reference code and change status to PENDING
-        $sql = "UPDATE bookings SET reference_code = ?, status = 'PENDING' WHERE booking_id = ? AND user_id = ?";
+        $sql = "UPDATE booking_tbl SET 
+                reference_number = ?, 
+                booking_status = 'PENDING_PAYMENT_VERIFICATION' 
+                WHERE booking_id = ? AND user_id = ?";
+        
         $stmt = $conn->prepare($sql);
+        if ($stmt === false) {
+            $conn->close();
+            die("Prepare failed: " . htmlspecialchars($conn->error));
+        }
+        
         $stmt->bind_param("sii", $referenceCode, $order_id, $_SESSION['user_id']);
         
         if ($stmt->execute()) {
-            // Success! Ibalik sa receipt page (may order_id pa rin)
-            header("Location: ../user/booking.php?order_id=" . $order_id . "&ref_submitted=success");
+            $stmt->close();
+            $conn->close();
+            header("Location: ../user/billing.php?order_id=" . $order_id . "&ref_submitted=success");
             exit();
         } else {
-            die("Error updating reference: " . htmlspecialchars($stmt->error));
+            $error = $stmt->error;
+            $stmt->close();
+            $conn->close();
+            die("Error updating reference: " . htmlspecialchars($error));
         }
-
-        // $stmt->close();
+    } else {
+        $conn->close();
+        header("Location: ../user/booking.php?error=invalid_data");
+        exit();
     }
+} else {
+    $conn->close();
+    header("Location: ../user/booking.php?error=invalid_request");
+    exit();
 }
 
-// Bumalik sa booking page kung may error o walang data
-header("Location: ../user/booking.php?error=ref_failed");
-exit();
+// This should never be reached, but just in case
+$conn->close();
 ?>

@@ -25,9 +25,38 @@ if (empty($_POST['firstname']) || empty($_POST['lastname']) || empty($_POST['ema
 
 $userId = $_SESSION['user_id'] ?? 7;
 
+// Function to delete profile picture file
+function deleteProfilePictureFile($filePath) {
+    if (!empty($filePath)) {
+        $fullPath = '../' . ltrim($filePath, '/');
+        if (file_exists($fullPath) && is_file($fullPath)) {
+            if (unlink($fullPath)) {
+                error_log("Deleted old profile picture: " . $fullPath);
+                return true;
+            } else {
+                error_log("Failed to delete old profile picture: " . $fullPath);
+            }
+        }
+    }
+    return false;
+}
+
 // Handle profile picture upload if provided
 $profilePicturePath = null;
+
 if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === 0) {
+    // First, get the current profile picture to delete it later
+    $oldPicturePath = null;
+    $stmt = $conn->prepare("SELECT profile_picture FROM accounts_tbl WHERE user_id = ?");
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        $oldPicturePath = $user['profile_picture'];
+    }
+    $stmt->close();
+
     $uploadDir = '../uploads/profile_pictures/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
@@ -44,8 +73,12 @@ if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] ===
         $filePath = $uploadDir . $fileName;
         
         if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $filePath)) {
-            // CORRECT PATH: This should be the web-accessible path
             $profilePicturePath = 'uploads/profile_pictures/' . $fileName;
+            
+            // Delete the OLD profile picture file after successful upload
+            if ($oldPicturePath && $oldPicturePath !== $profilePicturePath) {
+                deleteProfilePictureFile($oldPicturePath);
+            }
         }
     }
 }

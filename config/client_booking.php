@@ -16,26 +16,89 @@ if ($conn->connect_error) {
 }
 
 // =======================================================
-// SCENARIO A: REFERENCE CODE SUBMISSION (From billing.php modal)
+// SCENARIO A: REFERENCE CODE SUBMISSION (From modal)
 // =======================================================
 if (isset($_POST['submit_reference_from_modal']) && isset($_POST['order_id_value']) && isset($_POST['reference_code'])) {
+    
     $orderId = intval($_POST['order_id_value']);
     $referenceCode = trim($_POST['reference_code']);
     
-    // Update the database
+    // GET PAYMENT DATA FROM MODAL - USE ACTUAL VALUES
+    $paymentMethod = trim($_POST['payment_method'] ?? '');
+    $paymentDetails = trim($_POST['payment_details'] ?? '');
+    $paymentType = trim($_POST['payment_type'] ?? 'Down Payment'); // This should be from the form
+    
+    // Debug: Check what payment type we're receiving
+    error_log("Payment Type Received: " . $paymentType);
+    
+    // If custom payment channel is used
+    if (isset($_POST['custom_payment_channel']) && !empty(trim($_POST['custom_payment_channel']))) {
+        $paymentDetails = trim($_POST['custom_payment_channel']);
+    }
+    
+    // Validate that payment method data exists
+    if (empty($paymentMethod)) {
+        die("Error: Payment Method is required");
+    }
+    
+    if (empty($paymentDetails)) {
+        die("Error: Payment Channel is required");
+    }
+    
+    // Calculate correct amount due based on ACTUAL payment type
+    $totalPrice = 0;
+    $amountDue = 0;
+    
+    // First, get the total price from the booking
+    $priceSql = "SELECT total_price FROM booking_tbl WHERE booking_id = ?";
+    $priceStmt = $conn->prepare($priceSql);
+    $priceStmt->bind_param("i", $orderId);
+    $priceStmt->execute();
+    $priceResult = $priceStmt->get_result();
+    
+    if ($priceRow = $priceResult->fetch_assoc()) {
+        $totalPrice = (float)$priceRow['total_price'];
+        
+        // Calculate amount due based on ACTUAL selected payment type
+        if ($paymentType === 'Full Payment') {
+            $amountDue = $totalPrice; // 100%
+            error_log("Full Payment selected - Amount Due: " . $amountDue);
+        } else {
+            $amountDue = $totalPrice * 0.50; // Down Payment 50%
+            error_log("Down Payment selected - Amount Due: " . $amountDue);
+        }
+    }
+    $priceStmt->close();
+    
+    // Update the database with CORRECT payment information
     $sql = "UPDATE booking_tbl SET 
+            payment_method = ?,
+            payment_details = ?,
+            payment_type = ?,
             reference_number = ?, 
+            amount_due = ?,
             booking_status = 'PENDING_PAYMENT_VERIFICATION' 
             WHERE booking_id = ?";
     
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $referenceCode, $orderId);
+    $stmt->bind_param("ssssdi", 
+        $paymentMethod, 
+        $paymentDetails, 
+        $paymentType, 
+        $referenceCode, 
+        $amountDue, 
+        $orderId
+    );
     
     if ($stmt->execute()) {
         $stmt->close();
         $conn->close();
+        
+        // Debug success
+        error_log("Payment reference updated successfully - Type: " . $paymentType . ", Amount: " . $amountDue);
+        
         // Redirect back to billing page
-        header("Location: ../user/billing.php?order_id=$orderId");
+        header("Location: ../user/billing.php?order_id=$orderId&payment_success=1");
         exit();
     } else {
         die("Error updating reference: " . $stmt->error);
@@ -62,7 +125,7 @@ if (isset($_POST['place_order_btn'])) {
     $paymentMethod = trim($_POST['payment_method'] ?? '');
     $paymentDetails = trim($_POST['payment_details'] ?? 'Not Applicable'); 
 
-    $paymentType = trim($_POST['payment_type'] ?? 'Down Payment');
+    $paymentType = trim($_POST['payment_type'] ?? '');
     $bookingStatus = 'PENDING_ORDER_CONFIRMATION';
 
     $totalPrice = 0.0;
