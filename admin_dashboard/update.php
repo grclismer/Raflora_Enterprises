@@ -120,7 +120,10 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Updates</title>
     <link rel="stylesheet" href="../assets/css/admin/admin_dashboard.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="../assets/css/admin/client_updates.css">
+=======
+>>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     <style>
         /* Additional styles for client management */
         .search-box { 

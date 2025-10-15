@@ -109,6 +109,12 @@ if (isset($_POST['submit_reference_from_modal']) && isset($_POST['order_id_value
 // SCENARIO B: NEW BOOKING SUBMISSION (From booking.php form)
 // =======================================================
 if (isset($_POST['place_order_btn'])) {
+<<<<<<< HEAD
+=======
+    // YOUR ORIGINAL NEW BOOKING CODE GOES HERE
+    // (Keep all your existing code for new bookings)
+    
+>>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     // 1. Data Sanitization and Retrieval
     $fullName = trim($_POST['full_name'] ?? '');
     $mobileNumber = trim($_POST['mobile_number'] ?? ''); 
@@ -121,6 +127,10 @@ if (isset($_POST['place_order_btn'])) {
     $packages = trim($_POST['packages'] ?? '');
     $paymentMethod = trim($_POST['payment_method'] ?? '');
     $paymentDetails = trim($_POST['payment_details'] ?? 'Not Applicable'); 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     $paymentType = trim($_POST['payment_type'] ?? '');
     $bookingStatus = 'PENDING_ORDER_CONFIRMATION';
 
@@ -128,13 +138,19 @@ if (isset($_POST['place_order_btn'])) {
     $amountDue = 0.0;
     $designDocumentPath = 'assets/uploads/default.jpg'; 
 
+<<<<<<< HEAD
     // 2. Fetch Package Price and Package ID - FIXED HERE
     $sqlPrice = "SELECT package_id, fixed_price FROM package_details_tbl WHERE package_name = ? AND event_type = ?";
+=======
+    // 2. Fetch Package Price
+    $sqlPrice = "SELECT fixed_price FROM package_details_tbl WHERE package_name = ? AND event_type = ?";
+>>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     $stmtPrice = $conn->prepare($sqlPrice);
     $stmtPrice->bind_param("ss", $packages, $eventTheme);
     $stmtPrice->execute();
     $resultPrice = $stmtPrice->get_result();
     
+<<<<<<< HEAD
     $packageId = null;
     if ($row = $resultPrice->fetch_assoc()) {
         $totalPrice = (float)$row['fixed_price'];
@@ -147,6 +163,13 @@ if (isset($_POST['place_order_btn'])) {
         die("Error: Invalid package selected. Please choose a valid package.");
     }
 
+=======
+    if ($row = $resultPrice->fetch_assoc()) {
+        $totalPrice = (float)$row['fixed_price'];
+    }
+    $stmtPrice->close();
+
+>>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     // 3. Calculate Amount Due
     if ($paymentType === 'Full Payment') {
         $amountDue = $totalPrice;
@@ -171,6 +194,7 @@ if (isset($_POST['place_order_btn'])) {
         }
     }
 
+<<<<<<< HEAD
     // 5. Insert Booking into Database - FIXED: Added package_id
     $sql = "INSERT INTO booking_tbl (user_id, package_id, full_name, mobile_number, email, address, event_theme, packages, design_document_path, event_date, event_time, recommendations, payment_method, payment_details, payment_type, total_price, amount_due, booking_status, reference_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)";
  
@@ -178,6 +202,14 @@ if (isset($_POST['place_order_btn'])) {
     $stmt->bind_param("iisssssssssssssdds", 
         $_SESSION['user_id'], 
         $packageId, // ADDED: Valid package_id
+=======
+    // 5. Insert Booking into Database 
+    $sql = "INSERT INTO booking_tbl (user_id, full_name, mobile_number, email, address, event_theme, packages, design_document_path, event_date, event_time, recommendations, payment_method, payment_details, payment_type, total_price, amount_due, booking_status, reference_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)";
+ 
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isssssssssssssdds", 
+        $_SESSION['user_id'], 
+>>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
         $fullName, 
         $mobileNumber, 
         $email, 
@@ -205,10 +237,13 @@ if (isset($_POST['place_order_btn'])) {
         header("Location: ../user/booking.php?order_id={$orderId}&payment_method={$paymentMethod}&payment_type={$paymentType}&amount_due={$amountDue}&payment_details={$paymentDetails}");
         exit();
     } else {
+<<<<<<< HEAD
         // Enhanced error logging
         error_log("Database Error: " . $stmt->error);
         error_log("Package ID used: " . $packageId);
         error_log("User ID: " . $_SESSION['user_id']);
+=======
+>>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
         die("Error during booking submission: " . $stmt->error);
     }
 }
