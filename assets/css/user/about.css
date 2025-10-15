@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Global Containers */
+.Landing-page,
+.Gallery-Page,
+.About-Info,
+.reserve-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.about-container {
+    padding: 0%;
+    margin: 0%;
+}
+
+/* About Section */
+.About-Info {
+    padding: 3% 5%;
+    padding-top: 5%;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin: 50px 0;
+}
+
+.profile-section.reverse {
+    flex-direction: row-reverse;
+}
+
+.profile-content {
+    flex: 1;
+}
+
+.profile-content h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.profile-content h3 {
+    font-weight: normal;
+    font-style: italic;
+    margin: 0 0 20px;
+    color: #555;
+}
+
+.profile-image-container {
+    flex-shrink: 0;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- Responsive --- */
+@media screen and (max-width: 1024px) {
+    .profile-section {
+        gap: 30px;
+    }
+
+    .profile-image-container {
+        width: 250px;
+        height: 250px;
+    }
+
+    .profile-content h1 {
+        font-size: 2em;
+    }
+
+    .profile-content h3 {
+        font-size: 1em;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .about-container {
+        margin-top: 5%;
+    }
+
+    .profile-section,
+    .profile-section.reverse {
+        flex-direction: column; /* stack on smaller screens */
+        text-align: center;
+    }
+
+    .profile-image-container {
+        width: 220px;
+        height: 220px;
+        margin-bottom: 20px;
+    }
+
+    .profile-content h1 {
+        font-size: 1.6em;
+    }
+
+    .profile-content h3 {
+        font-size: 0.95em;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .profile-section {
+        margin: 30px 0;
+        gap: 20px;
+    }
+
+    .profile-image-container {
+        width: 180px;
+        height: 180px;
+    }
+
+    .profile-content h1 {
+        font-size: 1.4em;
+    }
+
+    .profile-content h3 {
+        font-size: 0.9em;
+    }
+}

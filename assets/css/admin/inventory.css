@@ -1,0 +1,101 @@
+/* Inventory Page Specific Styles */
+
+.tools-actions {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+#inventory-search {
+    padding: 10px 15px;
+    width: 300px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#inventory-search:focus {
+    border-color: var(--accent-blue);
+}
+
+/* Status and Category Badges */
+.status-available, .category-tools, .category-equipment, .status-half, .status-full, .payment-online, .payment-ewallet {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.status-available, .status-full {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-half {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.category-supplies {
+    background-color: #fff0f5;
+    color: #8b008b;
+}
+
+.category-tools {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.category-equipment {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.payment-online {
+    background-color: #d7e9ff;
+    color: #004d99;
+}
+
+.payment-ewallet {
+    background-color: #e5f1ff;
+    color: #0066cc;
+}
+
+/* Modal specific for inventory */
+.save-btn {
+    width: 100%;
+    margin-top: 15px;
+    background: var(--accent-blue);
+    color: #fff;
+    font-weight: bold;
+    border-radius: 25px;
+}
+
+.save-btn:hover {
+    background: #0056b3;
+}
+
+/* Mobile Styles for Inventory */
+@media (max-width: 768px) {
+    .tools-actions {
+        flex-wrap: wrap;
+    }
+    
+    #inventory-search {
+        width: 100%;
+    }
+}

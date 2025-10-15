@@ -1,0 +1,559 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #ebebeb;
+}
+
+/* Settings Card */
+.settings-card {
+    width: 100%;
+    max-width: 32rem;
+    background-color: #1f2937;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    color: white;
+    position: relative;
+}
+
+@media (min-width: 640px) {
+    .settings-card {
+        padding: 2rem;
+    }
+}
+
+.settings-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #374151;
+    padding-bottom: 0.75rem;
+}
+
+/* Home Button */
+.home-btn {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.5rem;
+    z-index: 10;
+}
+
+.home-btn a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+}
+
+.home-btn:hover {
+    color: #d1d5db;
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Form Groups */
+.form-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.form-group-icon {
+    position: relative;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.readonly-input {
+    cursor: not-allowed;
+    opacity: 0.7;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.form-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+/* Address Group */
+.address-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Section Titles */
+.section-title {
+    margin: 2rem 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 1px solid #374151;
+    padding-bottom: 0.5rem;
+}
+
+.security-title {
+    color: #60a5fa;
+}
+
+.danger-title {
+    color: #f87171;
+    margin-top: 2rem;
+}
+
+/* Password Section */
+.password-section {
+    margin-bottom: 1.5rem;
+}
+
+.password-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+}
+
+.password-group {
+    margin-bottom: 1rem;
+}
+
+/* Save Button */
+.save-btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    border-radius: 0.75rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.save-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.4);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+/* Delete Section */
+.delete-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 0.75rem;
+    margin-top: 1rem;
+}
+
+.delete-content {
+    flex: 1;
+}
+
+.delete-title {
+    display: block;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #fca5a5;
+    margin-bottom: 0.25rem;
+}
+
+.delete-description {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    line-height: 1.4;
+}
+
+.delete-btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
+}
+
+/* Profile Picture Section */
+.profile-picture-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profile-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-image-container {
+    position: relative;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    background-color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 4px solid #4b5563;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-image-container:hover {
+    border-color: #3b82f6;
+    transform: scale(1.05);
+}
+
+.profile-placeholder-icon {
+    font-size: 3rem;
+    color: #6b7280;
+}
+
+.profile-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Profile Menu */
+.profile-menu {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.profile-image-container:hover .profile-menu {
+    opacity: 1;
+}
+
+.profile-menu-button {
+    width: 1.8rem;
+    height: 1.8rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.profile-menu-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.profile-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    margin-top: 0.5rem;
+    width: 10rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 0;
+    border: 1px solid #e5e7eb;
+    z-index: 20;
+}
+
+.profile-dropdown-item {
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    color: #374151;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.profile-dropdown-item:hover {
+    background-color: #f3f4f6;
+}
+
+.profile-dropdown-icon {
+    margin-right: 0.5rem;
+    width: 1rem;
+    text-align: center;
+}
+
+.profile-dropdown-icon-change {
+    color: #3b82f6;
+}
+
+.profile-dropdown-icon-remove {
+    color: #ef4444;
+}
+
+/* Profile Upload */
+.profile-upload-input {
+    display: none;
+}
+
+/* Image View Modal */
+.image-view-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.image-modal-content {
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+    background: transparent;
+    border-radius: 0.5rem;
+}
+
+.image-modal-close {
+    position: absolute;
+    top: -3rem;
+    right: 0;
+    color: white;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-modal-close:hover {
+    color: #d1d5db;
+}
+
+.image-modal-preview {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Message Modal */
+.message-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #1f2937;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 100%;
+    color: white;
+    border: 1px solid #374151;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #f9fafb;
+}
+
+.modal-text {
+    color: #d1d5db;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.modal-btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.confirm-btn {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+}
+
+.confirm-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-1px);
+}
+
+.cancel-btn {
+    background-color: #4b5563;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #374151;
+    transform: translateY(-1px);
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.flex {
+    display: flex !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.image-view-modal,
+.message-modal {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Input focus states */
+input:focus, button:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .settings-card {
+        padding: 1.25rem;
+    }
+    
+    .delete-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .delete-btn {
+        align-self: flex-end;
+    }
+    
+    .home-btn {
+        right: 1rem;
+        top: 1rem;
+        font-size: 1.25rem;
+    }
+}

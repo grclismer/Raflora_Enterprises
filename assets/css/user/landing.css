@@ -1,0 +1,172 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* --- Hero Section --- */
+.Home-bg {
+    text-align: center;
+    padding: 120px 20px 60px;
+}
+
+.Home-bg h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.Home-bg p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.Home-bg img {
+    
+    width: 70%;
+    max-width: 600px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+/* --- Team Section --- */
+.Set-img {
+    text-align: center;
+    padding: 20px 0px;
+    background: #fff;
+    margin: 6%;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.Set-img img {
+    width: 45%;
+    height: 410px;
+    gap: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    
+}
+
+.Set-img .description {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+/* .Set-img {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 6%;
+    padding: 6%;
+    margin-top: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.Set-img .Section-Heading {
+    display: flex;
+    position: absolute;
+}
+
+.Set-img img {
+    width: 50%;
+    height: 10%;
+    margin-top: -40px;
+    padding: 10px 20px;
+    border-radius: 10%;
+}
+
+.Set-img .description {
+    font-size: 2rem;
+    font-weight: bold;
+    position: absolute;
+    bottom: 6%;
+} 
+/* --- Feedback Section --- */
+.Feedback-content {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 40px 20px;
+}
+
+.Review {
+    flex: 1 1 250px;
+    max-width: 300px;
+    text-align: center;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.Client img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10% 40% 10% 40%;
+    margin-bottom: 10px;
+}
+/* .Client img {
+    width: 40%;
+    height: auto;
+    justify-content: center;
+    margin-left: 120px;
+    border-radius: 10% 40% 10% 40%;
+} */
+.Review h2 {
+    font-size: 1.1rem;
+}
+
+.Review h3 {
+    font-size: 0.95rem;
+    margin-top: 10px;
+    color: #555;
+}
+
+/* --- Footer --- */
+/* .footer {
+    background: #222;
+    color: #fff;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.footer h1 {
+    margin-bottom: 20px;
+}
+
+.social-icons-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.social-icons-container img {
+    width: 40px;
+    margin-bottom: 10px;
+}
+
+.social-icons-container a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+} */
+
+/* --- Responsive --- */
+@media screen and (max-width: 768px) {
+    .Home-bg h1 { font-size: 1.8rem; }
+    .Home-bg p { font-size: 1rem; }
+    .Set-img img { width: 80%; height: 150px; }
+    .Feedback-content { flex-direction: column; align-items: center; }
+    .Client img {border-radius: 10%;}
+}
