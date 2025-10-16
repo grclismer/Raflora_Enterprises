@@ -277,11 +277,14 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                 <div class="modal-header">
                     <h5 class="modal-title" id="paymentModalLabel">Payment Confirmation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    
                 </div>
                 <form action="../config/client_booking.php" method="POST" id="modalReferenceForm">
                     <div class="modal-body">
                         <div class="alert alert-info" role="alert">
-                            Please complete your payment information below.
+                            Please complete your payment information below. <br>
+                            <strong>Gcash No. 09773436195</strong><br>
+                            <strong>Bank No.  001234567891</strong><br>
                         </div>
                         
                         <p><strong>Order ID:</strong> <span id="modal-order-id"><?php echo $orderId; ?></span></p>

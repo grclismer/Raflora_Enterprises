@@ -16,16 +16,6 @@ const paymentChannels = {
     'Online Bank': ['BDO Bank', 'BPI Bank', 'Metrobank', 'UnionBank', 'Landbank', 'Security Bank'],
     'E-Wallet': ['GCash', 'PayMaya']
 };
-// ✅ ADD THIS MISSING FUNCTION HERE
-function updateAllTooltips() {
-    console.log('updateAllTooltips called - fixing JavaScript error');
-    // For now, this just fixes the error - we can add actual tooltip logic later
-}
-function updateAllTooltips() {
-    // For now, just log that it was called
-    console.log('Tooltip update requested');
-    // We'll fix the actual tooltip logic later
-}
 
 // Payment instructions data
 const paymentMethods = {
@@ -135,7 +125,7 @@ function setupPaymentHandler(methodId, detailsId, customId, placeholderId) {
             }
             
             // Update any visible tooltips
-            // updateAllTooltips();
+            updateAllTooltips();
         });
         
         // Handle channel selection change
@@ -161,6 +151,11 @@ function setupPaymentHandler(methodId, detailsId, customId, placeholderId) {
         customInput.addEventListener('input', function() {
             updateAllTooltips();
         });
+        
+        // Trigger initial setup
+        if (methodSelect.value) {
+            methodSelect.dispatchEvent(new Event('change'));
+        }
     }
 }
 
@@ -226,7 +221,7 @@ function calculatePaymentAmount(totalPriceId, amountDueId, paymentType) {
 }
 
 // =======================================================
-// 3. PAYMENT GUIDE FUNCTIONALITY - FIXED VERSION
+// 3. PAYMENT GUIDE FUNCTIONALITY
 // =======================================================
 
 function initializePaymentGuides() {
@@ -326,6 +321,14 @@ function initializePaymentGuides() {
     });
     
     console.log('Payment guides initialization complete');
+}
+
+function updateAllTooltips() {
+    console.log('Updating all tooltips...');
+    const tooltips = document.querySelectorAll('.payment-guide-tooltip');
+    tooltips.forEach(tooltip => {
+        updateTooltipContent(tooltip);
+    });
 }
 
 function updateTooltipContent(tooltip) {
@@ -597,7 +600,25 @@ function closePaymentModal() {
         document.querySelectorAll('.payment-guide-tooltip').forEach(tooltip => {
             tooltip.classList.remove('show');
         });
+        
+        // Clear interrupted transaction flags
+        handleInterruptedTransaction();
     }
+}
+
+// Function to handle interrupted transaction cleanup
+function handleInterruptedTransaction() {
+    console.log('Handling interrupted transaction cleanup...');
+    
+    // Clear any session flags via AJAX
+    fetch('../config/clear_session_flags.php')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Session flags cleared:', data);
+        })
+        .catch(error => {
+            console.error('Error clearing session flags:', error);
+        });
 }
 
 // Make functions globally available
@@ -607,7 +628,6 @@ window.validatePaymentForm = validatePaymentForm;
 window.validateBillingPaymentForm = validateBillingPaymentForm;
 window.paymentMethods = paymentMethods;
 window.paymentChannels = paymentChannels;
-
 
 // =======================================================
 // DEBUG FUNCTION (You can remove this after testing)

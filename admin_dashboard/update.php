@@ -22,26 +22,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $conn->query("ALTER TABLE booking_tbl ADD COLUMN rejection_reason TEXT NULL");
     }
     
-    if ($status === 'REJECTED' && !empty($reason)) {
-        $sql = "UPDATE booking_tbl SET booking_status = ?, rejection_reason = ? WHERE booking_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssi", $status, $reason, $booking_id);
-    } else {
-        $sql = "UPDATE booking_tbl SET booking_status = ? WHERE booking_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("si", $status, $booking_id);
-    }
+    // Start transaction to ensure both updates succeed
+    $conn->begin_transaction();
     
-    if ($stmt->execute()) {
+    try {
+        if ($status === 'REJECTED' && !empty($reason)) {
+            $sql = "UPDATE booking_tbl SET booking_status = ?, rejection_reason = ? WHERE booking_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssi", $status, $reason, $booking_id);
+        } else {
+            $sql = "UPDATE booking_tbl SET booking_status = ? WHERE booking_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("si", $status, $booking_id);
+        }
+        
+        if (!$stmt->execute()) {
+            throw new Exception("Error updating booking: " . $stmt->error);
+        }
+        
+        // ✅ CRITICAL FIX: Update payment status when admin approves booking
+        if ($status === 'APPROVED' || $status === 'COMPLETED') {
+            $payment_status = ($status === 'APPROVED') ? 'verified' : 'completed';
+            
+            $payment_sql = "UPDATE payments_tbl SET status = ? WHERE booking_id = ?";
+            $payment_stmt = $conn->prepare($payment_sql);
+            $payment_stmt->bind_param("si", $payment_status, $booking_id);
+            
+            if (!$payment_stmt->execute()) {
+                throw new Exception("Error updating payment status: " . $payment_stmt->error);
+            }
+            $payment_stmt->close();
+        }
+        
+        $conn->commit();
         $_SESSION['success_message'] = "Booking status updated successfully!";
-    } else {
-        $_SESSION['error_message'] = "Error updating booking: " . $stmt->error;
+        
+    } catch (Exception $e) {
+        $conn->rollback();
+        $_SESSION['error_message'] = $e->getMessage();
     }
     
     header("Location: update.php");
     exit();
 }
-
 // Handle booking details view via AJAX
 if (isset($_GET['view_booking'])) {
     $booking_id = intval($_GET['view_booking']);
@@ -267,9 +290,9 @@ $conn->close();
 
     <!-- Status Update Forms -->
     <form id="approveForm" method="POST" style="display: none;">
-        <input type="hidden" name="action" value="update_status">
-        <input type="hidden" name="booking_id" id="approveBookingId">
-        <input type="hidden" name="status" value="APPROVED">
+    <input type="hidden" name="action" value="update_status">
+    <input type="hidden" name="booking_id" id="approveBookingId">
+    <input type="hidden" name="status" value="APPROVED">
     </form>
 
     <form id="rejectForm" method="POST" style="display: none;">
@@ -280,9 +303,9 @@ $conn->close();
     </form>
 
     <form id="completeForm" method="POST" style="display: none;">
-        <input type="hidden" name="action" value="update_status">
-        <input type="hidden" name="booking_id" id="completeBookingId">
-        <input type="hidden" name="status" value="COMPLETED">
+    <input type="hidden" name="action" value="update_status">
+    <input type="hidden" name="booking_id" id="completeBookingId">
+    <input type="hidden" name="status" value="COMPLETED">
     </form>
 
     <script>

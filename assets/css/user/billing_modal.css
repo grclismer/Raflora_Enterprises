@@ -286,3 +286,66 @@ body.modal-open {
 body.modal-open {
     overflow: hidden;
 }
+
+/* Add these styles to your existing billing_modal.css */
+
+/* Ensure modal displays properly for interrupted transactions */
+.modal-open {
+    overflow: hidden;
+}
+
+.payment-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.payment-modal[style*="display:block"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.payment-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.payment-modal[style*="display:block"] .payment-modal-content {
+    transform: translateY(0);
+}
+
+/* Interrupted transaction styles */
+.interrupted-transaction-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.interrupted-transaction-notice h4 {
+    margin: 0 0 8px 0;
+    color: #856404;
+}
+
+.interrupted-transaction-notice p {
+    margin: 0;
+    color: #856404;
+}

@@ -68,17 +68,32 @@ if ($booking && !empty($booking['packages']) && !empty($booking['event_theme']))
 
 $conn->close();
 
-// UPDATED: Check if we should show the payment modal
+// UPDATED: Enhanced check for interrupted transactions
 $showPaymentModal = false;
 
-// Method 1: Check URL parameter (for direct access from my_bookings.php)
+// Method 1: Check URL parameter from booking history
 if (isset($_GET['trigger_modal']) && $_GET['trigger_modal'] == 1) {
     if ($booking && $booking['booking_status'] === 'PENDING_ORDER_CONFIRMATION') {
         $showPaymentModal = true;
     }
 }
 
-// Method 2: Check session (for redirects from other pages)
+// Method 2: Check for interrupted transactions specifically
+if (isset($_GET['continue_transaction']) && $_GET['continue_transaction'] == 1) {
+    if ($booking && $booking['booking_status'] === 'PENDING_ORDER_CONFIRMATION') {
+        $showPaymentModal = true;
+        $_SESSION['continue_transaction'] = $orderId;
+    }
+}
+
+// Method 3: Check session for interrupted transactions
+if (isset($_SESSION['continue_transaction']) && $_SESSION['continue_transaction'] == $orderId) {
+    if ($booking && $booking['booking_status'] === 'PENDING_ORDER_CONFIRMATION') {
+        $showPaymentModal = true;
+    }
+}
+
+// Method 4: Check session (for redirects from other pages)
 if (isset($_SESSION['show_payment_modal']) && $_SESSION['show_payment_modal'] == $orderId) {
     if ($booking && $booking['booking_status'] === 'PENDING_ORDER_CONFIRMATION') {
         $showPaymentModal = true;
@@ -112,17 +127,45 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Receipt - Order <?php echo $orderId; ?></title>
 
-    <!-- KEEP your original CSS links (place cleaned CSS into these file paths if you want new styling) -->
     <link rel="stylesheet" href="../assets/css/user/billing_modal.css">
     <link rel="stylesheet" href="../assets/css/user/billing.css">
     <script src="../assets/js/user/modal.js" defer ></script>
 
+    <!-- Add Bootstrap for modal compatibility -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-      /* Small safety CSS to ensure layout won't be fully broken if your external css missing.
-         This will be overridden by your billing.css when it loads. */
-      /* .billing-container { display:flex; gap:0; width:100%; min-height:100vh; }
+      .billing-container { display:flex; gap:0; width:100%; min-height:100vh; }
       .billing-left, .billing-right { padding:24px; box-sizing:border-box; }
-      body { background:#f5f5f5; } */
+      body { background:#f5f5f5; }
+      
+      /* Interrupted transaction notice */
+      .interrupted-transaction-notice {
+          background: #fff3cd;
+          border: 1px solid #ffeaa7;
+          padding: 15px;
+          border-radius: 6px;
+          margin-bottom: 15px;
+      }
+      
+      .interrupted-transaction-notice h4 {
+          margin: 0 0 8px 0;
+          color: #856404;
+      }
+      
+      .interrupted-transaction-notice p {
+          margin: 0;
+          color: #856404;
+      }
+
+      /* Make sure modal displays properly */
+      .modal-backdrop {
+          z-index: 1040;
+      }
+      .modal {
+          z-index: 1050;
+      }
     </style>
 </head>
 <body>
@@ -142,19 +185,25 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
         </div>
 
         <div style="margin-top: 20px;">
-            <!-- <label style="display:block; margin-bottom:8px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></label>
-            <label style="display:block; margin-bottom:12px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></label> -->
+            <?php if ($booking['booking_status'] == 'APPROVED'): ?>
+                <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
+            <?php endif; ?>
 
-            <button class="proceed-btn" onclick="window.print()" style="display:block; width:80%; margin-top:10px;">Proceed</button>
-            <!-- // In billing.php - Update the proceed button logic -->
-<?php if ($booking['booking_status'] == 'APPROVED'): ?>
-    <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
-<?php endif; ?>
-            <!-- Buttons / Status area (kept same conditions as original) -->
+            <!-- Buttons / Status area -->
             <?php if ($booking['booking_status'] == 'PENDING_ORDER_CONFIRMATION'): ?>
-                <button class="submit-payment-btn" onclick="openPaymentModal()" style="margin-top:12px; width:80%;">Submit Payment Reference</button>
-
-                <div class="status-indicator" style="margin-top:12px;">Status: Waiting for Payment Reference Submission</div>
+                <?php if ($showPaymentModal): ?>
+                    <div class="interrupted-transaction-notice">
+                        <h4>🔄 Interrupted Transaction</h4>
+                        <p>Your booking was created but payment reference wasn't submitted. Please complete your payment below.</p>
+                    </div>
+                <?php endif; ?>
+                
+                <button class="submit-payment-btn" onclick="openBillingPaymentModal()" style="margin-top:12px; width:80%; <?php echo $showPaymentModal ? 'background: #dc3545; border-color: #dc3545;' : ''; ?>">
+    <?php echo $showPaymentModal ? 'Complete Payment Reference' : 'Submit Payment Reference'; ?>
+</button>
+                <div class="status-indicator" style="margin-top:12px; <?php echo $showPaymentModal ? 'color: #dc3545;' : ''; ?>">
+                    <?php echo $showPaymentModal ? '⚠️ Status: Payment Reference Required' : 'Status: Waiting for Payment Reference Submission'; ?>
+                </div>
 
             <?php elseif ($booking['booking_status'] == 'PENDING_PAYMENT_VERIFICATION'): ?>
                 <div class="status-indicator" style="margin-top:12px;">Status: Waiting for Admin Payment Verification</div>
@@ -265,253 +314,293 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
             <p style="color:#333; margin:0;"><?php echo nl2br(htmlspecialchars($booking['recommendations'])); ?></p>
         </div>
 
-        <!-- <div style="margin-top:22px; text-align:center;">
-            <button class="proceed-btn" onclick="window.print()" style="padding:12px 24px; border-radius:8px;">Print Receipt</button>
-        </div> -->
-
     </main>
 
   </div>
 
-  <!-- Payment Reference Modal (keeps original form/action names) -->
-  <!-- Payment Reference Modal -->
-<!-- Payment Reference Modal -->
-<div id="paymentModal" class="payment-modal" style="<?php echo $showPaymentModal ? 'display:block;' : 'display:none;' ?>">
-    <div class="payment-modal-content" style="max-width:600px; margin:60px auto; background:#fff; padding:24px; border-radius:8px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="margin: 0; flex: 1;">Submit Payment Reference</h2>
-            <button type="button" onclick="closePaymentModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #aaa;">&times;</button>
-        </div>
-
-        <div class="alert alert-info" style="padding: 12px 16px; margin-bottom: 20px; border-radius: 6px; background: #e3f2fd; border: 1px solid #bbdefb; color: #0d47a1;">
-            Please pay the required amount to get the <strong>Reference code</strong>.
-        </div>
-
-        <p><strong>Order ID:</strong> #<?php echo $orderId; ?></p>
-        <p><strong>Package Price:</strong> <span id="billing-package-price" class="text-info"><?php echo format_price($totalPrice); ?></span></p>
-        <p><strong>Amount Due Now:</strong> <span id="billing-amount-due-now" class="text-xl text-success"><?php echo format_price($amountDue); ?></span></p>
-        
-        <!-- Store the total price in a hidden field for calculation -->
-        <input type="hidden" id="billing-total-package-price" value="<?php echo $totalPrice; ?>">
-        
-        <!-- COMPACT PAYMENT SELECTION FOR BILLING -->
-        <div style="display: flex; gap: 15px; margin: 20px 0;">
-            <div style="flex: 1; position: relative;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;" class="required-field">
-                    Payment Method 
-                    <span class="required-indicator">*</span>
-                </label>
-                <select id="billing-payment-method" name="payment_method" required 
-                        class="payment-field"
-                        style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px;">
-                    <option value="">Select method</option>
-                    <option value="Online Bank">Online Bank</option>
-                    <option value="E-Wallet">E-Wallet</option>
-                </select>
-                <div class="field-error" id="billing-method-error" style="display: none;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Please select a payment method</span>
-                </div>
-            </div>
-            <div style="flex: 1; position: relative;">
-                <label style="display: block; margin-bottom: 8px; font-weight: 500;" class="required-field">
-                    Payment Channel 
-                    <span class="required-indicator">*</span>
-                </label>
-                <select name="payment_details" id="billing-payment-details" 
-                        class="payment-field"
-                        style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; display: none;">
-                    <option value="">Select channel</option>
-                </select>
-                <input type="text" name="custom_payment_channel" id="billing-custom-payment-channel" 
-                       class="payment-field"
-                       style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; display: none;"
-                       placeholder="Enter payment channel name">
-                <div id="billing-channel-placeholder" style="color: #6c757d; font-style: italic; padding: 10px 0;">
-                    Select method first
-                </div>
-                <div class="field-error" id="billing-channel-error" style="display: none;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Please select or enter a payment channel</span>
-                </div>
-            </div>
-        </div>
-
-        <div style="margin: 20px 0;">
-            <label style="display: block; margin-bottom: 8px; font-weight: 500;" class="required-field">
-                Payment Type 
-                <span class="required-indicator">*</span>
-            </label>
-            <div style="display: flex; gap: 20px;">
-                <label style="display: flex; align-items: center; gap: 8px;">
-                    <input type="radio" name="payment_type" value="Down Payment" required checked class="payment-field billing-payment-type-radio" data-type="down" />
-                    <span>Down Payment (50%)</span>
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px;">
-                    <input type="radio" name="payment_type" value="Full Payment" required class="payment-field billing-payment-type-radio" data-type="full" />
-                    <span>Full Payment (100%)</span>
-                </label>
-            </div>
-        </div>
-
-        <form action="../config/client_booking.php" method="POST" id="billingReferenceForm" onsubmit="return validateBillingPaymentForm()">
-            <input type="hidden" name="order_id_value" value="<?php echo $orderId; ?>">
-
-            <div style="margin: 20px 0; position: relative;">
-                <label for="billingReferenceCode" style="display: block; margin-bottom: 8px; font-weight: 500;" class="required-field">
-                    Reference ID/Code 
-                    <span class="required-indicator">*</span>
-                    <span class="payment-guide-icon" id="billingPaymentGuideIcon">
-                        <i class="fas fa-info-circle"></i>
-                    </span>
-                </label>
-                <input type="text" name="reference_code" id="billingReferenceCode" required 
-                       class="payment-field"
-                       placeholder="Enter your 12-30 digit Reference code" 
-                       minlength="12" maxlength="30"
-                       pattern="[A-Za-z0-9]{12,30}"
-                       title="Reference code must be 12-30 characters (letters and numbers only)"
-                       style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:6px;">
-                <div class="field-error" id="billing-reference-error" style="display: none;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Reference code must be 12-30 characters (letters and numbers only)</span>
-                </div>
+  <!-- Payment Modal - EXACTLY LIKE BOOKING PAGE -->
+  <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Payment Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 
-                <!-- Payment Guide Tooltip for Billing - FIXED IDs -->
-                <div class="payment-guide-tooltip" id="billingPaymentGuideTooltip">
-                    <h6>💡 How to Pay via <span id="billing-guide-channel">Your Selected Bank</span>:</h6>
-                    <div id="billing-payment-instructions">
-                        Please select a payment method to see instructions.
-                    </div>
-                    <p><strong>Reference Code Requirements:</strong></p>
-                    <ul>
-                        <li>12-30 characters long</li>
-                        <li>Letters and numbers only</li>
-                        <li>No spaces or special characters</li>
-                    </ul>
-                    <p><strong>Need help?</strong> Contact: support@raflora.com</p>
-                </div>
             </div>
+            <form action="../config/client_booking.php" method="POST" id="modalReferenceForm">
+                <div class="modal-body">
+                    <div class="alert alert-info" role="alert">
+                        Please complete your payment information below. <br>
+                        <strong>Gcash No. 09773436195</strong> <br>
+                        <strong>Bank No.  001234567891</strong><br>
+                    </div>
+                    
+                    <p><strong>Order ID:</strong> <span id="modal-order-id"><?php echo $orderId; ?></span></p>
+                    <p><strong>Package Price:</strong> <span id="package-price" class="text-info"><?php echo format_price($totalPrice); ?></span></p>
+                    <p><strong>Amount Due Now:</strong> <span id="amount-due-now" class="text-xl text-success"><?php echo format_price($amountDue); ?></span></p>
+                    
+                    <input type="hidden" id="total-package-price" value="<?php echo $totalPrice; ?>">
 
-            <button type="submit" name="submit_reference_from_modal" class="submit-btn" 
-                    style="background:#28a745; color:#fff; padding:10px 18px; border-radius:6px; border:none; cursor: pointer; width: 100%;">
-                Submit Reference
-            </button>
-        </form>
+                    <!-- Payment Method Display (Read-only) -->
+                    <div class="mb-3">
+                        <label class="form-label">Selected Payment Method</label>
+                        <div class="form-control" style="background-color: #f8f9fa;">
+                            <strong><?php echo htmlspecialchars($booking['payment_method']); ?> - <?php echo htmlspecialchars($booking['payment_type']); ?></strong>
+                        </div>
+                    </div>
+
+                    <!-- Payment Channel Section -->
+                    <div class="mb-3" id="payment-channel-section">
+                        <div class="row align-items-end">
+                            <div class="col-md-6">
+                                <label for="payment-details-select" class="form-label required-field">
+                                    Payment Channel <span class="required-indicator">*</span>
+                                </label>
+                                <select name="payment_details" id="payment-details-select" class="form-control" required>
+                                    <option value="">Select channel</option>
+                                    <!-- Options will be populated by JavaScript based on payment method -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Custom Channel Input (Hidden by default) -->
+                                <label for="custom-payment-channel" class="form-label" style="color: #6c757d;">
+                                    Specify Channel
+                                </label>
+                                <input type="text" 
+                                       name="custom_payment_channel" 
+                                       id="custom-payment-channel" 
+                                       class="form-control" 
+                                       placeholder="Enter other payment channel"
+                                       style="display: none; color: #6c757d;"
+                                       disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reference Code -->
+                    <div class="mb-3">
+                        <label for="referenceCode" class="form-label required-field">
+                            Reference ID/Code <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" class="form-control" name="reference_code" id="referenceCode" required 
+                            placeholder="Enter your 12-30 digit Reference code" 
+                            minlength="12" maxlength="30"
+                            value="<?php echo htmlspecialchars($booking['reference_number'] ?? ''); ?>">
+                    </div>
+
+                    <!-- Hidden fields to pass payment data -->
+                    <input type="hidden" name="payment_method" value="<?php echo htmlspecialchars($booking['payment_method']); ?>">
+                    <input type="hidden" name="payment_type" value="<?php echo htmlspecialchars($booking['payment_type']); ?>">
+                    <input type="hidden" name="order_id_value" id="modal-order-id-input" value="<?php echo $orderId; ?>">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="submit_reference_from_modal" class="btn btn-success">Submit Payment</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+  </div>
 
   <script>
-        // CRITICAL: PHP to JS Data Injection
-        window.packageData = <?php echo $packages_json; ?>;
-    
-        $(document).ready(function() {
-            const packageData = window.packageData || {};
-            const themeDropdown = $('#theme');
-            const packagesDropdown = $('#packages');
-            const infoDiv = $('#selected-package-info');
+    // Auto-open modal for interrupted transactions
+    <?php if ($showPaymentModal): ?>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Showing payment modal for interrupted transaction');
             
-            // --- Payment Details Toggle Logic ---
-            const paymentMethodDropdown = $('#payment-method');
-            const paymentDetailsSelect = $('#payment_details_form');
-            const cashPaymentDetailsHidden = $('#cash_payment_details_hidden');
-
-            function togglePaymentDetails() {
-                const selectedMethod = paymentMethodDropdown.val();
+            // Use Bootstrap modal to show
+            const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            paymentModal.show();
+            
+            // Initialize payment channels with existing booking data
+            setTimeout(function() {
+                const paymentMethod = "<?php echo htmlspecialchars($booking['payment_method']); ?>";
+                const paymentDetailsSelect = document.getElementById('payment-details-select');
+                const customChannelInput = document.getElementById('custom-payment-channel');
                 
-                // Show the specific bank/e-wallet dropdown for Online Bank and E-Wallet
-                if (selectedMethod === 'Online Bank' || selectedMethod === 'E-Wallet') {
-                    paymentDetailsSelect.show().prop('required', true);
-                    cashPaymentDetailsHidden.prop('disabled', true); // Disable cash hidden field
-                } else {
-                    // If no relevant payment method is selected, hide the dropdown
-                    paymentDetailsSelect.hide().prop('required', false).val('');
-                    cashPaymentDetailsHidden.prop('disabled', false); // Enable cash hidden field
-                }
-            }
-
-            paymentMethodDropdown.on('change', togglePaymentDetails);
-            togglePaymentDetails(); // Initial call
-            // --- END NEW PAYMENT LOGIC ---
-
-            // --- Logic for displaying price/inclusions (UNCHANGED) ---
-            function updatePackageDetails(packageName) {
-                const selectedEvent = themeDropdown.val().toLowerCase().trim();
-                const trimmedPackageName = packageName ? packageName.trim() : '';
-                if (!trimmedPackageName || !selectedEvent) {
-                    infoDiv.html('<p class="text-gray-500 dark:text-gray-400">Please select a package to view the price and inclusions.</p>');
-                    return;
-                }
+                // Define payment channels
+                const paymentChannels = {
+                    'Online Bank': ['BDO Bank', 'BPI Bank', 'Metrobank', 'UnionBank', 'Landbank', 'Security Bank', 'Other'],
+                    'E-Wallet': ['GCash', 'PayMaya', 'Other']
+                };
                 
-                const packageInfo = packageData[selectedEvent] ? packageData[selectedEvent][trimmedPackageName] : null;
-
-                if (!packageInfo) {
-                    infoDiv.html(`<p class="text-red-500 dark:text-red-400 font-bold">Error: Package details not found. Check if the package is linked to the selected event type in the database.</p>`);
-                    return;
-                }
-
-                let htmlContent = `
-                    <p class="text-lg font-semibold text-green-600 dark:text-green-400 mb-2">Fixed Price: <strong>${packageInfo.price}</strong></p>
-                    <h4 class="font-medium mt-3 mb-1">Inclusions:</h4>
-                    <ul class="list-disc ml-5 space-y-1 text-sm">
-                `;
-
-                if (Array.isArray(packageInfo.inclusions)) {
-                    packageInfo.inclusions.forEach(item => {
-                        const trimmedItem = item.trim();
-                        if (trimmedItem !== '') { 
-                            htmlContent += `<li>${trimmedItem}</li>`;
+                function initializePaymentChannels() {
+                    if (paymentDetailsSelect && paymentChannels[paymentMethod]) {
+                        // Clear existing options
+                        paymentDetailsSelect.innerHTML = '<option value="">Select channel</option>';
+                        
+                        // Populate with channels based on payment method
+                        paymentChannels[paymentMethod].forEach(channel => {
+                            const option = document.createElement('option');
+                            option.value = channel;
+                            option.textContent = channel;
+                            paymentDetailsSelect.appendChild(option);
+                        });
+                        
+                        console.log('Populated payment channels for:', paymentMethod);
+                        
+                        // Pre-select existing payment details if available
+                        const existingDetails = "<?php echo htmlspecialchars($booking['payment_details'] ?? ''); ?>";
+                        if (existingDetails) {
+                            setTimeout(function() {
+                                // Check if existing details is in the dropdown
+                                const options = Array.from(paymentDetailsSelect.options);
+                                const foundOption = options.find(option => option.value === existingDetails);
+                                
+                                if (foundOption) {
+                                    paymentDetailsSelect.value = existingDetails;
+                                } else if (existingDetails) {
+                                    // If not found, set to "Other" and fill custom input
+                                    paymentDetailsSelect.value = 'Other';
+                                    customChannelInput.style.display = 'block';
+                                    customChannelInput.disabled = false;
+                                    customChannelInput.required = true;
+                                    customChannelInput.value = existingDetails;
+                                }
+                                
+                                // Trigger change event to update UI
+                                paymentDetailsSelect.dispatchEvent(new Event('change'));
+                            }, 100);
                         }
-                    });
+                    }
                 }
-
-                htmlContent += '</ul>';
-                infoDiv.html(htmlContent);
-            }
+                
+                function handleChannelSelection() {
+                    if (paymentDetailsSelect && customChannelInput) {
+                        const selectedValue = paymentDetailsSelect.value;
+                        
+                        if (selectedValue === 'Other') {
+                            // Show and enable custom input
+                            customChannelInput.style.display = 'block';
+                            customChannelInput.disabled = false;
+                            customChannelInput.required = true;
+                            customChannelInput.placeholder = 'Enter payment channel name';
+                        } else {
+                            // Hide and disable custom input
+                            customChannelInput.style.display = 'none';
+                            customChannelInput.disabled = true;
+                            customChannelInput.required = false;
+                            customChannelInput.value = ''; // Clear value
+                        }
+                    }
+                }
+                
+                // Initialize on page load
+                initializePaymentChannels();
+                
+                // Add event listener for channel selection
+                if (paymentDetailsSelect) {
+                    paymentDetailsSelect.addEventListener('change', handleChannelSelection);
+                }
+                
+                // Initialize custom input state
+                handleChannelSelection();
+                
+            }, 200);
             
-            function filterPackages(selectedEvent) {
-                packagesDropdown.empty().append('<option value="">Select Packages</option>'); 
-                
-                const eventKey = selectedEvent.toLowerCase().trim();
-                const packagesForEvent = packageData[eventKey];
-
-                if (packagesForEvent) {
-                    $.each(packagesForEvent, function(name, details) {
-                        packagesDropdown.append($('<option>', {
-                            value: name,
-                            text: name
-                        }));
-                    });
-                }
-                
-                updatePackageDetails('');
+            // Clean URL to prevent modal showing on refresh
+            if (window.history.replaceState) {
+                const cleanUrl = window.location.href.split('?')[0] + '?order_id=<?php echo $orderId; ?>';
+                window.history.replaceState({}, document.title, cleanUrl);
             }
-
-            themeDropdown.on('change', function() {
-                const selectedEvent = $(this).val();
-                filterPackages(selectedEvent);
-            }).trigger('change'); 
-
-            packagesDropdown.on('change', function() {
-                const selectedPackage = $(this).val();
-                updatePackageDetails(selectedPackage);
-            });
-            
-            // --- Modal display for successful order placement (RESTORED) ---
-            <?php if ($showModal): ?>
-                // Clean the URL to prevent the modal from popping up on refresh
-                if (window.history.replaceState) {
-                    const url = window.location.href;
-                    const cleanUrl = url.split("?")[0];
-                    window.history.replaceState({path:cleanUrl}, '', cleanUrl);
-                }
-                
-                $(document).ready(function() {
-                    const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
-                    paymentModal.show();
-                });
-            <?php endif; ?>
         });
-    </script>
+    <?php endif; ?>
+
+    // Function to open modal manually
+    function openPaymentModal() {
+        const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        paymentModal.show();
+    }
+  </script>
+  <script>
+// Function to open the billing payment modal
+function openBillingPaymentModal() {
+    const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+    paymentModal.show();
+    
+    // Initialize payment channels when modal opens manually
+    setTimeout(function() {
+        const paymentMethod = "<?php echo htmlspecialchars($booking['payment_method']); ?>";
+        const paymentDetailsSelect = document.getElementById('payment-details-select');
+        const customChannelInput = document.getElementById('custom-payment-channel');
+        
+        // Define payment channels
+        const paymentChannels = {
+            'Online Bank': ['BDO Bank', 'BPI Bank', 'Metrobank', 'UnionBank', 'Landbank', 'Security Bank', 'Other'],
+            'E-Wallet': ['GCash', 'PayMaya', 'Other']
+        };
+        
+        function initializePaymentChannels() {
+            if (paymentDetailsSelect && paymentChannels[paymentMethod]) {
+                // Clear existing options
+                paymentDetailsSelect.innerHTML = '<option value="">Select channel</option>';
+                
+                // Populate with channels based on payment method
+                paymentChannels[paymentMethod].forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    paymentDetailsSelect.appendChild(option);
+                });
+                
+                console.log('Populated payment channels for:', paymentMethod);
+                
+                // Pre-select existing payment details if available
+                const existingDetails = "<?php echo htmlspecialchars($booking['payment_details'] ?? ''); ?>";
+                if (existingDetails) {
+                    // Check if existing details is in the dropdown
+                    const options = Array.from(paymentDetailsSelect.options);
+                    const foundOption = options.find(option => option.value === existingDetails);
+                    
+                    if (foundOption) {
+                        paymentDetailsSelect.value = existingDetails;
+                    } else if (existingDetails) {
+                        // If not found, set to "Other" and fill custom input
+                        paymentDetailsSelect.value = 'Other';
+                        customChannelInput.style.display = 'block';
+                        customChannelInput.disabled = false;
+                        customChannelInput.required = true;
+                        customChannelInput.value = existingDetails;
+                    }
+                    
+                    // Trigger change event to update UI
+                    paymentDetailsSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+        
+        function handleChannelSelection() {
+            if (paymentDetailsSelect && customChannelInput) {
+                const selectedValue = paymentDetailsSelect.value;
+                
+                if (selectedValue === 'Other') {
+                    // Show and enable custom input
+                    customChannelInput.style.display = 'block';
+                    customChannelInput.disabled = false;
+                    customChannelInput.required = true;
+                    customChannelInput.placeholder = 'Enter payment channel name';
+                } else {
+                    // Hide and disable custom input
+                    customChannelInput.style.display = 'none';
+                    customChannelInput.disabled = true;
+                    customChannelInput.required = false;
+                    customChannelInput.value = ''; // Clear value
+                }
+            }
+        }
+        
+        // Initialize on modal open
+        initializePaymentChannels();
+        
+        // Add event listener for channel selection
+        if (paymentDetailsSelect) {
+            paymentDetailsSelect.addEventListener('change', handleChannelSelection);
+        }
+        
+        // Initialize custom input state
+        handleChannelSelection();
+        
+    }, 100);
+}
+</script>
 </body>
 </html>
