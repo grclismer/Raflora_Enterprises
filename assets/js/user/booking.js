@@ -192,3 +192,74 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+
+// CORRECT Payment method handling - FIXED VERSION
+// Payment channel handling for modal
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentMethodSelect = document.getElementById('payment-method-modal');
+    const paymentChannelSection = document.getElementById('payment-channel-section');
+    const paymentDetailsSelect = document.getElementById('payment-details-select');
+    
+    const paymentChannels = {
+        'Online Bank': ['BDO Bank', 'BPI Bank', 'Metrobank', 'UnionBank', 'Landbank', 'Security Bank', 'Other'],
+        'E-Wallet': ['GCash', 'PayMaya', 'Other']
+    };
+    
+    if (paymentMethodSelect) {
+        paymentMethodSelect.addEventListener('change', function() {
+            const selectedMethod = this.value;
+            
+            // Reset payment channel
+            paymentDetailsSelect.innerHTML = '<option value="">Select channel</option>';
+            paymentChannelSection.style.display = 'none';
+            paymentDetailsSelect.required = false;
+            
+            if (selectedMethod && paymentChannels[selectedMethod]) {
+                paymentChannelSection.style.display = 'block';
+                paymentDetailsSelect.required = true;
+                
+                // Populate channels
+                paymentChannels[selectedMethod].forEach(channel => {
+                    const option = document.createElement('option');
+                    option.value = channel;
+                    option.textContent = channel;
+                    paymentDetailsSelect.appendChild(option);
+                });
+            }
+        });
+    }
+});
+
+// Payment channel handling for modal
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentDetailsSelect = document.getElementById('payment-details-select');
+    const customChannelInput = document.getElementById('custom-payment-channel');
+    
+    if (paymentDetailsSelect && customChannelInput) {
+        paymentDetailsSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            
+            if (selectedValue === 'Other') {
+                // Show and enable custom input
+                customChannelInput.style.display = 'block';
+                customChannelInput.disabled = false;
+                customChannelInput.required = true;
+                customChannelInput.placeholder = 'Enter payment channel name';
+            } else {
+                // Hide and disable custom input
+                customChannelInput.style.display = 'none';
+                customChannelInput.disabled = true;
+                customChannelInput.required = false;
+                customChannelInput.value = ''; // Clear value
+            }
+        });
+        
+        // Initialize on page load
+        if (paymentDetailsSelect.value === 'Other') {
+            customChannelInput.style.display = 'block';
+            customChannelInput.disabled = false;
+            customChannelInput.required = true;
+        }
+    }
+});

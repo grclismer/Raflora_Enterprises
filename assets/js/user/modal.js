@@ -16,6 +16,16 @@ const paymentChannels = {
     'Online Bank': ['BDO Bank', 'BPI Bank', 'Metrobank', 'UnionBank', 'Landbank', 'Security Bank'],
     'E-Wallet': ['GCash', 'PayMaya']
 };
+// ✅ ADD THIS MISSING FUNCTION HERE
+function updateAllTooltips() {
+    console.log('updateAllTooltips called - fixing JavaScript error');
+    // For now, this just fixes the error - we can add actual tooltip logic later
+}
+function updateAllTooltips() {
+    // For now, just log that it was called
+    console.log('Tooltip update requested');
+    // We'll fix the actual tooltip logic later
+}
 
 // Payment instructions data
 const paymentMethods = {
@@ -125,7 +135,7 @@ function setupPaymentHandler(methodId, detailsId, customId, placeholderId) {
             }
             
             // Update any visible tooltips
-            updateAllTooltips();
+            // updateAllTooltips();
         });
         
         // Handle channel selection change
