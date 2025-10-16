@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Payment channels data
 const paymentChannels = {
     'Online Bank': ['BDO Bank', 'BPI Bank', 'Metrobank', 'UnionBank', 'Landbank', 'Security Bank'],
-    'E-Wallet': ['GCash', 'PayMaya', 'GrabPay', 'Coins.ph', 'ShopeePay']
+    'E-Wallet': ['GCash', 'PayMaya']
 };
 
 // Payment instructions data

@@ -15,26 +15,39 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// ========== DEBUG: Check what's being submitted ==========
+error_log("DEBUG: Form submitted with POST data: " . print_r($_POST, true));
+error_log("DEBUG: submit_reference_from_modal exists: " . (isset($_POST['submit_reference_from_modal']) ? 'YES' : 'NO'));
+
 // =======================================================
-// SCENARIO A: REFERENCE CODE SUBMISSION (From modal)
+// SCENARIO A: REFERENCE CODE SUBMISSION (From modal) - UPDATED
 // =======================================================
 if (isset($_POST['submit_reference_from_modal']) && isset($_POST['order_id_value']) && isset($_POST['reference_code'])) {
+    
+    error_log("DEBUG: Processing payment reference submission");
     
     $orderId = intval($_POST['order_id_value']);
     $referenceCode = trim($_POST['reference_code']);
     
-    // GET PAYMENT DATA FROM MODAL - USE ACTUAL VALUES
+    // GET PAYMENT DATA FROM MODAL - UPDATED HANDLING
     $paymentMethod = trim($_POST['payment_method'] ?? '');
     $paymentDetails = trim($_POST['payment_details'] ?? '');
-    $paymentType = trim($_POST['payment_type'] ?? 'Down Payment'); // This should be from the form
-    
-    // Debug: Check what payment type we're receiving
-    error_log("Payment Type Received: " . $paymentType);
-    
-    // If custom payment channel is used
-    if (isset($_POST['custom_payment_channel']) && !empty(trim($_POST['custom_payment_channel']))) {
+    $paymentType = trim($_POST['payment_type'] ?? 'Down Payment');
+
+    // DEBUG: Log what we received
+    error_log("DEBUG: Raw payment_details: " . ($_POST['payment_details'] ?? 'NOT SET'));
+    error_log("DEBUG: Raw custom_payment_channel: " . ($_POST['custom_payment_channel'] ?? 'NOT SET'));
+
+    // Handle payment channel selection properly - UPDATED LOGIC
+    if (isset($_POST['payment_details']) && $_POST['payment_details'] === 'Other') {
+        // If "Other" is selected, use the custom input
+        $paymentDetails = trim($_POST['custom_payment_channel'] ?? '');
+    } elseif (empty($paymentDetails) && isset($_POST['custom_payment_channel']) && !empty(trim($_POST['custom_payment_channel']))) {
+        // Fallback: if payment_details is empty but custom input has value
         $paymentDetails = trim($_POST['custom_payment_channel']);
     }
+
+    error_log("DEBUG: Final Payment Details: $paymentDetails");
     
     // Validate that payment method data exists
     if (empty($paymentMethod)) {
@@ -45,7 +58,7 @@ if (isset($_POST['submit_reference_from_modal']) && isset($_POST['order_id_value
         die("Error: Payment Channel is required");
     }
     
-    // Calculate correct amount due based on ACTUAL payment type
+    // Calculate correct amount due
     $totalPrice = 0;
     $amountDue = 0;
     
@@ -59,18 +72,20 @@ if (isset($_POST['submit_reference_from_modal']) && isset($_POST['order_id_value
     if ($priceRow = $priceResult->fetch_assoc()) {
         $totalPrice = (float)$priceRow['total_price'];
         
-        // Calculate amount due based on ACTUAL selected payment type
+        // Calculate amount due based on payment type
         if ($paymentType === 'Full Payment') {
-            $amountDue = $totalPrice; // 100%
-            error_log("Full Payment selected - Amount Due: " . $amountDue);
+            $amountDue = $totalPrice;
         } else {
-            $amountDue = $totalPrice * 0.50; // Down Payment 50%
-            error_log("Down Payment selected - Amount Due: " . $amountDue);
+            $amountDue = $totalPrice * 0.50;
         }
     }
     $priceStmt->close();
     
-    // Update the database with CORRECT payment information
+    error_log("DEBUG: Calculated Amount Due: $amountDue");
+    
+    // ========== CRITICAL: UPDATE BOTH TABLES ==========
+    
+    // 1. Update booking_tbl (for existing system)
     $sql = "UPDATE booking_tbl SET 
             payment_method = ?,
             payment_details = ?,
@@ -91,16 +106,46 @@ if (isset($_POST['submit_reference_from_modal']) && isset($_POST['order_id_value
     );
     
     if ($stmt->execute()) {
+        error_log("DEBUG: Successfully updated booking_tbl");
         $stmt->close();
-        $conn->close();
         
-        // Debug success
-        error_log("Payment reference updated successfully - Type: " . $paymentType . ", Amount: " . $amountDue);
+        // 2. INSERT INTO payments_tbl (NEW RELATIONAL SYSTEM)
+        $payment_sql = "INSERT INTO payments_tbl (
+            booking_id, amount_paid, payment_type, payment_method, 
+            payment_channel, reference_number, status
+        ) VALUES (?, ?, ?, ?, ?, ?, 'pending')";
         
-        // Redirect back to billing page
-        header("Location: ../user/billing.php?order_id=$orderId&payment_success=1");
-        exit();
+        $payment_stmt = $conn->prepare($payment_sql);
+        if ($payment_stmt === false) {
+            error_log("DEBUG: Failed to prepare payments_tbl insert: " . $conn->error);
+            die("Error preparing payment record: " . $conn->error);
+        }
+        
+        // Convert payment type for database
+        $payment_type_db = ($paymentType === 'Full Payment') ? 'full_payment' : 'down_payment';
+        
+        $payment_stmt->bind_param("idssss", 
+            $orderId,
+            $amountDue,
+            $payment_type_db,
+            $paymentMethod,
+            $paymentDetails,
+            $referenceCode
+        );
+        
+        if ($payment_stmt->execute()) {
+            error_log("DEBUG: Successfully inserted into payments_tbl");
+            $payment_stmt->close();
+            $conn->close();
+            header("Location: ../user/billing.php?order_id=$orderId&payment_success=1");
+            exit();
+        } else {
+            error_log("DEBUG: Failed to insert into payments_tbl: " . $payment_stmt->error);
+            die("Error creating payment record: " . $payment_stmt->error);
+        }
+        
     } else {
+        error_log("DEBUG: Failed to update booking_tbl: " . $stmt->error);
         die("Error updating reference: " . $stmt->error);
     }
 }
@@ -109,12 +154,6 @@ if (isset($_POST['submit_reference_from_modal']) && isset($_POST['order_id_value
 // SCENARIO B: NEW BOOKING SUBMISSION (From booking.php form)
 // =======================================================
 if (isset($_POST['place_order_btn'])) {
-<<<<<<< HEAD
-=======
-    // YOUR ORIGINAL NEW BOOKING CODE GOES HERE
-    // (Keep all your existing code for new bookings)
-    
->>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     // 1. Data Sanitization and Retrieval
     $fullName = trim($_POST['full_name'] ?? '');
     $mobileNumber = trim($_POST['mobile_number'] ?? ''); 
@@ -127,10 +166,6 @@ if (isset($_POST['place_order_btn'])) {
     $packages = trim($_POST['packages'] ?? '');
     $paymentMethod = trim($_POST['payment_method'] ?? '');
     $paymentDetails = trim($_POST['payment_details'] ?? 'Not Applicable'); 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     $paymentType = trim($_POST['payment_type'] ?? '');
     $bookingStatus = 'PENDING_ORDER_CONFIRMATION';
 
@@ -138,19 +173,13 @@ if (isset($_POST['place_order_btn'])) {
     $amountDue = 0.0;
     $designDocumentPath = 'assets/uploads/default.jpg'; 
 
-<<<<<<< HEAD
     // 2. Fetch Package Price and Package ID - FIXED HERE
     $sqlPrice = "SELECT package_id, fixed_price FROM package_details_tbl WHERE package_name = ? AND event_type = ?";
-=======
-    // 2. Fetch Package Price
-    $sqlPrice = "SELECT fixed_price FROM package_details_tbl WHERE package_name = ? AND event_type = ?";
->>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     $stmtPrice = $conn->prepare($sqlPrice);
     $stmtPrice->bind_param("ss", $packages, $eventTheme);
     $stmtPrice->execute();
     $resultPrice = $stmtPrice->get_result();
     
-<<<<<<< HEAD
     $packageId = null;
     if ($row = $resultPrice->fetch_assoc()) {
         $totalPrice = (float)$row['fixed_price'];
@@ -163,13 +192,6 @@ if (isset($_POST['place_order_btn'])) {
         die("Error: Invalid package selected. Please choose a valid package.");
     }
 
-=======
-    if ($row = $resultPrice->fetch_assoc()) {
-        $totalPrice = (float)$row['fixed_price'];
-    }
-    $stmtPrice->close();
-
->>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
     // 3. Calculate Amount Due
     if ($paymentType === 'Full Payment') {
         $amountDue = $totalPrice;
@@ -194,7 +216,6 @@ if (isset($_POST['place_order_btn'])) {
         }
     }
 
-<<<<<<< HEAD
     // 5. Insert Booking into Database - FIXED: Added package_id
     $sql = "INSERT INTO booking_tbl (user_id, package_id, full_name, mobile_number, email, address, event_theme, packages, design_document_path, event_date, event_time, recommendations, payment_method, payment_details, payment_type, total_price, amount_due, booking_status, reference_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)";
  
@@ -202,14 +223,6 @@ if (isset($_POST['place_order_btn'])) {
     $stmt->bind_param("iisssssssssssssdds", 
         $_SESSION['user_id'], 
         $packageId, // ADDED: Valid package_id
-=======
-    // 5. Insert Booking into Database 
-    $sql = "INSERT INTO booking_tbl (user_id, full_name, mobile_number, email, address, event_theme, packages, design_document_path, event_date, event_time, recommendations, payment_method, payment_details, payment_type, total_price, amount_due, booking_status, reference_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)";
- 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isssssssssssssdds", 
-        $_SESSION['user_id'], 
->>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
         $fullName, 
         $mobileNumber, 
         $email, 
@@ -234,16 +247,14 @@ if (isset($_POST['place_order_btn'])) {
         $conn->close();
 
         // Redirect to booking.php to show the payment modal
+        // header("Location: ../user/booking.php?order_id={$orderId}");
         header("Location: ../user/booking.php?order_id={$orderId}&payment_method={$paymentMethod}&payment_type={$paymentType}&amount_due={$amountDue}&payment_details={$paymentDetails}");
         exit();
     } else {
-<<<<<<< HEAD
         // Enhanced error logging
         error_log("Database Error: " . $stmt->error);
         error_log("Package ID used: " . $packageId);
         error_log("User ID: " . $_SESSION['user_id']);
-=======
->>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
         die("Error during booking submission: " . $stmt->error);
     }
 }

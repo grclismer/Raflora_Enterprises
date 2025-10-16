@@ -251,40 +251,7 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                             <p class="text-gray-500 dark:text-gray-400">Please select a package to view the price and inclusions.</p>
                         </div>
                     </div>
-                    
-                    <!-- <div class="payment-selection">
-                        <label for="payment-method">Payment Method</label>
-                        <select id="payment-method" name="payment_method" required>
-                            <option value="">Select payment method</option>
-                            <option value="Online Bank">Online Bank</option>
-                            <option value="E-Wallet">E-Wallet</option>
-                        </select>
-                        
-                        <div id="paymentDetailsGroup">
-                            <label for="payment_details_form">Specific Bank / E-Wallet</label>
-                            <select name="payment_details" id="payment_details_form" class="form-control" required style="display: none;">
-                                <option value="">Select Payment Channel</option>
-                                <optgroup label="Online Banks">
-                                    <option value="BDO Bank">BDO Bank</option>
-                                    <option value="BPI Bank">BPI Bank</option>
-                                    <option value="Metrobank">Metrobank</option>
-                                </optgroup>
-                                <optgroup label="E-Wallets">
-                                    <option value="GCash">GCash</option>
-                                    <option value="PayMaya">PayMaya</option>
-                                </optgroup>
-                                <option value="Other">Other / Unlisted</option>
-                            </select>
-                            <input type="hidden" name="payment_details" id="cash_payment_details_hidden" value="Not Applicable">
-                        </div>
-                        <div class="payment-type">
-                            <label>Payment Type</label>
-                            <div>
-                                <input type="radio" name="payment_type" value="Down Payment" required checked /> Down Payment (50%)
-                                <input type="radio" name="payment_type" value="Full Payment"required> Full Payment (100%)
-                            </div>
-                        </div>
-                    </div> -->
+                   
                     <div class="form-action">
                         <button type="submit" class="submit-button" name="place_order_btn">Place order</button>
                     </div>

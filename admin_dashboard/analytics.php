@@ -6,10 +6,7 @@
     <title>Performance Analytics</title>
     <!-- <link rel="stylesheet" href="../assets/css/admin/analytics.css"> -->
      <link rel="stylesheet" href="../assets/css/admin/admin_dashboard.css">
-<<<<<<< HEAD
      <link rel="stylesheet" href="../assets/css/admin/analytics.css">
-=======
->>>>>>> 1bc6967ee12901cb1317b6fd2339b702c67e1c08
 </head>
 <body>
     <div class="sidebar">

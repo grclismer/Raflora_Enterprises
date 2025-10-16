@@ -142,10 +142,10 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
         </div>
 
         <div style="margin-top: 20px;">
-            <label style="display:block; margin-bottom:8px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></label>
-            <label style="display:block; margin-bottom:12px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></label>
+            <!-- <label style="display:block; margin-bottom:8px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></label>
+            <label style="display:block; margin-bottom:12px;"><input type="checkbox" unchecked required> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></label> -->
 
-            <!-- <button class="proceed-btn" onclick="window.print()" style="display:block; width:80%; margin-top:10px;">Proceed</button> -->
+            <button class="proceed-btn" onclick="window.print()" style="display:block; width:80%; margin-top:10px;">Proceed</button>
             <!-- // In billing.php - Update the proceed button logic -->
 <?php if ($booking['booking_status'] == 'APPROVED'): ?>
     <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
