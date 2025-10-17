@@ -259,8 +259,9 @@ tr:hover {
 }
 
 .invoice-summary {
+    display: block;
     background: #f8f9fa;
-    width: 70%;
+    width: 100%;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -268,14 +269,18 @@ tr:hover {
 .summary-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
+    gap: 5px;
+    
 }
 .stat-card {
     background: white;
     padding: 15px;
+    margin: 20px;
     border-radius: 8px;
+    justify-content: space-between;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
 }
 .stat-number {
     font-size: 24px;

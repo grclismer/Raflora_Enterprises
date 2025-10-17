@@ -267,16 +267,16 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                         <button type="submit" class="submit-button" name="place_order_btn">Place order</button>
                     </div>
                     <!-- Terms and condition with privacy Policy pop-up modal -->
-                                        <!-- Method 1: Using specific IDs (auto-detected) -->
+                        <!-- Method 1: Using specific IDs (auto-detected) -->
                     <!-- Terms and condition with privacy Policy -->
-<div class="modal-checkbox">
-    <input type="checkbox" id="privacyCheckbox" required>
-    <span>I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></span>
-</div>
-<div class="modal-checkbox">
-    <input type="checkbox" id="termsCheckbox" required>
-    <span>I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></span>
-</div>
+                    <div class="modal-checkbox">
+                        <input type="checkbox" id="privacyCheckbox" required>
+                        <span>I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></span>
+                    </div>
+                    <div class="modal-checkbox">
+                        <input type="checkbox" id="termsCheckbox" required>
+                        <span>I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></span>
+                    </div>
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
                             // Manual attachment if needed

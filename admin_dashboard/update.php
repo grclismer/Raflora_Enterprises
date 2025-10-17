@@ -108,8 +108,9 @@ if (isset($_GET['view_booking'])) {
         
         echo '</div>
         <div class="detail-section">
-            <h3>Client Recommendations</h3>
-            <div class="detail-item">'.(!empty($booking['recommendations']) ? htmlspecialchars($booking['recommendations']) : 'No recommendations provided').'</div>
+            <h3>Design & Recommendations</h3>
+            <div class="detail-item"><strong>Design Document:</strong> '.($booking['design_document_path'] != 'assets/uploads/default.jpg' ? '<a href="../'.$booking['design_document_path'].'" target="_blank">View Design</a>' : 'No design uploaded').'</div>
+            <div class="detail-item"><strong>Client Recommendations:</strong> '.(!empty($booking['recommendations']) ? htmlspecialchars($booking['recommendations']) : 'No recommendations provided').'</div>
         </div>';
     } else {
         echo '<p>Booking not found.</p>';

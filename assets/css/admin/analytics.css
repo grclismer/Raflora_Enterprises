@@ -1,4 +1,5 @@
 /* Analytics Dashboard Styles */
+
 .quick-stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -60,17 +61,43 @@
     gap: 20px;
     margin-bottom: 30px;
 }
+/* Avatar Image Styles for Card Layout */
+.avatar-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+}
 
+/* Existing avatar placeholder styles (keep these) */
+.avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
 .client-list {
     background: white;
     border-radius: 10px;
-    padding: 20px;
+    width: 585px;
+    padding: 5px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    height: 446px;
+    
+    
 }
 
 .client-table-container {
-    max-height: 400px;
+    max-height: 390px;
     overflow-y: auto;
+    
 }
 
 .client-table {
@@ -80,7 +107,7 @@
 
 .client-table th {
     background: #f8f9fa;
-    padding: 12px 15px;
+    padding: 10px 11px;
     text-align: left;
     font-weight: 600;
     color: #2c3e50;
@@ -95,8 +122,9 @@
 }
 
 .client-name {
-    font-weight: 500;
+    font-weight: 600;
     color: #2c3e50;
+    margin-bottom: 8px;
 }
 
 .booking-count, .total-spent {
@@ -150,6 +178,15 @@
     height: fit-content;
 }
 
+/* Payment Methods Chart - Adjusted container height only */
+.chart-container.payment-methods {
+    height: 350px; /* Container height only */
+}
+
+.chart-container.payment-methods .chart-content {
+    height: calc(100% - 40px); /* Adjust content area to fit container */
+}
+
 .chart-container.large {
     grid-column: 1 / -1;
 }
@@ -167,7 +204,6 @@
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 20px;
-    margin-bottom: 30px;
 }
 
 /* Evaluations Styles */
@@ -180,9 +216,10 @@
 .evaluation-item {
     display: flex;
     gap: 15px;
-    padding: 15px;
     border-bottom: 1px solid #e9ecef;
     transition: background-color 0.2s ease;
+    padding: 20px 0;
+    transition: background-color 0.2s;
 }
 
 .evaluation-item:hover {
@@ -235,7 +272,11 @@
     margin-bottom: 5px;
     color: #2c3e50;
 }
-
+.order-number {
+    color: #6c757d;
+    font-weight: normal;
+    margin-left: 10px;
+}
 .rating-stars {
     margin-bottom: 8px;
     display: flex;
@@ -264,12 +305,22 @@
     font-style: italic;
     line-height: 1.4;
 }
-
+.category-ratings {
+    margin: 8px 0;
+    color: #6c757d;
+}
 .event-info {
     color: #95a5a6;
     font-size: 0.8rem;
 }
-
+.recommend-badge {
+    background: #d4edda;
+    color: #155724;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
 .no-data-message {
     text-align: center;
     padding: 40px 20px;
@@ -288,10 +339,21 @@
 }
 
 /* Quick Overview Styles */
+.quick-overview-section {
+    width: 36.5rem;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-top: -380px;
+    margin-bottom: 20px;
+}
+
 .quick-overview {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    height: calc(10% - 40px); /* Adjust content to fit container */
 }
 
 .overview-item {
@@ -299,9 +361,11 @@
     align-items: center;
     gap: 15px;
     padding: 15px;
-    background: #f8f9fa;
+    background: #ffffff;
     border-radius: 8px;
+    height: 54px;
     transition: background-color 0.2s ease;
+    /* Individual items maintain their natural height */
 }
 
 .overview-item:hover {
@@ -374,5 +438,21 @@
     
     .rating-stars {
         justify-content: center;
+    }
+    
+    .chart-container-quick-overview {
+        height: auto; /* Allow container height to adjust on mobile */
+    }
+    
+    .chart-container.payment-methods {
+        height: auto; /* Allow container height to adjust on mobile */
+    }
+    
+    .quick-overview {
+        height: auto; /* Allow content height to adjust on mobile */
+    }
+    
+    .chart-container.payment-methods .chart-content {
+        height: auto; /* Allow content height to adjust on mobile */
     }
 }

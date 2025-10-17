@@ -22,6 +22,7 @@ body {
     display: flex;
     min-height: 100vh;
     color: var(--font-color);
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .sidebar {
@@ -31,9 +32,11 @@ body {
     color: white;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     transition: width 0.3s ease;
-    /* position: fixed; */
+    position: fixed; /* Add this */
+    height: 100vh; /* Add this */
+    overflow-y: auto; /* Add this */
+    z-index: 1000; /* Add this */
 }
-
 .logo img {
     width: 180px;
     display: block;
@@ -92,8 +95,11 @@ body {
 }
 
 .main-content {
-    flex: 1;
-    padding: 0;
+    margin-left: 250px; /* Keep this to push content right of sidebar */
+    min-height: 100vh;
+    background: #f8f9fa;
+    width: calc(100% - 250px); /* Add this */
+    margin-top: 0; /* Ensure no top margin */
 }
 
 .header {
@@ -103,6 +109,12 @@ body {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: fixed; /* Fixed position */
+    top: 0;
+    right: 0;
+    left: 250px; /* Start after sidebar */
+    z-index: 999;
+    height: 80px; /* Set fixed height */
 }
 
 .header h1 {
@@ -125,7 +137,7 @@ body {
 .logout-btn a{
     font-size: larger;
     text-decoration: none;
-    color: var(--primary-color);
+    /* color: var(--primary-color); */
 }
 
 .logout-btn:hover {
@@ -139,6 +151,7 @@ body {
 
 .dashboard-content {
     padding: 30px;
+    margin-top: 80px; 
 }
 
 .section-header {
