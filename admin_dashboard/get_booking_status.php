@@ -1,4 +1,13 @@
 <?php
+
+// =======================================================================
+// PHP SCRIPT START - TIMEZONE CORRECTION
+// =======================================================================
+
+// Example: Set the timezone to Manila (Philippines Standard Time)
+date_default_timezone_set('Asia/Manila');
+
+
 // update_booking_status.php
 session_start();
 include '../config/db.php';

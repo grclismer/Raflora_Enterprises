@@ -50,6 +50,8 @@ if (!$conn->connect_error) {
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<!-- Add this in the body section, before the script tag -->
+<input type="hidden" id="currentUserId" value="<?php echo $user_data['user_id']; ?>">
 <body>
     <!-- Account Settings Container -->
     <div id="settings-card" class="settings-card">
@@ -165,6 +167,29 @@ if (!$conn->connect_error) {
                 <i class="fa-solid fa-floppy-disk"></i> Save Changes
             </button>
         </form>
+    <!-- QR Code Login Section -->
+<div class="section-title qr-title">QR Code Login</div>
+<div class="qr-section">
+    <div class="qr-content">
+        <span class="qr-title">Your Login QR Code</span>
+        <p class="qr-description">Use this QR code to log in quickly. Save it to your phone and scan it on the login page.</p>
+        
+        <!-- QR Code Display -->
+        <div class="qr-code-container">
+            <div class="qr-code-display">
+                <img id="qrCodeImage" 
+     src="/Raflora_Enterprises/api/get_user_qr.php?user_id=<?php echo $user_data['user_id']; ?>" 
+     alt="Your Login QR Code" 
+     class="qr-image">
+            </div>
+            
+            <!-- Download Button -->
+            <button onclick="downloadQRCode()" class="download-qr-btn">
+                <i class="fas fa-download"></i> Save QR Code
+            </button>
+        </div>
+    </div>
+</div>
         <!-- Danger Zone -->
         <div class="section-title danger-title">Deactivate account</div>
         <!-- Delete Account -->
@@ -198,6 +223,7 @@ if (!$conn->connect_error) {
             </div>
         </div>
     </div>
+    
     <script src="../assets/js/user/account_settings.js"></script>
 </body>
 </html>

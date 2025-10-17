@@ -335,8 +335,8 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                                 Reference ID/Code <span class="required-indicator">*</span>
                             </label>
                             <input type="text" class="form-control" name="reference_code" id="referenceCode" required 
-                                placeholder="Enter your 12-30 digit Reference code" 
-                                minlength="12" maxlength="30">
+                                placeholder="Enter your 12-13 digit Reference code" 
+                                minlength="12" maxlength="13">
                         </div>
 
                         <!-- Hidden fields to pass payment data -->

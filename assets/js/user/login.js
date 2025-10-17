@@ -230,3 +230,262 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// QR Code Scanner Functions
+let qrScanner = null;
+
+console.log("🔄 QR Scanner functions loaded");
+console.log("📚 jsQR available:", typeof jsQR !== 'undefined');
+
+function openQRScanner() {
+    console.log("🎬 Opening QR scanner...");
+    const modal = document.getElementById('qrScannerModal');
+    if (!modal) {
+        console.error("❌ QR scanner modal not found!");
+        return;
+    }
+    modal.classList.remove('hidden');
+    startQRScanner();
+}
+
+function closeQRScanner() {
+    console.log("🛑 Closing QR scanner...");
+    const modal = document.getElementById('qrScannerModal');
+    modal.classList.add('hidden');
+    stopQRScanner();
+}
+
+async function startQRScanner() {
+    try {
+        console.log("📷 Starting camera...");
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: "environment" } 
+        });
+        const video = document.getElementById('qrVideo');
+        video.srcObject = stream;
+        
+        video.onloadedmetadata = function() {
+            console.log("✅ Camera stream loaded");
+        };
+        
+        console.log("🔍 Starting QR scan loop...");
+        qrScanner = setInterval(scanQRFrame, 500); // Scan every 500ms
+        
+    } catch (err) {
+        console.error('❌ Camera error:', err);
+        showMessage('Cannot access camera. Please upload QR code image instead.', 'error');
+    }
+}
+
+function stopQRScanner() {
+    console.log("⏹️ Stopping scanner...");
+    if (qrScanner) {
+        clearInterval(qrScanner);
+        qrScanner = null;
+    }
+    
+    const video = document.getElementById('qrVideo');
+    if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => {
+            console.log("🛑 Stopping camera track");
+            track.stop();
+        });
+    }
+}
+
+function scanQRFrame() {
+    const video = document.getElementById('qrVideo');
+    const canvas = document.getElementById('qrCanvas');
+    
+    if (!video || !canvas) {
+        console.error("❌ Video or canvas element not found");
+        return;
+    }
+    
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // Check if jsQR is available
+        if (typeof jsQR === 'undefined') {
+            console.error("❌ jsQR library not loaded!");
+            stopQRScanner();
+            return;
+        }
+        
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        
+        if (code) {
+            console.log("✅ QR Code detected:", code.data);
+            stopQRScanner(); // Stop scanning once we found a code
+            handleScannedQR(code.data);
+        }
+    }
+}
+
+function handleQRFileUpload(event) {
+    console.log("📁 File upload triggered");
+    const file = event.target.files[0];
+    if (!file) {
+        console.log("❌ No file selected");
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        console.log("🖼️ File loaded, processing image...");
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.getElementById('qrCanvas');
+            const context = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            context.drawImage(img, 0, 0);
+            
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            
+            if (typeof jsQR === 'undefined') {
+                console.error("❌ jsQR library not loaded!");
+                showMessage('QR scanner library not loaded', 'error');
+                return;
+            }
+            
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            
+            if (code) {
+                console.log("✅ QR Code found in file:", code.data);
+                handleScannedQR(code.data);
+            } else {
+                console.log("❌ No QR code found in image");
+                showMessage('No QR code found in the image', 'error');
+            }
+        };
+        img.onerror = function() {
+            console.error("❌ Error loading image");
+            showMessage('Error loading image', 'error');
+        };
+        img.src = e.target.result;
+    };
+    reader.onerror = function() {
+        console.error("❌ Error reading file");
+        showMessage('Error reading file', 'error');
+    };
+    reader.readAsDataURL(file);
+}
+
+async function handleScannedQR(qrData) {
+    console.log("🔍 Handling scanned QR data:", qrData);
+    
+    try {
+        const qrObject = JSON.parse(qrData);
+        console.log("✅ Parsed QR object:", qrObject);
+        
+        if (qrObject.method === 'qr_login' && qrObject.system === 'raflora_enterprises') {
+            console.log("🚀 Sending to verification API...");
+            
+            const apiUrl = '/Raflora_Enterprises/api/verify_qr_login.php';
+            console.log("📡 API URL:", apiUrl);
+            
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ qr_data: qrData })
+            });
+            
+            console.log("📊 API Response status:", response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            console.log("📨 API Response data:", result);
+            
+            if (result.status === 'success') {
+                // Use safe message display
+                safeShowMessage('Login successful! Redirecting...', 'success');
+                console.log('✅ Login successful! Redirecting...');
+                
+                // Close scanner
+                closeQRScanner();
+                
+                // Redirect based on role
+                setTimeout(() => {
+                    console.log("🔄 Redirecting to:", result.user.role);
+                    if (result.user.role === 'admin_type') {
+                        window.location.href = '/Raflora_Enterprises/admin_dashboard/inventory.php';
+                    } else {
+                        window.location.href = '/Raflora_Enterprises/user/landing.php';
+                    }
+                }, 1500);
+                
+            } else {
+                console.log("❌ Login failed:", result.message);
+                safeShowMessage('QR code login failed: ' + result.message, 'error');
+            }
+        } else {
+            console.log("❌ Invalid QR format for this system");
+            safeShowMessage('This QR code is not for Raflora Enterprises login', 'error');
+        }
+    } catch (error) {
+        console.error('💥 Error processing QR code:', error);
+        safeShowMessage('Error: ' + error.message, 'error');
+    }
+}
+
+// Safe message display with fallback
+function safeShowMessage(message, type = 'info') {
+    // Try to use existing showMessage function
+    if (typeof showMessage === 'function') {
+        showMessage(message, type);
+        return;
+    }
+    
+    // Fallback: Use browser alert for critical messages
+    console.log(`[${type.toUpperCase()}] ${message}`);
+    
+    // Try to use existing message containers in your form
+    const messageContainers = [
+        document.getElementById('welcomeMessageLogin'),
+        document.getElementById('welcomeMessageRegister'),
+        document.getElementById('forgotPasswordMessage')
+    ];
+    
+    const validContainer = messageContainers.find(container => container !== null);
+    
+    if (validContainer) {
+        validContainer.textContent = message;
+        validContainer.style.display = 'block';
+        validContainer.style.color = type === 'error' ? 'red' : 'green';
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            validContainer.style.display = 'none';
+        }, 5000);
+    } else {
+        // Final fallback: alert
+        if (type === 'error') {
+            alert('Error: ' + message);
+        } else if (type === 'success') {
+            alert('Success: ' + message);
+        }
+    }
+}
+
+// Test function to simulate QR scan
+function testQRScan() {
+    console.log("🧪 Testing QR scan with manual data...");
+    const testData = '{"user_id":5,"system":"raflora_enterprises","method":"qr_login"}';
+    handleScannedQR(testData);
+}
+
+
+// Add this at the top of your QR scanner functions
+console.log("🔍 Checking jsQR library:", typeof jsQR);

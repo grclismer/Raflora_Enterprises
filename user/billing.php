@@ -135,45 +135,13 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <style>
-      .billing-container { display:flex; gap:0; width:100%; min-height:100vh; }
-      .billing-left, .billing-right { padding:24px; box-sizing:border-box; }
-      body { background:#f5f5f5; }
-      
-      /* Interrupted transaction notice */
-      .interrupted-transaction-notice {
-          background: #fff3cd;
-          border: 1px solid #ffeaa7;
-          padding: 15px;
-          border-radius: 6px;
-          margin-bottom: 15px;
-      }
-      
-      .interrupted-transaction-notice h4 {
-          margin: 0 0 8px 0;
-          color: #856404;
-      }
-      
-      .interrupted-transaction-notice p {
-          margin: 0;
-          color: #856404;
-      }
-
-      /* Make sure modal displays properly */
-      .modal-backdrop {
-          z-index: 1040;
-      }
-      .modal {
-          z-index: 1050;
-      }
-    </style>
 </head>
 <body>
 
   <div class="billing-container">
 
     <!-- LEFT (Billing info) - fixed / sticky on desktop -->
-    <aside class="billing-left" style="width: 40%; min-width: 320px; background: #fff; border-right: 1px solid #eee; position: sticky; top:0; height:100vh; overflow:auto;">
+    <aside class="billing-left">
         <h1 style="font-size:28px; font-weight:800; margin-bottom:12px;">Thank you for your purchase!</h1>
         <h3 style="font-size:18px; margin-top:18px;">Billing address</h3>
 
@@ -184,10 +152,8 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
             <p><strong>Email</strong><?php echo htmlspecialchars($booking['email']); ?></p>
         </div>
 
-        <div style="margin-top: 20px;">
-            <?php if ($booking['booking_status'] == 'APPROVED'): ?>
-                <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
-            <?php endif; ?>
+        <div style="margin-top: 40px;">
+            
 
             <!-- Buttons / Status area -->
             <?php if ($booking['booking_status'] == 'PENDING_ORDER_CONFIRMATION'): ?>
@@ -198,66 +164,73 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
                     </div>
                 <?php endif; ?>
                 
-                <button class="submit-payment-btn" onclick="openBillingPaymentModal()" style="margin-top:12px; width:80%; <?php echo $showPaymentModal ? 'background: #dc3545; border-color: #dc3545;' : ''; ?>">
-    <?php echo $showPaymentModal ? 'Complete Payment Reference' : 'Submit Payment Reference'; ?>
-</button>
+                <button class="submit-payment-btn" onclick="openBillingPaymentModal()" style="margin-top:25px; margin-bottom:25px; width:40%; <?php echo $showPaymentModal ? 'background: #dc3545; border-color: #dc3545;' : ''; ?>">
+                     <?php echo $showPaymentModal ? 'Complete Payment Reference' : 'Submit Payment Reference'; ?>
+                </button>
                 <div class="status-indicator" style="margin-top:12px; <?php echo $showPaymentModal ? 'color: #dc3545;' : ''; ?>">
                     <?php echo $showPaymentModal ? '⚠️ Status: Payment Reference Required' : 'Status: Waiting for Payment Reference Submission'; ?>
                 </div>
 
             <?php elseif ($booking['booking_status'] == 'PENDING_PAYMENT_VERIFICATION'): ?>
+                <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
                 <div class="status-indicator" style="margin-top:12px;">Status: Waiting for Admin Payment Verification</div>
+                
 
             <?php elseif ($booking['booking_status'] == 'APPROVED'): ?>
-                <div class="status-indicator" style="margin-top:12px; background:#d4edda; border-color:#c3e6cb; color:#155724;">✅ Status: Booking Approved! Your event is confirmed.</div>
+                <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
+                <div class="status-indicator" style="margin-top:25px; margin-bottom:25px; width:90%; background:#d4edda; border-color:#c3e6cb; color:#155724;">✅ Status: Booking Approved! Your event is confirmed.</div>
 
             <?php elseif ($booking['booking_status'] == 'REJECTED'): ?>
-                <div class="status-indicator" style="margin-top:12px; background:#f8d7da; border-color:#f5c6cb; color:#721c24;">❌ Status: Booking Rejected
+                <div class="status-indicator" style="margin-top:25px; margin-bottom:25px; width:40%; background:#f8d7da; border-color:#f5c6cb; color:#721c24;">❌ Status: Booking Rejected
                     <?php if (!empty($booking['rejection_reason'])): ?>
-                        <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
+                        <a href="../user/my_bookings.php" class="View-book-btn"style="margin-top: 12px; margin-left:38px; width:130px; height:70px; font-size:17px;  " >View My Bookings</a>
                         <div style="margin-top:12px;"><strong>Reason:</strong> <?php echo htmlspecialchars($booking['rejection_reason']); ?></div>
                     <?php endif; ?>
                 </div>
 
-                <div style="margin-top:12px; padding:12px; background:#fff3cd; border:1px solid #ffeaa7; border-radius:6px;">
+                <div style="margin-top:12px; padding:12px; background:#fff3cd; border:1px solid #ffeaa7; border-radius:6px;"> 
                     <strong>What to do next?</strong>
                     <p>If you believe this was a mistake or would like to discuss further, please contact our support team.</p>
                 </div>
-
             <?php elseif ($booking['booking_status'] == 'COMPLETED'): ?>
-                <div class="status-indicator" style="margin-top:12px; background:#e2e3e5; border-color:#d6d8db; color:#383d41;">✅ Status: Event Completed Successfully</div>
+                <a href="../user/my_bookings.php" class="proceed-btn">View My Bookings</a>
+                <div class="status-indicator" style="margin-top:25px; margin-bottom:25px; width:90%; background:#e2e3e5; border-color:#d6d8db; color:#383d41;">✅ Status: Event Completed Successfully</div>
             <?php endif; ?>
 
-            <a href="#" class="feedback-link" id="showFeedbackCondition" style="display:block; margin-top:18px;">Feedback and evaluation</a>
+            
         </div>
+        <a href="#" class="feedback-link" id="showFeedbackCondition">Feedback and evaluation</a>
     </aside>
-
+    
     <!-- RIGHT (Summary) - scrollable -->
-    <main class="billing-right" style="flex:1; height:100vh; overflow:auto; background:#fafafa;">
-        <div class="summary-header" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <img src="../assets/images/logo/raflora-logo.jpg" alt="RAFLORA Logo" style="height:48px;">
-                <h2 style="margin:0; font-size:22px;">Summary of deliverables</h2>
+    <main class="billing-right">
+        
+        <div class="summary-header">
+            <h2>Summary of deliverables</h2>
+            <div>
+                <img src="../assets/images/logo/raflora-logo.jpg" alt="RAFLORA Logo">
+                
             </div>
 
-            <div class="summary-info" style="text-align:right;">
+            <div class="summary-info">
                 <div><strong>Date</strong><div><?php echo $formattedDate; ?></div></div>
-                <div style="margin-top:6px;"><strong>Order number</strong><div><?php echo htmlspecialchars($orderId); ?></div></div>
-                <div style="margin-top:6px;"><strong>Payment method</strong><div><?php echo htmlspecialchars($booking['payment_method']); ?></div></div>
+                <div><strong>Order number</strong><div><?php echo htmlspecialchars($orderId); ?></div></div>
+                <div><strong>Payment method</strong><div><?php echo htmlspecialchars($booking['payment_method']); ?></div></div>
             </div>
         </div>
-
-        <table class="summary-table" style="width:100%; margin-top:18px; border-collapse:collapse;">
-            <thead>
+          <thead>
+            <table class="sub-header">
                 <tr>
-                    <th style="text-align:left; padding:8px 0;">Item (Event/Package)</th>
-                    <th style="text-align:center; padding:8px 0;">Price/Unit</th>
-                    <th style="text-align:left; padding:8px 0;">Package Details</th>
-                    <th style="text-align:right; padding:8px 0;">Total cost</th>
+                    <th>Item (Event/Package)</th>
+                    <!-- <th style="text-align:center; padding:8px 0;">Price/Unit</th> -->
+                    <th>Package Details</th>
+                    <th>Total cost</th>
                 </tr>
+            </table>
             </thead>
-            <tbody>
-                <tr style="vertical-align:top;">
+        <table class="summary-table">
+            <tbody class="summary-body">
+                <tr>
                     <td style="padding:12px 0;">
                         <strong>Event:</strong> <?php echo htmlspecialchars($booking['event_theme']); ?><br>
                         <strong>Package:</strong> <?php echo htmlspecialchars($booking['packages']); ?>
@@ -304,7 +277,7 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
             </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:0;">
                 <div><strong>Remaining Balance Due:</strong></div>
-                <div style="font-weight:800; color:#cc0000;"><?php echo format_price($remainingBalance); ?></div>
+                <div style="font-weight:800; color:#fa5353fa;"><?php echo format_price($remainingBalance); ?></div>
             </div>
         </div>
 
@@ -383,8 +356,8 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
                             Reference ID/Code <span class="required-indicator">*</span>
                         </label>
                         <input type="text" class="form-control" name="reference_code" id="referenceCode" required 
-                            placeholder="Enter your 12-30 digit Reference code" 
-                            minlength="12" maxlength="30"
+                            placeholder="Enter your 12-13 digit Reference code" 
+                            minlength="12" maxlength="13"
                             value="<?php echo htmlspecialchars($booking['reference_number'] ?? ''); ?>">
                     </div>
 
@@ -402,109 +375,6 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
   </div>
 
   <script>
-    // Auto-open modal for interrupted transactions
-    <?php if ($showPaymentModal): ?>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Showing payment modal for interrupted transaction');
-            
-            // Use Bootstrap modal to show
-            const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
-            paymentModal.show();
-            
-            // Initialize payment channels with existing booking data
-            setTimeout(function() {
-                const paymentMethod = "<?php echo htmlspecialchars($booking['payment_method']); ?>";
-                const paymentDetailsSelect = document.getElementById('payment-details-select');
-                const customChannelInput = document.getElementById('custom-payment-channel');
-                
-                // Define payment channels
-                const paymentChannels = {
-                    'Online Bank': ['BDO Bank', 'BPI Bank', 'Metrobank', 'UnionBank', 'Landbank', 'Security Bank', 'Other'],
-                    'E-Wallet': ['GCash', 'PayMaya', 'Other']
-                };
-                
-                function initializePaymentChannels() {
-                    if (paymentDetailsSelect && paymentChannels[paymentMethod]) {
-                        // Clear existing options
-                        paymentDetailsSelect.innerHTML = '<option value="">Select channel</option>';
-                        
-                        // Populate with channels based on payment method
-                        paymentChannels[paymentMethod].forEach(channel => {
-                            const option = document.createElement('option');
-                            option.value = channel;
-                            option.textContent = channel;
-                            paymentDetailsSelect.appendChild(option);
-                        });
-                        
-                        console.log('Populated payment channels for:', paymentMethod);
-                        
-                        // Pre-select existing payment details if available
-                        const existingDetails = "<?php echo htmlspecialchars($booking['payment_details'] ?? ''); ?>";
-                        if (existingDetails) {
-                            setTimeout(function() {
-                                // Check if existing details is in the dropdown
-                                const options = Array.from(paymentDetailsSelect.options);
-                                const foundOption = options.find(option => option.value === existingDetails);
-                                
-                                if (foundOption) {
-                                    paymentDetailsSelect.value = existingDetails;
-                                } else if (existingDetails) {
-                                    // If not found, set to "Other" and fill custom input
-                                    paymentDetailsSelect.value = 'Other';
-                                    customChannelInput.style.display = 'block';
-                                    customChannelInput.disabled = false;
-                                    customChannelInput.required = true;
-                                    customChannelInput.value = existingDetails;
-                                }
-                                
-                                // Trigger change event to update UI
-                                paymentDetailsSelect.dispatchEvent(new Event('change'));
-                            }, 100);
-                        }
-                    }
-                }
-                
-                function handleChannelSelection() {
-                    if (paymentDetailsSelect && customChannelInput) {
-                        const selectedValue = paymentDetailsSelect.value;
-                        
-                        if (selectedValue === 'Other') {
-                            // Show and enable custom input
-                            customChannelInput.style.display = 'block';
-                            customChannelInput.disabled = false;
-                            customChannelInput.required = true;
-                            customChannelInput.placeholder = 'Enter payment channel name';
-                        } else {
-                            // Hide and disable custom input
-                            customChannelInput.style.display = 'none';
-                            customChannelInput.disabled = true;
-                            customChannelInput.required = false;
-                            customChannelInput.value = ''; // Clear value
-                        }
-                    }
-                }
-                
-                // Initialize on page load
-                initializePaymentChannels();
-                
-                // Add event listener for channel selection
-                if (paymentDetailsSelect) {
-                    paymentDetailsSelect.addEventListener('change', handleChannelSelection);
-                }
-                
-                // Initialize custom input state
-                handleChannelSelection();
-                
-            }, 200);
-            
-            // Clean URL to prevent modal showing on refresh
-            if (window.history.replaceState) {
-                const cleanUrl = window.location.href.split('?')[0] + '?order_id=<?php echo $orderId; ?>';
-                window.history.replaceState({}, document.title, cleanUrl);
-            }
-        });
-    <?php endif; ?>
-
     // Function to open modal manually
     function openPaymentModal() {
         const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));

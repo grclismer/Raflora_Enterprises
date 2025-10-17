@@ -146,11 +146,11 @@ function format_price($price) {
                     <thead>
                         <tr>
                             <th class="px-6 py-3 text-left text-xs tracking-wider w-1/6">Order ID</th>
-                            <th class="px-6 py-3 text-left text-xs tracking-wider w-1/4">Event/Package</th>
+                            <th class="px-6 py-3 text-left text-xs tracking-wider w-1/6">Event/Package</th>
                             <th class="px-6 py-3 text-left text-xs tracking-wider w-1/6">Event Date</th>
                             <th class="px-6 py-3 text-right text-xs tracking-wider w-1/6">Total Price</th>
-                            <th class="px-6 py-3 text-left text-xs tracking-wider w-1/6">Status</th>
-                            <th class="px-6 py-3 text-left text-xs tracking-wider w-1/4">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs tracking-wider w-1/7">Status</th>
+                            <th class="px-6 py-3 text-left text-xs tracking-wider w-1/6">Actions</th>
                         </tr>
                     </thead>
                 </table>
@@ -167,21 +167,21 @@ function format_price($price) {
                                 $shouldShowSubmitPayment = ($booking_status === 'PENDING_ORDER_CONFIRMATION' && !$hasReference);
                             ?>
                             <tr class="hover:bg-gray-50 transition duration-150 ease-in-out">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 w-1/6">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 ">
                                     #<?php echo htmlspecialchars($booking['booking_id']); ?>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-700 w-1/4">
+                                <td class="px-6 py-4 text-sm text-gray-700 ">
                                     <div class="font-medium text-gray-900"><?php echo htmlspecialchars($booking['event_theme']); ?></div>
                                     <div class="text-gray-500 text-xs"><?php echo htmlspecialchars($booking['packages']); ?></div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
                                     <?php echo date('M d, Y', strtotime($booking['event_date'])); ?>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-extrabold text-gray-900 text-right w-1/6">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-extrabold text-gray-900 text-right">
                                     <?php echo format_price($price); ?>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/6">
-                                    <span class="status-badge status-<?php echo $normalized_status; ?>">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 ">
+                                    <span class="status-badge status-<?php echo $normalized_status; ?> w-1/6">
                                         <?php 
                                         // FIXED: Proper status display
                                         $display_status = str_replace('_', ' ', $booking_status);
@@ -189,11 +189,15 @@ function format_price($price) {
                                         ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3 w-1/4">
-                                    <a href="billing.php?order_id=<?php echo $booking['booking_id']; ?>" class="text-indigo-600 hover:text-indigo-900">View Details</a>
-                                    
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">
                                     <?php if ($shouldShowSubmitPayment): ?>
-                                        <span class="text-gray-300">|</span>
+                                        
+                                    <?php else: ?>
+                                        <a href="billing.php?order_id=<?php echo $booking['booking_id']; ?>" class="text-indigo-600 hover:text-indigo-900">View Details</a>
+                                    <?php endif; ?>
+
+                                    <?php if ($shouldShowSubmitPayment): ?>
+                                        
                                         <!-- UPDATED: Changed parameter name to trigger_modal -->
                                         <a href="billing.php?order_id=<?php echo $booking['booking_id']; ?>&trigger_modal=1" class="text-green-600 hover:text-green-900 font-bold">Submit Payment</a>
                                     <?php endif; ?>

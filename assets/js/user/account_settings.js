@@ -277,3 +277,59 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.classList.add('hidden');
     }
 });
+
+
+// QR Code functionality
+async function generateQRCode() {
+    try {
+        const generateBtn = document.getElementById('generateQRBtn');
+        const downloadBtn = document.getElementById('downloadQRBtn');
+        const qrImage = document.getElementById('qrCodeImage');
+        const qrPlaceholder = document.getElementById('qrCodePlaceholder');
+        
+        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+        generateBtn.disabled = true;
+
+        const response = await fetch('../api/generate_qr_login.php');
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            // Generate QR code image
+            const qrCodeUrl = `../api/get_qr_code.php?t=${Date.now()}`;
+            qrImage.src = qrCodeUrl;
+            qrImage.classList.remove('hidden');
+            qrPlaceholder.classList.add('hidden');
+            downloadBtn.classList.remove('hidden');
+            
+            // Store session ID for download
+            qrImage.dataset.sessionId = result.session_id;
+            
+            showMessage('QR code generated successfully!', 'success');
+        } else {
+            showMessage('Failed to generate QR code: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error generating QR code:', error);
+        showMessage('Error generating QR code', 'error');
+    } finally {
+        const generateBtn = document.getElementById('generateQRBtn');
+        generateBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Generate New QR Code';
+        generateBtn.disabled = false;
+    }
+}
+// QR Code Download Function
+function downloadQRCode() {
+    const userId = document.getElementById('currentUserId').value;
+    const qrImageUrl = `../api/get_user_qr.php?user_id=${userId}&download=1`;
+    
+    // Create temporary link for download
+    const link = document.createElement('a');
+    link.href = qrImageUrl;
+    link.download = `raflora-login-qr-${userId}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Show success message
+    showMessage('QR code downloaded successfully!', 'success');
+}
