@@ -305,7 +305,7 @@ $fileUrl = (strpos($designPath, 'default') !== false) ? null : '../' . $designPa
                     <div class="alert alert-info" role="alert">
                         Please complete your payment information below. <br>
                         <strong>Gcash No. 09773436195</strong> <br>
-                        <strong>Bank No.  001234567891</strong><br>
+                        <strong>BDO SAVINGS ACCOUNT:  0013-9018-3937</strong><br>
                     </div>
                     
                     <p><strong>Order ID:</strong> <span id="modal-order-id"><?php echo $orderId; ?></span></p>

@@ -88,7 +88,6 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
     $formattedAmount = '₱' . number_format($amountDue, 2);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -101,7 +100,16 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
     <script src="../assets/js/user/navbar.js" defer></script>
     <script src="../assets/js/user/booking.js" defer></script>
     <script src="../assets/js/user/modal.js" defer></script>
+    <script src="../assets/js/user/navbar.js" defer></script>
+    <!-- In your HTML head -->
+ <link rel="stylesheet" href="../assets/css/user/terms_policy.css">
+    
+    <script src="../assets/js/user/navbar.js" defer></script>
+    <script src="../assets/js/user/booking.js" defer></script>
+    <!-- Add the modal JS -->
+    <script src="../assets/js/user/terms_policy.js" defer></script>
 
+ 
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -258,13 +266,32 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                     <div class="form-action">
                         <button type="submit" class="submit-button" name="place_order_btn">Place order</button>
                     </div>
-                    
-                    <label style="display:block; margin-bottom:8px;">
-                        <input type="checkbox" required> I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a>
-                    </label>
-                    <label style="display:block; margin-bottom:12px;">
-                        <input type="checkbox" required> I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a>
-                    </label>
+                    <!-- Terms and condition with privacy Policy pop-up modal -->
+                                        <!-- Method 1: Using specific IDs (auto-detected) -->
+                    <!-- Terms and condition with privacy Policy -->
+<div class="modal-checkbox">
+    <input type="checkbox" id="privacyCheckbox" required>
+    <span>I read and agree to <a href="#" id="showPrivacyPolicy">Privacy Policy</a></span>
+</div>
+<div class="modal-checkbox">
+    <input type="checkbox" id="termsCheckbox" required>
+    <span>I read and agree to <a href="#" id="showTermsCondition">Terms and Condition</a></span>
+</div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Manual attachment if needed
+                            const customPrivacy = document.getElementById('customPrivacyLink');
+                            const customTerms = document.getElementById('customTermsLink');
+                            
+                            if (customPrivacy) {
+                                window.termsPrivacyModal.attachToElement(customPrivacy, 'privacy');
+                            }
+                            if (customTerms) {
+                                window.termsPrivacyModal.attachToElement(customTerms, 'terms');
+                            }
+                        });
+                    </script>
+                        
                 </form>
             </div>
         </div>
@@ -284,7 +311,7 @@ if (isset($_GET['order_id']) && isset($_GET['payment_method']) && isset($_GET['p
                         <div class="alert alert-info" role="alert">
                             Please complete your payment information below. <br>
                             <strong>Gcash No. 09773436195</strong><br>
-                            <strong>Bank No.  001234567891</strong><br>
+                            <strong>BDO SAVINGS ACCOUNT:  0013 - 9018 - 3937</strong><br>
                         </div>
                         
                         <p><strong>Order ID:</strong> <span id="modal-order-id"><?php echo $orderId; ?></span></p>

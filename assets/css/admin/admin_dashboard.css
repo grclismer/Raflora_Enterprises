@@ -31,6 +31,7 @@ body {
     color: white;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     transition: width 0.3s ease;
+    /* position: fixed; */
 }
 
 .logo img {
