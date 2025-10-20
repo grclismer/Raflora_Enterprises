@@ -266,3 +266,50 @@ tr:hover {
         overflow: auto;
     }
 }
+
+
+/* Delete Button Styles */
+.delete-permanent-btn {
+    background: #dc3545 !important;
+    color: white !important;
+    border: 1px solid #dc3545 !important;
+}
+
+.delete-permanent-btn:hover {
+    background: #c82333 !important;
+    border-color: #c82333 !important;
+}
+
+.cancel-btn {
+    background: #6c757d !important;
+    color: white !important;
+    border: 1px solid #6c757d !important;
+}
+
+.cancel-btn:hover {
+    background: #5a6268 !important;
+    border-color: #5a6268 !important;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-actions .action-btn {
+    flex: 1;
+    text-align: center;
+}
+
+/* Warning text */
+.warning-text {
+    color: #dc3545;
+    font-weight: bold;
+    margin: 10px 0;
+    padding: 10px;
+    background: #ffe6e6;
+    border-radius: 5px;
+    border-left: 4px solid #dc3545;
+}

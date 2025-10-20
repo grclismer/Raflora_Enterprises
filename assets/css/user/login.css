@@ -163,6 +163,7 @@ body {
     text-align: center;
     color: #d5d5d5; /* Green color for greeting */
     font-size: 1.5em;
+    margin-top: 50px;
     margin-bottom: 5px;
     font-weight: bold;
     display: none; /* Hidden by default */
@@ -319,4 +320,56 @@ body {
         flex-direction: column; /* Stacks columns vertically on small screens */
         gap: 0;
     }
+}
+
+
+.success-message {
+    background-color: #d4edda08;
+    color: #1ab13d;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.error-message {
+    background-color: #d4edda08;
+    color: #c9071bc0;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.forgot-instructions {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* Loading state for button */
+.btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+
+
+
+.info-message {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #bee5eb;
+    text-align: center;
+}
+
+.scanner-header{
+    padding: 10px;
+    font-size: larger;
 }

@@ -27,7 +27,6 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 $user_data = [];
 
 if (!$conn->connect_error) {
-    // UPDATED QUERY TO INCLUDE PROFILE PICTURE
     $stmt = $conn->prepare("SELECT user_id, first_name, last_name, user_name, email, mobile_number, address, profile_picture FROM accounts_tbl WHERE user_id = ?");
     $stmt->bind_param("i", $_SESSION['user_id']);
     $stmt->execute();
@@ -38,6 +37,20 @@ if (!$conn->connect_error) {
     }
     $stmt->close();
     $conn->close();
+}
+
+// Check for success/error messages
+$success_message = '';
+$error_message = '';
+
+if (isset($_SESSION['success'])) {
+    $success_message = $_SESSION['success'];
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    $error_message = $_SESSION['error'];
+    unset($_SESSION['error']);
 }
 ?>
 <!DOCTYPE html>
@@ -50,8 +63,6 @@ if (!$conn->connect_error) {
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<!-- Add this in the body section, before the script tag -->
-<input type="hidden" id="currentUserId" value="<?php echo $user_data['user_id']; ?>">
 <body>
     <!-- Account Settings Container -->
     <div id="settings-card" class="settings-card">
@@ -60,12 +71,25 @@ if (!$conn->connect_error) {
         </button>
         <h2 class="settings-title">Account Settings</h2>
 
+        <!-- Display Messages -->
+        <?php if ($success_message): ?>
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> <?php echo $success_message; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($error_message): ?>
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i> <?php echo $error_message; ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Profile Picture Upload -->
         <div class="profile-picture-section">
             <div class="profile-container">
                 <div class="profile-image-container" onclick="viewProfileImage()">
-                    <i id="avatarIcon" class="profile-placeholder-icon <?php echo !empty($user_data['profile_picture']) ? 'hidden' : ''; ?>"></i>
-                    <img id="profileImage" src="<?php echo !empty($user_data['profile_picture']) ? '/raflora_enterprises/' . $user_data['profile_picture'] : ''; ?>" alt="Profile" class="profile-image <?php echo empty($user_data['profile_picture']) ? 'hidden' : ''; ?>">
+                    <i id="avatarIcon" class="fas fa-user profile-placeholder-icon <?php echo !empty($user_data['profile_picture']) ? 'hidden' : ''; ?>"></i>
+                    <img id="profileImage" src="<?php echo !empty($user_data['profile_picture']) ? '../' . $user_data['profile_picture'] : ''; ?>" alt="Profile" class="profile-image <?php echo empty($user_data['profile_picture']) ? 'hidden' : ''; ?>">
                     <div id="profileMenu" class="profile-menu <?php echo empty($user_data['profile_picture']) ? 'hidden' : ''; ?>">
                         <button type="button" onclick="event.stopPropagation(); toggleProfileMenu()" class="profile-menu-button">
                             <i class="fas fa-ellipsis-h"></i>
@@ -88,7 +112,8 @@ if (!$conn->connect_error) {
         </div>
 
         <!-- START FORM HERE -->
-        <form id="settingsForm" onsubmit="handleSave(event)">
+        <form id="settingsForm" method="POST" action="update_account.php">
+            <input type="hidden" name="user_id" value="<?php echo $user_data['user_id']; ?>">
             
             <!-- User ID and Username Display -->
             <div class="form-grid">
@@ -108,13 +133,13 @@ if (!$conn->connect_error) {
             <div class="form-grid">
                 <div class="form-group form-group-icon">
                     <input type="text" id="reg-firstname" name="firstname" placeholder="First Name" maxlength="50" required 
-                           value="<?php echo $user_data['first_name'] ?? ''; ?>"
+                           value="<?php echo htmlspecialchars($user_data['first_name'] ?? ''); ?>"
                            class="form-input">
                     <i class="fa-solid fa-signature form-icon"></i>
                 </div>
                 <div class="form-group form-group-icon">
                     <input type="text" id="reg-lastname" name="lastname" placeholder="Last Name" maxlength="50" required 
-                           value="<?php echo $user_data['last_name'] ?? ''; ?>"
+                           value="<?php echo htmlspecialchars($user_data['last_name'] ?? ''); ?>"
                            class="form-input">
                     <i class="fa-solid fa-signature form-icon"></i>
                 </div>
@@ -123,13 +148,13 @@ if (!$conn->connect_error) {
             <!-- Email and Contact Number Group -->
             <div class="form-grid">
                 <div class="form-group form-group-icon">
-                    <input type="email" id="reg-email" placeholder="Email" value="<?php echo $user_data['email'] ?? ''; ?>" required
+                    <input type="email" id="reg-email" name="email" placeholder="Email" value="<?php echo htmlspecialchars($user_data['email'] ?? ''); ?>" required
                            class="form-input">
                     <i class="fa fa-envelope form-icon"></i>
                 </div>
                 <div class="form-group form-group-icon">
                     <input type="tel" id="reg-phone" name="phone" placeholder="Contact Number (e.g., 900-123-4567)" maxlength="15" 
-                           value="<?php echo $user_data['mobile_number'] ?? ''; ?>"
+                           value="<?php echo htmlspecialchars($user_data['mobile_number'] ?? ''); ?>"
                            class="form-input">
                     <i class="fa-solid fa-phone form-icon"></i>
                 </div>
@@ -137,7 +162,7 @@ if (!$conn->connect_error) {
             
             <div class="form-group form-group-icon address-group">
                 <input type="text" id="reg-address" name="address" placeholder="Address (Optional)" maxlength="255"
-                        value="<?php echo $user_data['address'] ?? ''; ?>"
+                        value="<?php echo htmlspecialchars($user_data['address'] ?? ''); ?>"
                         class="form-input">
                 <i class="fa-solid fa-map-location-dot form-icon"></i>
             </div>
@@ -145,51 +170,54 @@ if (!$conn->connect_error) {
             <!-- Security Section -->
             <div class="section-title security-title">Security</div>
             
-            <!-- Change the password section to -->
+            <!-- Change Password Section -->
             <div class="password-section">
                 <h4 class="password-title">Change Password (Leave blank if not changing):</h4>
                 <div class="password-group">
                     <div class="form-group form-group-icon">
-                        <input type="password" id="current-password" placeholder="Current Password" class="form-input">
+                        <input type="password" id="current-password" name="current_password" placeholder="Current Password" class="form-input">
                         <i class="fa fa-lock form-icon"></i>
                     </div>
                     <div class="form-group form-group-icon">
-                        <input type="password" id="new-password" placeholder="New Password" class="form-input">
+                        <input type="password" id="new-password" name="new_password" placeholder="New Password" class="form-input">
                         <i class="fa fa-lock form-icon"></i>
                     </div>
                     <div class="form-group form-group-icon">
-                        <input type="password" id="confirm-new-password" placeholder="Confirm New Password" class="form-input">
+                        <input type="password" id="confirm-new-password" name="confirm_new_password" placeholder="Confirm New Password" class="form-input">
                         <i class="fa fa-lock form-icon"></i>
                     </div>
                 </div>
             </div>
+            
             <button type="submit" class="save-btn">
                 <i class="fa-solid fa-floppy-disk"></i> Save Changes
             </button>
         </form>
-    <!-- QR Code Login Section -->
-<div class="section-title qr-title">QR Code Login</div>
-<div class="qr-section">
-    <div class="qr-content">
-        <span class="qr-title">Your Login QR Code</span>
-        <p class="qr-description">Use this QR code to log in quickly. Save it to your phone and scan it on the login page.</p>
-        
-        <!-- QR Code Display -->
-        <div class="qr-code-container">
-            <div class="qr-code-display">
-                <img id="qrCodeImage" 
-     src="/Raflora_Enterprises/api/get_user_qr.php?user_id=<?php echo $user_data['user_id']; ?>" 
-     alt="Your Login QR Code" 
-     class="qr-image">
+
+        <!-- QR Code Login Section -->
+        <div class="section-title qr-title">QR Code Login</div>
+        <div class="qr-section">
+            <div class="qr-content">
+                <span class="qr-title">Your Login QR Code</span>
+                <p class="qr-description">Use this QR code to log in quickly. Save it to your phone and scan it on the login page.</p>
+                
+                <!-- QR Code Display -->
+                <div class="qr-code-container">
+                    <div class="qr-code-display">
+                        <img id="qrCodeImage" 
+                             src="../api/get_user_qr.php?user_id=<?php echo $user_data['user_id']; ?>" 
+                             alt="Your Login QR Code" 
+                             class="qr-image">
+                    </div>
+                    
+                    <!-- Download Button -->
+                    <button onclick="downloadQRCode()" class="download-qr-btn">
+                        <i class="fas fa-download"></i> Save QR Code
+                    </button>
+                </div>
             </div>
-            
-            <!-- Download Button -->
-            <button onclick="downloadQRCode()" class="download-qr-btn">
-                <i class="fas fa-download"></i> Save QR Code
-            </button>
         </div>
-    </div>
-</div>
+        
         <!-- Danger Zone -->
         <div class="section-title danger-title">Deactivate account</div>
         <!-- Delete Account -->
@@ -203,6 +231,7 @@ if (!$conn->connect_error) {
             </button>
         </div>
     </div>
+    
     <!-- Image View Modal -->
     <div id="imageViewModal" class="image-view-modal hidden">
         <div class="image-modal-content">
@@ -212,6 +241,7 @@ if (!$conn->connect_error) {
             <img id="modalProfileImage" src="" alt="Profile Preview" class="image-modal-preview">
         </div>
     </div>
+    
     <!-- Message Modal (for alerts) -->
     <div id="message-box" class="message-modal hidden">
         <div class="modal-content">

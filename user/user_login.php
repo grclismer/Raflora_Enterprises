@@ -38,36 +38,35 @@
                 <div class="register-link">
                     <p>Don't have an account? <a href="#register-form" id="showRegister">Register</a></p>
                 </div>
-                <!-- Add this after the login form buttons -->
-<!-- QR Scanner Modal -->
-<div id="qrScannerModal" class="modal hidden">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Scan QR Code</h3>
-            <button class="close-btn" onclick="closeQRScanner()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div id="qrScannerContainer">
-                <video id="qrVideo" autoplay playsinline></video>
-                <canvas id="qrCanvas" class="hidden"></canvas>
-            </div>
-            <div class="qr-upload-section">
-                <p>Or upload QR code image:</p>
-                <input type="file" id="qrFileInput" accept="image/*" onchange="handleQRFileUpload(event)">
-            </div>
-        </div>
-    </div>
-</div>
+                <!-- QR Scanner Modal -->
+                <div id="qrScannerModal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="scanner-header">
+                            <h3>Scan QR Code</h3>
+                            <button class="close-scanner" onclick="closeQRScanner()">&times;</button>
+                        </div>
+                        <div class="scanner-body">
+                            <div id="qrScannerContainer">
+                                <video id="qrVideo" autoplay playsinline></video>
+                                <canvas id="qrCanvas" class="hidden"></canvas>
+                            </div>
+                            <div class="qr-upload-section">
+                                <p>Or upload QR code image:</p>
+                                <input type="file" id="qrFileInput" accept="image/*" onchange="handleQRFileUpload(event)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<!-- QR Login Option -->
-<div class="qr-login-option">
-    <div class="divider">
-        <span>Or login with QR Code</span>
-    </div>
-    <button type="button" class="btn qr-btn" onclick="openQRScanner()">
-        <i class="fas fa-qrcode"></i> Scan QR Code
-    </button>
-</div>
+                <!-- QR Login Option -->
+                <div class="qr-login-option">
+                    <div class="divider">
+                        <span>Or login with QR Code</span>
+                    </div>
+                    <button type="button" class="btn qr-btn" onclick="openQRScanner()">
+                        <i class="fas fa-qrcode"></i> Scan QR Code
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -154,9 +153,9 @@
                 <div id="forgotPasswordMessage" class="welcome-message"></div>
                 <p class="forgot-instructions">Enter your email and we'll send you a link to reset your password.</p>
                 <div class="input-box">
-                    <input type="email" id="forgot-email" placeholder=" " required>
+                    <input type="email" id="forgot-email" name="email" placeholder=" " required>
                     <label for="forgot-email">Email</label>
-                    <i class="fa-solid fa-envelope"></i>
+                <i class="fa-solid fa-envelope"></i>
                 </div>
                 <button type="submit" class="btn">Reset Password</button>
                 <div class="register-link">

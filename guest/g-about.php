@@ -34,11 +34,7 @@
                 <li><a href="../user/user_login.php" class="nav-link">Log-in</a></li>
             </ul>
         </nav>
-        <button id="dark-mode-icon-toggle" 
-            class="fixed top-4 left-4 p-3 rounded-full text-2xl transition-colors duration-300 hover:bg-gray-200 dark:hover:bg-gray-800 z-[9999] focus:outline-none">
-        <!-- CRITICAL: Ang JS ang magse-set ng Moon o Sun icon base sa current state -->
-        <i id="dark-mode-icon" class="fa-solid fa-moon text-blue-600 dark:text-yellow-400"></i>
-        </button>
+    
         <div class="About-Info">
             <div class="profile-section">
                 <div class="profile-content">
@@ -57,7 +53,7 @@
                     <img src="../assets/images/portrait/Rafael.jpg" alt="Raffy Chrisrtian Zamora">
                 </div>
                 <div class="profile-content">
-                    <h1>Raffy Chrisrtian Zamora</h1>
+                    <h1>Raffy Christian Zamora</h1>
                     <h3>PROPRIETOR</h3>
                     <p>Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:</p>
                     <br>

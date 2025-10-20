@@ -489,3 +489,43 @@ function testQRScan() {
 
 // Add this at the top of your QR scanner functions
 console.log("🔍 Checking jsQR library:", typeof jsQR);
+
+
+// Forgot Password Form Handling
+document.getElementById('forgotPasswordForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const messageDiv = document.getElementById('forgotPasswordMessage');
+    
+    // Clear previous messages
+    messageDiv.innerHTML = '<div class="info-message">Processing your request...</div>';
+    
+    try {
+        console.log('Sending forgot password request...');
+        
+        const response = await fetch('../api/forgot_password.php', {
+            method: 'POST',
+            body: formData
+        });
+        
+        console.log('Response received:', response);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Result:', result);
+        
+        if (result.status === 'success') {
+            messageDiv.innerHTML = `<div class="success-message">${result.message}</div>`;
+            this.reset();
+        } else {
+            messageDiv.innerHTML = `<div class="error-message">${result.message}</div>`;
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        messageDiv.innerHTML = `<div class="error-message">Network error: ${error.message}. Please check console for details.</div>`;
+    }
+});

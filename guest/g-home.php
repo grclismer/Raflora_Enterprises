@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../assets/css/user/navbar.css">
     <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <script src="../assets/js/user/dark_mode.js"></script> 
+    <!-- <script src="../assets/js/user/dark_mode.js"></script>  -->
     <link rel="stylesheet" href="../assets/css/user/dark_mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -103,5 +103,6 @@
          </footer>
     </div> 
     <script src="./js/script.js"></script>
+    
 </body>
 </html>

@@ -106,7 +106,7 @@ $conn->close();
                     <img src="../assets/images/portrait/Rafael.jpg" alt="Raffy Chrisrtian Zamora">
                 </div>
                 <div class="profile-content">
-                    <h1>Raffy Chrisrtian Zamora</h1>
+                    <h1>Raffy Christian Zamora</h1>
                     <h3>PROPRIETOR </h3>
                     <p>Body text for your whole article or post. We'll put in some lorem ipsum to show how a filled-out page might look:</p>
                     <br>

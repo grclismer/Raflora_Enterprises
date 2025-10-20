@@ -1,48 +1,45 @@
 <?php
-
-// =======================================================================
-// PHP SCRIPT START - TIMEZONE CORRECTION
-// =======================================================================
-
-// Example: Set the timezone to Manila (Philippines Standard Time)
+// api/change_password.php
 date_default_timezone_set('Asia/Manila');
-
-// Turn off error display but log them
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-
 session_start();
 header('Content-Type: application/json');
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Please log in to change password']);
+    exit();
+}
 
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "raflora_enterprises";
 
-// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
 if ($conn->connect_error) {
     echo json_encode(['status' => 'error', 'message' => "Database connection failed"]);
     exit();
 }
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
+$user_id = $_SESSION['user_id'];
+$current_password = $_POST['current_password'] ?? '';
+$new_password = $_POST['new_password'] ?? '';
+$confirm_password = $_POST['confirm_password'] ?? '';
+
+// Validate input
+if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
+    echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
+if ($new_password !== $confirm_password) {
+    echo json_encode(['status' => 'error', 'message' => 'New passwords do not match']);
+    exit();
+}
 
-// Get POST data
-$current_password = $_POST['current_password'] ?? '';
-$new_password = $_POST['new_password'] ?? '';
-
-// Validate
-if (empty($current_password) || empty($new_password)) {
-    echo json_encode(['status' => 'error', 'message' => 'Current password and new password are required']);
+if (strlen($new_password) < 6) {
+    echo json_encode(['status' => 'error', 'message' => 'New password must be at least 6 characters long']);
     exit();
 }
 

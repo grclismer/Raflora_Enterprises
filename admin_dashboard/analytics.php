@@ -161,44 +161,64 @@ $avgRatingFormatted = number_format($avgRating, 1);
 
             <div class="content-grid">
                 <!-- Client List -->
-                <div class="client-list">
-                    <div class="section-header">
-                        <h3>Top Clients</h3>
-                    </div>
-                    <div class="client-table-container">
-                        <table class="client-table">
-                            <thead>
-                                <tr>
-                                    <th>Client Name</th>
-                                    <th>Bookings</th>
-                                    <th>Total Spent</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach(array_slice($clientAnalytics, 0, 8) as $client): ?>
-                                <tr>
-                                    <td class="client-name"><?php echo htmlspecialchars($client['client_name'] ?: 'Unknown Client'); ?></td>
-                                    <td class="booking-count"><?php echo $client['total_bookings']; ?></td>
-                                    <td class="total-spent">₱<?php echo number_format($client['total_spent'], 2); ?></td>
-                                    <td class="client-status">
-                                        <span class="status-badge <?php echo strtolower($client['latest_status'] ?? 'unknown'); ?>">
-                                            <?php echo $client['latest_status'] ?? 'No Bookings'; ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php if(empty($clientAnalytics)): ?>
-                                <tr>
-                                    <td colspan="4" style="text-align: center; color: #95a5a6; padding: 20px;">
-                                        No client data available yet.
-                                    </td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<div class="client-list">
+    <div class="section-header">
+        <h3>Top Clients</h3>
+    </div>
+    <div class="client-table-container">
+        <table class="client-table">
+            <thead>
+                <tr>
+                    <th>Client Name</th>
+                    <th>Bookings</th>
+                    <th>Total Spent</th>
+                    <th>Client Tier</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach(array_slice($clientAnalytics, 0, 8) as $client): 
+                    $totalSpent = $client['total_spent'] ?? 0;
+                    // Define client tiers based on total spending
+                    if ($totalSpent >= 50000) {
+                        $tier = 'VIP';
+                        $tierClass = 'vip-tier';
+                        $tierDescription = 'Elite Client';
+                    } elseif ($totalSpent >= 20000) {
+                        $tier = 'Premium';
+                        $tierClass = 'premium-tier';
+                        $tierDescription = 'Loyal Client';
+                    } elseif ($totalSpent >= 5000) {
+                        $tier = 'Standard';
+                        $tierClass = 'standard-tier';
+                        $tierDescription = 'Regular Client';
+                    } else {
+                        $tier = 'New';
+                        $tierClass = 'new-tier';
+                        $tierDescription = 'New Client';
+                    }
+                ?>
+                <tr>
+                    <td class="client-name"><?php echo htmlspecialchars($client['client_name'] ?: 'Unknown Client'); ?></td>
+                    <td class="booking-count"><?php echo $client['total_bookings']; ?></td>
+                    <td class="total-spent">₱<?php echo number_format($totalSpent, 2); ?></td>
+                    <td class="client-tier">
+                        <span class="tier-badge <?php echo $tierClass; ?>" title="<?php echo $tierDescription; ?>">
+                            <?php echo $tier; ?>
+                        </span>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                <?php if(empty($clientAnalytics)): ?>
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #95a5a6; padding: 20px;">
+                        No client data available yet.
+                    </td>
+                </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
                 <!-- Charts Section -->
                 <div class="charts-section">

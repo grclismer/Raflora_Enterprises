@@ -24,7 +24,7 @@ if ($conn->connect_error) {
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "User not logged in";
-    header("Location: login.php");
+    header("Location: ../guest/login.php");
     exit();
 }
 

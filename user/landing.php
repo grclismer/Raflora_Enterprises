@@ -84,10 +84,7 @@ $conn->close();
             </ul>
         </nav>
         
-        <!-- DARK MODE BUTTON: Gumamit ng z-[9999] para hindi matabunan ng ibang elements -->
-        <!-- <button id="dark-mode-icon-toggle">
-            <i id="dark-mode-icon" class="fa-solid fa-moon"></i>
-        </button> -->
+       
         
         <div class="Landing-page">
             <div class="Home-bg">
@@ -159,5 +156,6 @@ $conn->close();
                 </div>
         </footer>
     </div> 
+    
 </body>
 </html>
