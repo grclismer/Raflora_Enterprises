@@ -240,10 +240,19 @@ console.log("📚 jsQR available:", typeof jsQR !== 'undefined');
 function openQRScanner() {
     console.log("🎬 Opening QR scanner...");
     const modal = document.getElementById('qrScannerModal');
+    const traditionalLogin = document.querySelector('#traditional-login');
+    
     if (!modal) {
         console.error("❌ QR scanner modal not found!");
         return;
     }
+    
+    // Hide traditional login elements
+    if (traditionalLogin) {
+        traditionalLogin.style.display = 'none';
+    }
+    
+    // Show QR scanner
     modal.classList.remove('hidden');
     startQRScanner();
 }
@@ -251,29 +260,56 @@ function openQRScanner() {
 function closeQRScanner() {
     console.log("🛑 Closing QR scanner...");
     const modal = document.getElementById('qrScannerModal');
+    const traditionalLogin = document.querySelector('#traditional-login');
+    
+    // Show traditional login elements
+    if (traditionalLogin) {
+        traditionalLogin.style.display = 'block';
+    }
+    
+    // Hide QR scanner
     modal.classList.add('hidden');
     stopQRScanner();
 }
+// Add this function for better error messages
+function showScannerMessage(message, type = 'info') {
+    const messageDiv = document.getElementById('welcomeMessageLogin');
+    if (messageDiv) {
+        messageDiv.textContent = message;
+        messageDiv.style.color = type === 'error' ? 'red' : 'green';
+        messageDiv.style.display = 'block';
+        
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 5000);
+    }
+}
 
+// Update your startQRScanner function
 async function startQRScanner() {
     try {
         console.log("📷 Starting camera...");
         const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: "environment" } 
+            video: { 
+                facingMode: "environment",
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            } 
         });
+        
         const video = document.getElementById('qrVideo');
         video.srcObject = stream;
         
         video.onloadedmetadata = function() {
             console.log("✅ Camera stream loaded");
+            video.play();
         };
         
-        console.log("🔍 Starting QR scan loop...");
-        qrScanner = setInterval(scanQRFrame, 500); // Scan every 500ms
+        qrScanner = setInterval(scanQRFrame, 500);
         
     } catch (err) {
         console.error('❌ Camera error:', err);
-        showMessage('Cannot access camera. Please upload QR code image instead.', 'error');
+        showScannerMessage('Cannot access camera. Please ensure camera permissions are granted.', 'error');
     }
 }
 

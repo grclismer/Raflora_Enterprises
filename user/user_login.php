@@ -11,63 +11,71 @@
 <body>
     <div class="Login-form" id="loginFormContainer">
         <div class="wrapper">
-            <form id="loginForm" action="../api/login.php" method="post">
-                <span class="return">
-                    <a href="../guest/g-home.php"><h2>X</h2></a>`
-                </span>
-                <h1>Login</h1>
-                <!-- The welcome message div will now display login success or error -->
-                <div id="welcomeMessageLogin" class="welcome-message"></div>
-                <div class="input-box">
-                    <input type="text" id="username" name="username" placeholder=" " maxlength="30" required>
-                    <label for="username">Username</label>
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="input-box">
-                    <input type="password" id="password" name="password" placeholder=" " maxlength="50" required>
-                    <label for="password">Password</label>
-                    <!-- This icon will be toggled by the JS to show/hide the password -->
-                    <i class="fa-solid fa-eye-slash" id="togglePassword"></i>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <div class="remember-forgot">
-                    <!-- <label><input type="checkbox" name="remember_me"> Remember me</label> -->
-                    <a href="#frogot-form" id="showForgotPassword">Forgot password?</a>
-                </div>
-                <button type="submit" class="btn">Login</button>
-                <div class="register-link">
-                    <p>Don't have an account? <a href="#register-form" id="showRegister">Register</a></p>
-                </div>
-                <!-- QR Scanner Modal -->
-                <div id="qrScannerModal" class="modal hidden">
-                    <div class="modal-content">
-                        <div class="scanner-header">
-                            <h3>Scan QR Code</h3>
-                            <button class="close-scanner" onclick="closeQRScanner()">&times;</button>
-                        </div>
-                        <div class="scanner-body">
-                            <div id="qrScannerContainer">
-                                <video id="qrVideo" autoplay playsinline></video>
-                                <canvas id="qrCanvas" class="hidden"></canvas>
-                            </div>
-                            <div class="qr-upload-section">
-                                <p>Or upload QR code image:</p>
-                                <input type="file" id="qrFileInput" accept="image/*" onchange="handleQRFileUpload(event)">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Inside your login form -->
+<form id="loginForm" action="../api/login.php" method="post">
+    <span class="return">
+        <a href="../guest/g-home.php"><h2>X</h2></a>
+    </span>
+    
+    <!-- Traditional Login Container -->
+    <div id="traditional-login">
+        <h1>Login</h1>
+        <div id="welcomeMessageLogin" class="welcome-message"></div>
+        
+        <div class="input-box">
+            <input type="text" id="username" name="username" placeholder=" " maxlength="30" required>
+            <label for="username">Username</label>
+            <i class="fa-solid fa-user"></i>
+        </div>
+        
+        <div class="input-box">
+            <input type="password" id="password" name="password" placeholder=" " maxlength="50" required>
+            <label for="password">Password</label>
+            <i class="fa-solid fa-eye-slash" id="togglePassword"></i>
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        
+        <div class="remember-forgot">
+            <a href="#frogot-form" id="showForgotPassword">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="btn">Login</button>
+        
+        <div class="register-link">
+            <p>Don't have an account? <a href="#register-form" id="showRegister">Register</a></p>
+        </div>
+        
+        <!-- QR Login Option -->
+        <div class="qr-login-option">
+            <div class="divider">
+                <span>Or login with QR Code</span>
+            </div>
+            <button type="button" class="btn qr-btn" onclick="openQRScanner()">
+                <i class="fas fa-qrcode"></i> Scan QR Code
+            </button>
+        </div>
+    </div>
+</form>
 
-                <!-- QR Login Option -->
-                <div class="qr-login-option">
-                    <div class="divider">
-                        <span>Or login with QR Code</span>
-                    </div>
-                    <button type="button" class="btn qr-btn" onclick="openQRScanner()">
-                        <i class="fas fa-qrcode"></i> Scan QR Code
-                    </button>
-                </div>
-            </form>
+<!-- QR Scanner Modal -->
+<div id="qrScannerModal" class="modal hidden">
+    <div class="modal-content">
+        <div class="scanner-header">
+            <h3>Scan QR Code</h3>
+            <button class="close-scanner" onclick="closeQRScanner()">&times;</button>
+        </div>
+        <div class="scanner-body">
+            <div id="qrScannerContainer">
+                <video id="qrVideo" autoplay playsinline></video>
+                <canvas id="qrCanvas" class="hidden"></canvas>
+            </div>
+            <div class="qr-upload-section">
+                <p>Or upload QR code image:</p>
+                <input type="file" id="qrFileInput" accept="image/*" onchange="handleQRFileUpload(event)">
+            </div>
+        </div>
+    </div>
+</div>
         </div>
     </div>
     <div class="Login-form hidden" id="registerFormContainer">

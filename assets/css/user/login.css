@@ -373,3 +373,106 @@ body {
     padding: 10px;
     font-size: larger;
 }
+
+
+/* Smooth transitions for show/hide */
+#traditional-login, #qrScannerModal {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#qrScannerModal.hidden {
+    display: none !important;
+}
+
+/* QR Scanner Modal Styles */
+.modal {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: rgb(255, 255, 255);
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 90%;
+    max-height: 90%;
+    color: #333;
+}
+
+.scanner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.close-scanner {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+#qrScannerContainer {
+    width: 300px;
+    height: 300px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto 15px;
+}
+
+#qrVideo, #qrCanvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.qr-upload-section {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.qr-login-option {
+    margin-top: 20px;
+}
+
+.divider {
+    text-align: center;
+    margin: 15px 0;
+    color: #fff;
+    position: relative;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.qr-btn {
+    background: #4CAF50 !important;
+    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.qr-btn:hover {
+    background: #45a049 !important;
+}
