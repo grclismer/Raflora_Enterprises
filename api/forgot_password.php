@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Generate token
     $token = bin2hex(random_bytes(32));
-    $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+    $expires = date('Y-m-d H:i:s', strtotime('+2 minutes'));
 
     // Delete old tokens
     $delete_stmt = $conn->prepare("DELETE FROM password_resets WHERE email = ?");
